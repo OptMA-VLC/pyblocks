@@ -1,2 +1,1 @@
-# meow-sim
-The Modular Electro-Optical Workbench
+# The Modular Electro-Optical Workbench
