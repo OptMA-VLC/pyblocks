@@ -1,0 +1,2 @@
+class PortDescription:
+    id: str
