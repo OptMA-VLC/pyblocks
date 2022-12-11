@@ -1,3 +1,8 @@
+from dataclasses import dataclass
+from typing import Any
+
+
+@dataclass
 class ParamDescription:
     key: str
-    value: str
+    value: Any
