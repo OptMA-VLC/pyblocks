@@ -1,8 +1,8 @@
 from dataclasses import dataclass, field
 from typing import List
 
-from src.meow_sim.config.param_description import ParamDescription
-from src.meow_sim.config.port_description import PortDescription
+from .param_description import ParamDescription
+from .port_description import PortDescription
 
 
 @dataclass

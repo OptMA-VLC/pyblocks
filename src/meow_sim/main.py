@@ -1,18 +1,15 @@
-from pprint import pprint
+from rich import print
 
-from src.meow_sim.config.block_description import BlockDescription
-from src.meow_sim.config.config import Config
-from src.meow_sim.config.connection_description import ConnectionDescription
-from src.meow_sim.config.param_description import ParamDescription
-from src.meow_sim.config.port_description import PortDescription
+from src.meow_sim.data_structures.config import BlockDescription, Config, ConnectionDescription, ParamDescription, \
+    PortDescription
 
 
 def main():
     print("Meow\n")
 
     config = load_config()
-    print("loaded config")
-    pprint(config)
+    print("Loaded config!")
+    print(config)
 
     # meow simul.json
     #
@@ -23,6 +20,7 @@ def main():
     #  reportar resultado?
     #    - escrever em um arquivo e reportar o path?
     #    - escrever gráficos em arquivos?
+
 
 def load_config() -> Config:
     return Config(
@@ -51,6 +49,7 @@ def load_config() -> Config:
             )
         ]
     )
+
 
 if __name__ == "__main__":
     main()
