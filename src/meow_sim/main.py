@@ -1,15 +1,15 @@
-from rich import print
-
+from src.meow_sim.logger import logger
 from src.meow_sim.data_structures.config import BlockDescription, Config, ConnectionDescription, ParamDescription, \
     PortDescription
 
 
 def main():
-    print("Meow\n")
+    logger.info("Meow!  :cat:\n")
 
     config = load_config()
-    print("Loaded config!")
-    print(config)
+    logger.info("[green]Loaded config![/green]", ':rainbow:')
+
+    logger.warn(config)
 
     # meow simul.json
     #
