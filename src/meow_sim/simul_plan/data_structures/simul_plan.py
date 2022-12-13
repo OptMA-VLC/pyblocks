@@ -6,6 +6,6 @@ from .connection_description import ConnectionDescription
 
 
 @dataclass
-class Config:
+class SimulPlan:
     blocks: List[BlockDescription]
     connections: List[ConnectionDescription]

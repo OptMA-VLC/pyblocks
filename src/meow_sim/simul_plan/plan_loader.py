@@ -1,11 +1,11 @@
-from src.meow_sim.data_structures.config import BlockDescription, Config, ConnectionDescription, ParamDescription, \
-    PortDescription
+from .data_structures import \
+    SimulPlan, BlockDescription, ConnectionDescription, ParamDescription, PortDescription
 
 
-class ConfigLoader:
+class PlanLoader:
     @staticmethod
-    def load() -> Config:
-        return Config(
+    def load() -> SimulPlan:
+        return SimulPlan(
             blocks=[BlockDescription(
                 id='str_source',
                 path='$BLOCKS/string_source',

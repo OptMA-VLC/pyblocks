@@ -7,6 +7,6 @@ class Severity(Enum):
     WARNING = auto()
 
 @dataclass
-class ConfigProblem:
+class PlanProblem:
     severity: Severity
     message: str
