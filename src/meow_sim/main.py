@@ -1,4 +1,4 @@
-from src.meow_sim.block_library import BlockLibrary
+from src.meow_sim.block_library.block_library import BlockLibrary
 from src.meow_sim.logger import logger
 
 from src.meow_sim.simul_plan.plan_loader import PlanLoader
