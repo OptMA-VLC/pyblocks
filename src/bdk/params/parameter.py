@@ -8,7 +8,7 @@ class ParamType(Enum):
 
 
 @dataclass
-class Param:
+class Parameter:
     type: str = None  # string, int,
     required: bool = False
     default: Any = ''

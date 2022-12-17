@@ -1,15 +1,36 @@
 # The Modular Electro-Optical Workbench
 
+## Installation
+
+The recommended IDE to develop this project is PyCharm.
+
+Dependency management is done with a requirements.txt file.
+
 ---
 
-## Developer Install
+## Usage
 
-This project has a requirements.txt file. Use a virtual env to work with it.
+Run ```src/meow_sim/main.py```
 
-In PyCharm/linux package installation might fail with:
+---
+
+## Testing
+
+Make sure to have pytest installed. Installing the dependencies in requirements.txt will install it.
+
+Unit tests are in ```./src/test```
+
+---
+
+## Troubleshooting
+
+### No module named distutils.cmd
+
+On linux + PyCharm package installation might fail with:
 ```
 from distutils.cmd import Command as DistutilsCommand
 ModuleNotFoundError: No module named 'distutils.cmd'
 ```
 
-Install python3-distutils to your system: ```sudo apt install python3-distutils```
+You need to install python3-distutils in your system:
+```sudo apt install python3-distutils```

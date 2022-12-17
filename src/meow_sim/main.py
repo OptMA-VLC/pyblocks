@@ -1,3 +1,4 @@
+from src.meow_sim.block_library import BlockLibrary
 from src.meow_sim.logger import logger
 
 from src.meow_sim.simul_plan.plan_loader import PlanLoader
@@ -13,6 +14,7 @@ def main():
     logger.info("Validating plan...")
     errors = PlanValidator.validate(plan)
 
+    block_lib = BlockLibrary()
 
 if __name__ == "__main__":
     main()
