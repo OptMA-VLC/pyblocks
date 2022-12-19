@@ -23,11 +23,11 @@ class BlockLibrary:
         for path in self._get_subdirectories(block_path):
             logger.info(f'    /{path.name}  --- is block: {self._is_block_dir(path)}')
 
+    @staticmethod
+    def is_block_dir(path: pathlib.Path) -> bool:
+        return (path / 'block.py').exists()
 
     @staticmethod
     def _get_subdirectories(path: pathlib.Path) -> List[pathlib.Path]:
         return [path for path in path.iterdir() if path.is_dir()]
 
-    @staticmethod
-    def _is_block_dir(path: pathlib.Path) -> bool:
-        return (path / 'block.py').exists()
