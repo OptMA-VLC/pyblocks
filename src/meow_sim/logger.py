@@ -18,6 +18,12 @@ class _Logger:
     def warn(self, *args, **kwargs):
         self._console.print(*self._inject_tag(args, r'[yellow]\[Warn][/yellow]'), **kwargs)
 
+    def error(self, *args, **kwargs):
+        self._console.print(*self._inject_tag(args, r'[red]\[Error][/red]'), **kwargs)
+
+    def verbose(self, *args, **kwargs):
+        self._console.print(*self._inject_tag(args, r'[white]\[Error][/white]'), **kwargs)
+
     def _inject_tag(self, args: Tuple[Any], tag: str) -> Tuple[Any]:
         if len(args) == 0:
             return args

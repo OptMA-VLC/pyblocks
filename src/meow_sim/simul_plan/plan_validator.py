@@ -22,7 +22,7 @@ class PlanValidator:
 
     @staticmethod
     def _check_duplicate_block_ids(blocks: List[BlockDescription]) -> List[PlanProblem]:
-        ids: [str] = list(map(lambda b: b.id, blocks))
+        ids: [str] = list(map(lambda b: b.block_id, blocks))
         count = Counter(ids).items()
         problems = []
 

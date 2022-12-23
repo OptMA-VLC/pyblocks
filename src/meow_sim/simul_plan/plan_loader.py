@@ -6,22 +6,19 @@ class PlanLoader:
     @staticmethod
     def load() -> SimulPlan:
         return SimulPlan(
-            blocks=[BlockDescription(
-                id='str_source',
-                path='$BLOCKS/string_source',
-                params=[
-                    ParamDescription(key='string', value='Hello World!')
-                ],
-                outputs=[
-                    PortDescription(id='out')
-                ]
-            ), BlockDescription(
-                id='str_print',
-                path='$BLOCKS/string_print',
-                inputs=[
-                    PortDescription(id='in')
-                ]
-            )],
+            blocks=[
+                BlockDescription(
+                    instance_of='br.ufmg.optma.vlc_lifi.channel',
+                    block_id='str_source',
+                    params=[
+                        ParamDescription(key='string', value='Hello World!')
+                    ]
+                ),
+                BlockDescription(
+                    instance_of='br.ufmg.optma.test.string_print',
+                    block_id='str_print',
+                )
+            ],
             connections=[
                 ConnectionDescription(
                     from_block='str_source',

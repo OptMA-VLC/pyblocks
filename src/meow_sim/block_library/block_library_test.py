@@ -1,5 +1,3 @@
-import pathlib
-
 from src.meow_sim.block_library.block_library import BlockLibrary
 
 

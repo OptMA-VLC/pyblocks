@@ -7,8 +7,8 @@ class TestPlanValidator:
     def test_duplicate_block_id_ok(self):
         config = SimulPlan(
             blocks=[
-                BlockDescription(id='id_1', path=''),
-                BlockDescription(id='id_2', path='')
+                BlockDescription(instance_of='', block_id='id_1'),
+                BlockDescription(instance_of='', block_id='id_2')
             ],
             connections=[]
         )
@@ -20,8 +20,8 @@ class TestPlanValidator:
     def test_duplicate_block_id_error(self):
         config = SimulPlan(
             blocks=[
-                BlockDescription(id='repeated_id', path=''),
-                BlockDescription(id='repeated_id', path='')
+                BlockDescription(instance_of='', block_id='repeated_id'),
+                BlockDescription(instance_of='', block_id='repeated_id')
             ],
             connections=[]
         )

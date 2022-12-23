@@ -1,8 +1,7 @@
 from src.bdk.base_block import BaseBlock
-from src.blocks.string_print.implementation import StringPrintImpl
 
 
-class StringPrint(BaseBlock):
+class StringSource(BaseBlock):
     def get_info(self):
         pass
 
@@ -10,4 +9,4 @@ class StringPrint(BaseBlock):
         pass
 
     def run(self, inputs, params):
-        StringPrintImpl.print('Hello Block!')
+        pass
