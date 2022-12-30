@@ -1,44 +1,40 @@
 import pathlib
 from typing import List
 
+from src.bdk.base_block import BaseBlock
 from src.meow_sim.block_library.block_adapter import BlockAdapter
 from src.meow_sim.logger import logger
 
 
 class BlockLibrary:
-    BLOCK_PATH = './blocks'
+    BLOCK_PATH = pathlib.Path('./blocks')
+
+    _blocks: List[BaseBlock]
 
     def __init__(self):
-        block_path = pathlib.Path(BlockLibrary.BLOCK_PATH)
+        self._blocks = []
 
-        logger.info(f'Checking {block_path.absolute()} for blocks')
+    def load_from_dir(self, path: pathlib.Path):
+        logger.verbose(f'Checking {path.absolute()} for blocks')
 
-        for path in self._get_subdirectories(block_path):
-            if path.name.startswith('__'):
-                logger.info(f'Skipping directory {path.name} for it starts with __')
+        for block_dir in self._get_subdirectories(path):
+            if block_dir.name.startswith('__'):
+                logger.verbose(f'  /{block_dir.name.ljust(20)} - Skipping because it starts with __')
                 continue
 
-            logger.info(f'Creating Adapter for potential block dir ${path.name}')
-            adapter = BlockAdapter(path)
-            # logger.info(f'{path} is a block')
+            try:
+                adapter = BlockAdapter(block_dir)
+                self._blocks.append(adapter)
+                logger.verbose(f'  /{block_dir.name.ljust(20)} - [green]Loaded[/green]')
+            except Exception as ex:
+                logger.verbose(f'  /{block_dir.name.ljust(20)} - [red]Failed[/red]')
+                logger.error(f'Error loading block from {block_dir.resolve()} - {str(ex)}')
 
+    def len(self):
+        return len(self._blocks)
 
-        # goal: populate a List[BlockAdapter]
-        #
-        # BlockAdapter
-        #   '''Objetivo: dar uma interface fácil para carregar e introspectar blocos; instanciar para a simulação'''
-        #
-        #   @classmethod is_block_dir(path):
-        #   get_block_validation():
-        #
-        #   __init__(path):
-        #   load_from_dir():
-        #
-        #   should maintain a reference to the block class
-        #
-        #   get_instance():
-        #       """should provide a new instance for when the simulation is run"""
-
+    def __len__(self):
+        return self.len()
 
     @staticmethod
     def _get_subdirectories(path: pathlib.Path) -> List[pathlib.Path]:

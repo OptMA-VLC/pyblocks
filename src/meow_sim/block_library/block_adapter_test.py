@@ -50,6 +50,8 @@ class TestBlockDirValidation:
         with pytest.raises(BlockExceptions.LoadBlockClassFailed) as ex_info:
             BlockAdapter(block_path)
         assert 'More than one' in str(ex_info.value)
+
+
 def _create_block_py(path: pathlib.Path, content: str):
     with (path / 'block.py').open(mode='w') as block_py:
         block_py.write(content)

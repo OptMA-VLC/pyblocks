@@ -10,32 +10,33 @@ class _Logger:
         self._console = Console()
         if self._console.color_system is None:
             print("[Warning] Console doesn't support color. Will try overriding.")
-            self._console = Console(color_system="256")
+            self._console = Console(color_system="256", width=120)
 
     def info(self, *args, **kwargs):
-        self._console.print(*self._inject_tag(args, r'[blue]\[Info][/blue]'), **kwargs)
+        self._print_with_tag(r'[blue]\[Info][/blue]', args, kwargs)
 
     def warn(self, *args, **kwargs):
-        self._console.print(*self._inject_tag(args, r'[yellow]\[Warn][/yellow]'), **kwargs)
+        self._print_with_tag(r'[yellow]\[Warn][/yellow]', args, kwargs)
 
     def error(self, *args, **kwargs):
-        self._console.print(*self._inject_tag(args, r'[red]\[Error][/red]'), **kwargs)
+        self._print_with_tag(r'[red]\[Error][/red]', args, kwargs)
 
     def verbose(self, *args, **kwargs):
-        self._console.print(*self._inject_tag(args, r'[white]\[Error][/white]'), **kwargs)
+        self._print_with_tag(r'[white]\[Verbose][/white]', args, kwargs)
 
-    def _inject_tag(self, args: Tuple[Any], tag: str) -> Tuple[Any]:
-        if len(args) == 0:
-            return args
-
+    def _print_with_tag(self, tag: str, args, kwargs):
         args_list = list(args)
-        if isinstance(args[0], str):
-            args_list[0] = f'{tag} {args[0]}'
-        else:
-            args_list.insert(0, tag)
 
-        return tuple(args_list)
+        no_tag = False
+        if 'no_tag' in kwargs and bool(kwargs['no_tag']):
+            no_tag = True
+            del kwargs['no_tag']
 
+        has_string_arg = len(args_list) > 0 and isinstance(args_list[0], str)
+        if has_string_arg and no_tag is False:
+            args_list[0] = f'{tag} {args_list[0]}'
+
+        self._console.print(*tuple(args_list), **kwargs)
 
 
 logger = _Logger()
