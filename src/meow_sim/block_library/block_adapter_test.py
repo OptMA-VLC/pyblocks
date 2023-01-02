@@ -6,7 +6,7 @@ from src.meow_sim.block_library.block_adapter import BlockAdapter
 from src.meow_sim.block_library.block_exceptions import BlockExceptions
 
 
-class TestBlockDirValidation:
+class TestBlockDirLoading:
     def test_ok(self, tmp_path):
         block_path = (tmp_path / 'my_block')
         block_path.mkdir()
