@@ -22,15 +22,15 @@ class PlanValidator:
 
     @staticmethod
     def _check_duplicate_block_ids(blocks: List[BlockDescription]) -> List[PlanProblem]:
-        ids: [str] = list(map(lambda b: b.block_id, blocks))
+        ids: [str] = list(map(lambda b: b.id, blocks))
         count = Counter(ids).items()
         problems = []
 
-        for (block_id, cnt) in count:
+        for (id, cnt) in count:
             if cnt > 1:
                 problems.append(PlanProblem(
                     severity=Severity.ERROR,
-                    message=f"Block id '{block_id}' is used by {cnt} blocks. Block id's must be unique."
+                    message=f"Block id '{id}' is used by {cnt} blocks. Block id's must be unique."
                 ))
 
         return problems

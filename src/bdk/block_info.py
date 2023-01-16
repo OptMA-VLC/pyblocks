@@ -6,8 +6,8 @@ from src.bdk.params.parameter import Parameter
 
 @dataclass
 class BlockInfo:
+    distribution_name: str
     name: str
-    screen_name: str
     description: str
 
     params: List[Parameter]

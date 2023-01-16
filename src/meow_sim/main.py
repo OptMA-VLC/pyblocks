@@ -1,9 +1,9 @@
 import sys
 
-from src.meow_sim.block_library.block_library import BlockLibrary
 from src.meow_sim.logger import logger
-from src.meow_sim.simul_graph.simulation_graph import SimulationGraph
 
+from src.meow_sim.block_library.block_library import BlockLibrary
+from src.meow_sim.simul_graph.simulation_graph import SimulationGraph
 from src.meow_sim.simul_plan.plan_loader import PlanLoader
 from src.meow_sim.simul_plan.plan_validator import PlanValidator
 
@@ -28,6 +28,12 @@ def main():
 
     logger.info('Building simulation graph...')
     simul_graph = SimulationGraph()
+    for block in plan.blocks:
+        simul_graph.add_block(block)
+
+    for connection in plan.connections:
+        simul_graph.add_connection(connection)
+
     simul_graph.plot_graph()
     logger.warn('TODO: simulate')
 
@@ -50,7 +56,6 @@ def check_requirements():
         logger.warn('Can\'t import tkinter. Plotting will fail.')
         logger.warn('tkinter can\'t be installed by pip and is needed as a backend to matplotlib.')
         logger.warn('To install on Linux run: sudo apt-get install python3-tk')
-
 
 
 if __name__ == "__main__":
