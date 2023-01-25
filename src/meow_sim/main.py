@@ -13,29 +13,28 @@ def main():
 
     check_requirements()
 
-    logger.info('Loading block library...')
-    block_lib = BlockLibrary()
-    block_lib.load_from_dir(BlockLibrary.BLOCK_PATH)
-    logger.info(f'Block library loaded. Found [green]{len(block_lib)}[/green] blocks.')
-
-    logger.info('Loading simulation plan...', end=' ')
-    plan = PlanLoader.load()
-    logger.info('[green]OK[/green]', no_tag=True)
-
-    logger.info('Validating plan...', end=' ')
-    validation_errors = PlanValidator.validate(plan)
-    logger.info('[green]OK[/green]', no_tag=True)
-
-    logger.info('Building simulation graph...')
-    simul_graph = SimulationGraph()
-    for block in plan.blocks:
-        simul_graph.add_block(block)
-
-    for connection in plan.connections:
-        simul_graph.add_connection(connection)
-
-    simul_graph.plot_graph()
-    logger.warn('TODO: simulate')
+    # logger.info('Loading block library...')
+    # block_lib = BlockLibrary()
+    # block_lib.load_from_dir(BlockLibrary.BLOCK_PATH)
+    # logger.info(f'Block library loaded. Found [green]{len(block_lib)}[/green] blocks.')
+    #
+    # logger.info('Loading simulation plan...', end=' ')
+    # plan = PlanLoader.load()
+    # logger.info('[green]OK[/green]', no_tag=True)
+    #
+    # logger.info('Validating plan...', end=' ')
+    # validation_errors = PlanValidator.validate(plan)
+    # logger.info('[green]OK[/green]', no_tag=True)
+    #
+    # logger.info('Building simulation graph...')
+    # simul_graph = SimulationGraph()
+    # for block in plan.blocks:
+    #     simul_graph.add_block(block)
+    #
+    # for connection in plan.connections:
+    #     simul_graph.add_connection(connection)
+    #
+    # simul_graph.plot_graph()
 
 
 def check_requirements():

@@ -6,7 +6,7 @@ from .port import Port
 from .signals.signal import Signal
 
 
-class BaseBlock(ABC):
+class BaseBlock:
     @abstractmethod
     def get_info(self) -> BlockInfo:
         pass

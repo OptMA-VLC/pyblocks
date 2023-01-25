@@ -5,6 +5,10 @@ from types import ModuleType
 from typing import Any, List
 
 
+def get_subdirectories(path: pathlib.Path) -> List[pathlib.Path]:
+    return [path for path in path.iterdir() if path.is_dir()]
+
+
 def load_module(name: str, path: pathlib.Path) -> ModuleType:
     spec = importlib.util.spec_from_file_location(name, path)
     module = importlib.util.module_from_spec(spec)
