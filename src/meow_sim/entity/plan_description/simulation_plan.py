@@ -1,11 +1,10 @@
 from dataclasses import dataclass
 from typing import List
 
-from .block_description import BlockDescription
-from .connection_description import ConnectionDescription
+from src.meow_sim.entity.plan_description import BlockDescription, ConnectionDescription
 
 
 @dataclass
-class SimulPlan:
+class SimulationPlan:
     blocks: List[BlockDescription]
     connections: List[ConnectionDescription]

@@ -1,0 +1,2 @@
+class ParamBundle:
+    pass

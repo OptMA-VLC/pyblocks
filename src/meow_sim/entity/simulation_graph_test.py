@@ -6,8 +6,8 @@ from typing import List
 
 import pytest
 
-from src.meow_sim.simul_graph.simulation_graph import SimulationGraph
-from src.meow_sim.simul_plan.data_structures import BlockDescription, ConnectionDescription
+from src.meow_sim.entity.simulation_graph import SimulationGraph
+from src.meow_sim.entity.data_structures import BlockDescription, ConnectionDescription
 
 
 class TestSimulationGraph_Blocks:
