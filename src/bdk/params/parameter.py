@@ -1,15 +1,13 @@
 from dataclasses import dataclass
-from enum import Enum, auto
-from typing import Any
+from typing import Any, Type
 
-
-class ParamType(Enum):
-    STRING = auto()
+ParamId = str
 
 
 @dataclass
 class Parameter:
-    type: str = None  # string, int,
+    id: ParamId
+    type: Type
+    value: Any
     required: bool = False
-    default: Any = ''
-    value: Any = None
+    default: Any = None

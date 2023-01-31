@@ -1,12 +1,12 @@
 import copy
 import pathlib
 from types import ModuleType
-from typing import Dict, Optional
+from typing import Dict
 
 from src.bdk.base_block import BaseBlock
 import src.meow_sim.repository.block_repository.block_repository_helpers as helpers
 import src.meow_sim.repository.block_repository.block_repository_exceptions as repo_exceptions
-from src.meow_sim.entity.block_distribution_name import BlockDistributionName
+from src.bdk.block_distribution_name import BlockDistributionName
 from src.meow_sim.entity.block_id import BlockId
 from src.meow_sim.logger import logger
 from src.meow_sim.repository.block_adapter.block_adapter import BlockAdapter
@@ -20,9 +20,9 @@ class BlockRepository:
     def __init__(self):
         self._indexed_blocks = {}
 
-    def index_dir(self, path: pathlib.Path):
+    def index_dir(self, path: pathlib.Path, raise_exceptions=False):
         if not path.is_dir():
-            raise repo_exceptions.NotADir()
+            raise repo_exceptions.NotADir(path)
 
         logger.verbose(f'Checking {path.absolute()} for blocks')
 
@@ -31,12 +31,14 @@ class BlockRepository:
                 logger.verbose(f'  /{block_dir.name.ljust(20)} - Skipping because it starts with __')
                 continue
 
-            dist_name = self.get_dist_name_from_path(block_dir)
-            if dist_name is not None:
+            try:
+                dist_name = self.get_dist_name_from_path(block_dir)
                 self._indexed_blocks[dist_name] = block_dir
                 logger.verbose(f'  /{block_dir.name.ljust(20)} - [green]Indexed[/green]')
-            else:
-                logger.verbose(f'  /{block_dir.name.ljust(20)} - [red]Failed[/red]')
+            except Exception as ex:
+                logger.verbose(f'  /{block_dir.name.ljust(20)} - [red]Failed[/red]  ({ex})')
+                if raise_exceptions:
+                    raise
 
     def get_indexed_blocks(self) -> Dict[BlockDistributionName, pathlib.Path]:
         return copy.deepcopy(self._indexed_blocks)
@@ -66,14 +68,11 @@ class BlockRepository:
 
         return BlockAdapter(block_class)
 
-    def get_dist_name_from_path(self, path: pathlib.Path) -> Optional[BlockId]:
-        try:
-            adapter = self.load_from_path(path)
-            return adapter.distribution_name
-        except:
-            return None
-        finally:
-            del adapter
+    def get_dist_name_from_path(self, path: pathlib.Path) -> BlockId:
+        adapter = self.load_from_path(path)
+        name = adapter.distribution_name
+        del adapter
+        return name
 
     def _get_block_class(self, module: ModuleType) -> BaseBlock:
         try:

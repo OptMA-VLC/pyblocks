@@ -1,7 +1,6 @@
 from src.bdk.base_block import BaseBlock
 from src.bdk.block_info import BlockInfo
-from src.meow_sim.entity.block_distribution_name import BlockDistributionName
-from src.meow_sim.entity.block_id import BlockId
+from src.bdk.block_distribution_name import BlockDistributionName
 
 
 class BlockAdapter:

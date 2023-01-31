@@ -1,6 +1,12 @@
 import sys
+from pathlib import Path
 
+from src.meow_sim import use_cases
+from src.meow_sim.entity.block import Block
+from src.meow_sim.entity.simulation_graph import SimulationGraph
 from src.meow_sim.logger import logger
+from src.meow_sim.repository.block_repository.block_repository import BlockRepository
+from src.meow_sim.repository.plan_repository.plan_repository import PlanRepository
 
 
 def main():
@@ -8,18 +14,25 @@ def main():
 
     check_requirements()
 
-    # logger.info('Loading block library...')
-    # block_lib = BlockLibrary()
-    # block_lib.load_from_dir(BlockLibrary.BLOCK_PATH)
-    # logger.info(f'Block library loaded. Found [green]{len(block_lib)}[/green] blocks.')
-    #
-    # logger.info('Loading simulation plan...', end=' ')
-    # plan = PlanLoader.load()
-    # logger.info('[green]OK[/green]', no_tag=True)
-    #
-    # logger.info('Validating plan...', end=' ')
-    # validation_errors = PlanValidator.validate(plan)
-    # logger.info('[green]OK[/green]', no_tag=True)
+    # create block_repo
+    logger.info('Loading block library...  ')
+    block_repo = BlockRepository()
+    block_lib_path = Path('./blocks')
+    block_repo.index_dir(block_lib_path)
+    logger.info('Load block library: [green]ok[/green]')
+
+    # load plan
+    logger.info('Loading simulation plan...', end=' ')
+    plan = PlanRepository().load()
+    logger.info('[green]ok[/green]', no_tag=True)
+
+    graph = use_cases.build_simulation_graph_from_plan(plan)
+    # load blocks
+
+    # create graph
+    logger.info('Creating simulation graph')
+    graph = SimulationGraph()
+
     #
     # logger.info('Building simulation graph...')
     # simul_graph = SimulationGraph()

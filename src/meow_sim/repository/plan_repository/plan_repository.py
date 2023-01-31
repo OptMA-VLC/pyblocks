@@ -1,4 +1,6 @@
-from src.meow_sim.entity.plan_description import BlockDescription, ConnectionDescription, ParamDescription
+from src.meow_sim.entity.plan_description.block_description import BlockDescription
+from src.meow_sim.entity.plan_description.connection_description import ConnectionDescription
+from src.meow_sim.entity.plan_description.param_description import ParamDescription
 from src.meow_sim.entity.plan_description.simulation_plan import SimulationPlan
 
 
