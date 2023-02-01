@@ -24,6 +24,6 @@ class ToUpperBlock(BaseBlock):
         super().__init__()
 
     def run(self):
-        input_str: str = self.inputs.get_signal('str_in')
+        input_str = self.inputs.get_signal('str_in')
         output_str = input_str.upper()
         self.outputs.set_signal('str_out', output_str)

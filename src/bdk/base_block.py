@@ -10,6 +10,11 @@ from ..meow_sim.entity.param_bundle import ParamBundle
 
 
 class BaseBlock(ABC):
+    block_info: BlockInfo
+    params: ParamBundle
+    inputs: PortBundle
+    outputs: PortBundle
+
     def __init__(self):
         _assert_required_fields(self)
 

@@ -9,8 +9,8 @@ from src.meow_sim.entity.param_bundle import ParamBundle
 class StringPrint(BaseBlock):
     def __init__(self):
         self.block_info = BlockInfo(
-            distribution_id='br.ufmg.optma.to_upper',
-            name='Makes a string upper case',
+            distribution_id='br.ufmg.optma.string_print',
+            name='Prints a string',
             description=''
         )
         self.params = ParamBundle()

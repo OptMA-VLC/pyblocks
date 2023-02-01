@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import networkx as nx
 
-from src.meow_sim.block_library.block_adapter import BlockAdapter
+from src.meow_sim.repository.block_adapter.block_adapter import BlockAdapter
 
 
 class SimulationGraph:

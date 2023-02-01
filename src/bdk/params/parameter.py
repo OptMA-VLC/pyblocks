@@ -8,6 +8,6 @@ ParamId = str
 class Parameter:
     id: ParamId
     type: Type
-    value: Any
+    value: Any = None
     required: bool = False
     default: Any = None

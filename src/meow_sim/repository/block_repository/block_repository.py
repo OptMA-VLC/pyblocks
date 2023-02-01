@@ -6,7 +6,7 @@ from typing import Dict
 from src.bdk.base_block import BaseBlock
 import src.meow_sim.repository.block_repository.block_repository_helpers as helpers
 import src.meow_sim.repository.block_repository.block_repository_exceptions as repo_exceptions
-from src.bdk.block_distribution_name import BlockDistributionName
+from src.bdk.block_distribution_id import BlockDistributionId
 from src.meow_sim.entity.block_id import BlockId
 from src.meow_sim.logger import logger
 from src.meow_sim.repository.block_adapter.block_adapter import BlockAdapter
@@ -40,10 +40,10 @@ class BlockRepository:
                 if raise_exceptions:
                     raise
 
-    def get_indexed_blocks(self) -> Dict[BlockDistributionName, pathlib.Path]:
+    def get_indexed_blocks(self) -> Dict[BlockDistributionId, pathlib.Path]:
         return copy.deepcopy(self._indexed_blocks)
 
-    def load_by_dist_name(self, dist_name: BlockDistributionName) -> BlockAdapter:
+    def load_by_dist_name(self, dist_name: BlockDistributionId) -> BlockAdapter:
         try:
             path = self._indexed_blocks[dist_name]
         except KeyError:
@@ -70,7 +70,8 @@ class BlockRepository:
 
     def get_dist_name_from_path(self, path: pathlib.Path) -> BlockId:
         adapter = self.load_from_path(path)
-        name = adapter.distribution_name
+        name = adapter.distribution_id
+        logger.verbose(f'dist name: {name}')
         del adapter
         return name
 
