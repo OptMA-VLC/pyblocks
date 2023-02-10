@@ -1,19 +1,66 @@
 import sys
 from pathlib import Path
 
+from matplotlib import pyplot as plt
+
+from src.bdk.signals.signal_wave import SignalWave
+from src.blocks.ltspice_runner.ltspice_runner_config import LTSpiceRunnerConfig
 from src.meow_sim.logger import logger
 from src.meow_sim.repository.block_repository.block_repository import BlockRepository
 
 
 def main():
-    str_demo()
+    logger.info('Meow!  :cat:')
+    check_requirements()
+
+    lt_spice_demo()
+
+def lt_spice_demo():
+    logger.info('Loading block library...  ', end='')
+    block_repo = BlockRepository()
+    block_lib_path = Path('./blocks')
+    block_repo.index_dir(block_lib_path, raise_exceptions=True)
+    logger.info('[green]ok[/green]', no_tag=True)
+
+    logger.info('Loading simulation Blocks...  ', end='')
+    block_ltspice = block_repo.load_by_dist_name('br.ufmg.optma.ltspice_runner', )
+    logger.info('[green]ok[/green]', no_tag=True)
+
+    input_signal = make_triangle_wave()
+    config = LTSpiceRunnerConfig(
+        file_name_input='',
+        file_name_output='',
+        file_name_in_circuit='TX_input.txt',
+        ltspice_file_relative_path='blocks/ltspice_runner/test_data/Transmissor.asc',
+        ltspice_file_name='Transmissor.net',
+        add_instructions=[
+            '; Simulation settings',
+            '.tran 0 1000m 0 1u'
+        ],
+        probe_signals=[
+            'I(D1)',
+        ]
+    )
+
+    logger.info('Running block ltspice_runner...', end='')
+    block_ltspice.apply_parameters([
+        ('config', config)
+    ])
+    block_ltspice.set_signal('signal_in', input_signal)
+    block_ltspice.run()
+    logger.info('[green]ok[/green]', no_tag=True)
+
+    output_signal = block_ltspice.get_signal('signal_out')
+
+    fig, ax1 = plt.subplots()
+    ax2 = ax1.twinx()
+    ax1.plot(input_signal.time, input_signal.wave, color='r', label='input')
+    ax2.plot(output_signal.time, output_signal.wave, label='output')
+    plt.legend()
+    plt.show()
 
 
 def str_demo():
-    logger.info('Meow!  :cat:')
-
-    check_requirements()
-
     # create block_repo
     logger.info('Loading block library...  ', end='')
     block_repo = BlockRepository()
@@ -66,6 +113,25 @@ def check_requirements():
         logger.warn('tkinter can\'t be installed by pip and is needed as a backend to matplotlib.')
         logger.warn('To install on Linux run: sudo apt-get install python3-tk')
 
+
+def make_triangle_wave(end_time = 1, step = 0.001, period = 0.2):
+    time = []
+    wave = []
+
+    current_time = 0
+    current_wave = 0
+    wave_delta = 1/(period/step)
+    while current_time <= end_time:
+        time.append(current_time)
+        wave.append(current_wave)
+
+        current_time += step
+        current_wave += wave_delta
+
+        if current_wave > 1:
+            current_wave = 0
+
+    return SignalWave(time, wave)
 
 if __name__ == "__main__":
     main()

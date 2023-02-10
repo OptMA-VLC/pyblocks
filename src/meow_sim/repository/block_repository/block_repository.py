@@ -71,7 +71,6 @@ class BlockRepository:
     def get_dist_name_from_path(self, path: pathlib.Path) -> BlockId:
         adapter = self.load_from_path(path)
         name = adapter.distribution_id
-        logger.verbose(f'dist name: {name}')
         del adapter
         return name
 
