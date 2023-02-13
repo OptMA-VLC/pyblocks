@@ -28,11 +28,8 @@ def lt_spice_demo():
 
     input_signal = make_triangle_wave()
     config = LTSpiceRunnerConfig(
-        file_name_input='',
-        file_name_output='',
+        schematic_file='blocks/ltspice_runner/test_data/Transmissor.asc',
         file_name_in_circuit='TX_input.txt',
-        ltspice_file_relative_path='blocks/ltspice_runner/test_data/Transmissor.asc',
-        ltspice_file_name='Transmissor.net',
         add_instructions=[
             '; Simulation settings',
             '.tran 0 1000m 0 1u'

@@ -41,16 +41,15 @@ class LTSpiceRunner(BaseBlock):
         signal = self.inputs.get_signal('signal_in')
         self.write_signal_file(config, signal)
 
-        return_dict = self.run_ltspice(config)
+        self.run_ltspice(config)
 
-        out_signal = self.get_output(return_dict)
+        out_signal = self.get_output(config)
         self.outputs.set_signal('signal_out', out_signal)
 
         self.remove_temp_files(config)
 
     def write_signal_file(self, config: LTSpiceRunnerConfig, signal: SignalWave):
-        cwd = Path().cwd()
-        file_name_in_circuit = cwd / Path(config.file_name_in_circuit)
+        file_name_in_circuit = Path(config.file_name_in_circuit).resolve()
 
         with open(file_name_in_circuit, "w") as file_in_circuit:
             for idx in range(len(signal)):
@@ -58,33 +57,30 @@ class LTSpiceRunner(BaseBlock):
                 value = signal.wave[idx]
                 file_in_circuit.write(f'{time}\t{value}\n')
 
-    def get_schematic_path(self, config: LTSpiceRunnerConfig) -> Path:
-        cwd = Path().cwd()
-        return cwd / Path(config.ltspice_file_relative_path)
-
     def run_ltspice(self, config: LTSpiceRunnerConfig):
-        sim_commander = SimCommander(str(self.get_schematic_path(config)))
+        schematic_path = Path(config.schematic_file)
+        if not schematic_path.exists():
+            raise RuntimeError(f'Schematic file could not be found in the provided path {schematic_path}')
+
+        sim_commander = SimCommander(str(schematic_path))
         sim_commander.reset_netlist()
 
         add_instructions = config.add_instructions
         sim_commander.add_instructions(*add_instructions)
 
-        netlist_name = config.ltspice_file_name
-        run_netlist_file = f"{netlist_name}.net"
+        run_netlist_file = f"{schematic_path.stem}.net"
         sim_commander.run(run_filename=run_netlist_file)
         sim_commander.wait_completion()
 
         # Sim Statistics
         print(f'Successful/Total Simulations: {str(sim_commander.okSim)}/{str(sim_commander.runno)}')
 
-        # Ler o arquivo
-        raw_data = LTSpiceRawRead(f"{netlist_name}.raw")
+    def get_output(self, config) -> SignalWave:
+        raw_data = LTSpiceRawRead(f'{Path(config.schematic_file).stem}.raw')
 
         signal_trace_dict = {'time': raw_data.get_axis()}
         signal_trace_dict.update({signal: raw_data.get_trace(signal) for signal in config.probe_signals})
-        return signal_trace_dict
 
-    def get_output(self, signal_trace_dict) -> SignalWave:
         print(f'Recovered {len(signal_trace_dict)} signals, including time')
         time = signal_trace_dict['time']
 
@@ -101,7 +97,7 @@ class LTSpiceRunner(BaseBlock):
         return SignalWave(time, out_signal)
 
     def remove_temp_files(self, config: LTSpiceRunnerConfig):
-        ltspice_file = Path().cwd() / Path("LtSpice") / Path(config.ltspice_file_relative_path)
+        ltspice_file = Path().cwd() / Path("LtSpice") / Path(config.schematic_file)
         ltspice_file_parent = ltspice_file.parent
 
         log_files = glob.glob('*.log')
