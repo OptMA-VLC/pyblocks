@@ -15,6 +15,7 @@ def main():
 
     lt_spice_demo()
 
+
 def lt_spice_demo():
     logger.info('Loading block library...  ', end='')
     block_repo = BlockRepository()
@@ -57,40 +58,6 @@ def lt_spice_demo():
     plt.show()
 
 
-def str_demo():
-    # create block_repo
-    logger.info('Loading block library...  ', end='')
-    block_repo = BlockRepository()
-    block_lib_path = Path('./blocks')
-    block_repo.index_dir(block_lib_path)
-    logger.info('[green]ok[/green]', no_tag=True)
-
-    logger.info('Loading simulation Blocks...  ', end='')
-    block_str_src = block_repo.load_by_dist_name('br.ufmg.optma.string_source')
-    block_to_upper = block_repo.load_by_dist_name('br.ufmg.optma.to_upper')
-    block_str_print = block_repo.load_by_dist_name('br.ufmg.optma.string_print')
-    logger.info('[green]ok[/green]', no_tag=True)
-
-    logger.info('Running block str_source...', end='')
-    block_str_src.apply_parameters([
-        ('string', 'Hello world!')
-    ])
-    block_str_src.run()
-    sig_1 = block_str_src.get_signal('str_out')
-    logger.info('[green]ok[/green]', no_tag=True)
-
-    logger.info('Running block to_upper...', end='')
-    block_to_upper.set_signal('str_in', sig_1)
-    block_to_upper.run()
-    sig_2 = block_to_upper.get_signal('str_out')
-    logger.info('[green]ok[/green]', no_tag=True)
-
-    logger.info('Running block str_print...', end='')
-    block_str_print.set_signal('str_in', sig_2)
-    block_str_print.run()
-    logger.info('[green]ok[/green]', no_tag=True)
-
-
 def check_requirements():
     major_ver, minor_ver, _, _, _ = sys.version_info
     if major_ver < 2:
@@ -111,7 +78,7 @@ def check_requirements():
         logger.warn('To install on Linux run: sudo apt-get install python3-tk')
 
 
-def make_triangle_wave(end_time = 1, step = 0.001, period = 0.2):
+def make_triangle_wave(end_time=1, step=0.001, period=0.2):
     time = []
     wave = []
 
@@ -129,6 +96,7 @@ def make_triangle_wave(end_time = 1, step = 0.001, period = 0.2):
             current_wave = 0
 
     return SignalWave(time, wave)
+
 
 if __name__ == "__main__":
     main()

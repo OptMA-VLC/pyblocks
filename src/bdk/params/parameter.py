@@ -9,5 +9,5 @@ class Parameter:
     id: ParamId
     type: Type
     value: Any = None
-    required: bool = False
+    required: bool = True
     default: Any = None

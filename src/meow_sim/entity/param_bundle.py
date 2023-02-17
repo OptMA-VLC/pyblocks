@@ -18,7 +18,7 @@ class ParamBundle:
 
     def get_param(self, param_id: ParamId) -> Any:
         param = self.params[param_id]
-        if not param.required and param.value is None:
+        if param.value is None:
             return param.default
 
         return param.value
