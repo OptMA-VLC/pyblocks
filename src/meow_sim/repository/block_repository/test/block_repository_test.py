@@ -21,7 +21,7 @@ class TestBlockRepository:
         )
 
         print('\nShould create BlockAdapter from files in block folder...  ', end='')
-        BlockRepository().load_from_path(block_path)
+        BlockRepository().get_class_from_path(block_path)
         print('Ok')
 
     def test_missing_block_py_file(self, tmp_path):
@@ -29,7 +29,7 @@ class TestBlockRepository:
         block_path.mkdir()
 
         with pytest.raises(NoBlockPyFile):
-            BlockRepository().load_from_path(block_path)
+            BlockRepository().get_class_from_path(block_path)
 
     def test_no_block_class(self, tmp_path):
         block_path = tmp_path / 'my_block'
@@ -43,7 +43,7 @@ class TestBlockRepository:
         )
 
         with pytest.raises(NoBlockClassFound) as ex_info:
-            BlockRepository().load_from_path(block_path)
+            BlockRepository().get_class_from_path(block_path)
 
     def test_more_than_one_block_class(self, tmp_path):
         block_path = tmp_path / 'my_block'
@@ -55,7 +55,7 @@ class TestBlockRepository:
         ''')
 
         with pytest.raises(MultipleBlockClassesInFile) as ex_info:
-            BlockRepository().load_from_path(block_path)
+            BlockRepository().get_class_from_path(block_path)
 
 
 def _create_block_py(path: pathlib.Path, content: str):

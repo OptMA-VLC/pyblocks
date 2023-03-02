@@ -1,12 +1,15 @@
 import sys
 from pathlib import Path
+from typing import List
 
 from matplotlib import pyplot as plt
 
 from src.bdk.signals.signal_wave import SignalWave
 from src.blocks.ltspice_runner.ltspice_runner_config import LTSpiceRunnerConfig
 from src.meow_sim.logger import logger
+from src.meow_sim.repository.block_adapter.block_adapter import BlockAdapter
 from src.meow_sim.repository.block_repository.block_repository import BlockRepository
+from src.meow_sim.repository.block_repository.indexing_result import IndexingResult, ResultItem
 
 
 def main():
@@ -16,16 +19,31 @@ def main():
     lt_spice_demo()
 
 
+def print_indexing_result(result: IndexingResult):
+    logger.verbose(f'Checked {result.indexed_path.absolute()} for blocks')
+
+    for item in result.items:
+        if item.type is ResultItem.ResultType.SUCCESS:
+            logger.verbose(f'  /{item.path.name.ljust(20)} - [green]Success[/green]')
+        elif item.type is ResultItem.ResultType.FAILED:
+            logger.verbose(f'  /{item.path.name.ljust(20)} - [red]Failed[/red]')
+            logger.verbose(f'    (failed with exception {item.exception.__class__.__name__})')
+        elif item.type is ResultItem.ResultType.SKIPPED:
+            logger.verbose(f'  /{item.path.name.ljust(20)} - [white]Skipped[/white]')
+
+
 def lt_spice_demo():
-    logger.info('Loading block library...  ', end='')
+    logger.info('Loading block library...  ')
     block_repo = BlockRepository()
     block_lib_path = Path('./blocks')
-    block_repo.index_dir(block_lib_path, raise_exceptions=True)
-    logger.info('[green]ok[/green]', no_tag=True)
+    indexing_result = block_repo.index_dir(block_lib_path)
+    logger.info('Loading block library...  [green]ok[/green]')
+    print_indexing_result(indexing_result)
 
-    logger.info('Loading simulation Blocks...  ', end='')
-    block_ltspice = block_repo.load_by_dist_name('br.ufmg.optma.ltspice_runner', )
-    logger.info('[green]ok[/green]', no_tag=True)
+    logger.info('Loading simulation Blocks...  ')
+    block_ltspice_class = block_repo.get_class_from_dist_name('br.ufmg.optma.ltspice_runner')
+    block_ltspice = BlockAdapter(block_ltspice_class)
+    logger.info('Loading simulation Blocks...  [green]ok[/green]')
 
     input_signal = make_triangle_wave()
     config = LTSpiceRunnerConfig(

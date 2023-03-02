@@ -1,7 +1,7 @@
 import copy
 import pathlib
 from types import ModuleType
-from typing import Dict
+from typing import Dict, List
 
 from src.bdk.base_block import BaseBlock
 import src.meow_sim.repository.block_repository.block_repository_helpers as helpers
@@ -10,6 +10,7 @@ from src.bdk.block_distribution_id import BlockDistributionId
 from src.meow_sim.entity.block_id import BlockId
 from src.meow_sim.logger import logger
 from src.meow_sim.repository.block_adapter.block_adapter import BlockAdapter
+from src.meow_sim.repository.block_repository.indexing_result import IndexingResult, ResultItem
 
 
 class BlockRepository:
@@ -20,38 +21,37 @@ class BlockRepository:
     def __init__(self):
         self._indexed_blocks = {}
 
-    def index_dir(self, path: pathlib.Path, raise_exceptions=False):
+    def index_dir(self, path: pathlib.Path) -> IndexingResult:
         if not path.is_dir():
             raise repo_exceptions.NotADir(path)
 
-        logger.verbose(f'Checking {path.absolute()} for blocks')
-
+        indexing_result = IndexingResult(path)
         for block_dir in helpers.get_subdirectories(path):
             if block_dir.name.startswith('__'):
-                logger.verbose(f'  /{block_dir.name.ljust(20)} - Skipping because it starts with __')
+                indexing_result.append(ResultItem.skipped(block_dir))
                 continue
 
             try:
-                dist_name = self.get_dist_name_from_path(block_dir)
-                self._indexed_blocks[dist_name] = block_dir
-                logger.verbose(f'  /{block_dir.name.ljust(20)} - [green]Indexed[/green]')
+                dist_id = self.get_dist_id_from_path(block_dir)
+                self._indexed_blocks[dist_id] = block_dir
+                indexing_result.append(ResultItem.success(path, dist_id))
             except Exception as ex:
-                logger.verbose(f'  /{block_dir.name.ljust(20)} - [red]Failed[/red]  ({ex})')
-                if raise_exceptions:
-                    raise
+                indexing_result.append(ResultItem.failed(path, ex))
+
+        return indexing_result
 
     def get_indexed_blocks(self) -> Dict[BlockDistributionId, pathlib.Path]:
         return copy.deepcopy(self._indexed_blocks)
 
-    def load_by_dist_name(self, dist_name: BlockDistributionId) -> BlockAdapter:
+    def get_class_from_dist_name(self, dist_name: BlockDistributionId) -> BaseBlock:
         try:
             path = self._indexed_blocks[dist_name]
         except KeyError:
             raise repo_exceptions.BlockDoesNotExist(dist_name)
 
-        return self.load_from_path(path)
+        return self.get_class_from_path(path)
 
-    def load_from_path(self, path: pathlib.Path):
+    def get_class_from_path(self, path: pathlib.Path) -> BaseBlock:
         if not path.is_dir():
             raise repo_exceptions.NotADir(path)
 
@@ -64,12 +64,11 @@ class BlockRepository:
         except Exception as ex:
             raise repo_exceptions.LoadModuleFailed(path) from ex
 
-        block_class = self._get_block_class(module)
+        return self._get_block_class(module)
 
-        return BlockAdapter(block_class)
-
-    def get_dist_name_from_path(self, path: pathlib.Path) -> BlockId:
-        adapter = self.load_from_path(path)
+    def get_dist_id_from_path(self, path: pathlib.Path) -> BlockId:
+        block_class = self.get_class_from_path(path)
+        adapter = BlockAdapter(block_class)
         name = adapter.distribution_id
         del adapter
         return name
