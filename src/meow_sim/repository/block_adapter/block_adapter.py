@@ -19,14 +19,27 @@ class BlockAdapter:
         return self._block_instance.block_info
 
     def apply_parameters(self, params: List[Tuple[ParamId, Any]]):
+        block_params = self._block_instance.params
+
         for (param_id, value) in params:
-            self._block_instance.params.set_param(param_id, value)
+            for block_param in block_params:
+                if block_param.id == param_id:
+                    block_param.value = value
 
-    def set_signal(self, port_id: PortId, value: Any):
-        self._block_instance.inputs.set_signal(port_id, value)
+    def set_input(self, port_id: PortId, value: Any):
+        for input in self._block_instance.inputs:
+            if input.id == port_id:
+                input.signal = value
+                return
 
-    def get_signal(self, port_id: PortId):
-        return self._block_instance.outputs.get_signal(port_id)
+        raise KeyError(f'No input port with Id {port_id} in block {self.distribution_id}')
+
+    def get_output(self, port_id: PortId):
+        for output in self._block_instance.outputs:
+            if output.id == port_id:
+                return output.signal
+
+        raise KeyError(f'No output port with Id {port_id} in block {self.distribution_id}')
 
     def run(self):
         self._block_instance.run()

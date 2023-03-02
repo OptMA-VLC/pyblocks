@@ -35,20 +35,18 @@ def lt_spice_demo():
             '; Simulation settings',
             '.tran 0 1000m 0 1u'
         ],
-        probe_signals=[
-            'I(D1)',
-        ]
+        probe_signals=['I(D1)']
     )
 
     logger.info('Running block ltspice_runner...', end='')
     block_ltspice.apply_parameters([
         ('config', config)
     ])
-    block_ltspice.set_signal('signal_in', input_signal)
+    block_ltspice.set_input('signal_in', input_signal)
     block_ltspice.run()
     logger.info('[green]ok[/green]', no_tag=True)
 
-    output_signal = block_ltspice.get_signal('signal_out')
+    output_signal = block_ltspice.get_output('signal_out')
 
     fig, ax1 = plt.subplots()
     ax2 = ax1.twinx()

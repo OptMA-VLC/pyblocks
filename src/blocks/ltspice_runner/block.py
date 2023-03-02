@@ -9,44 +9,34 @@ from PyLTSpice.LTSpice_RawRead import LTSpiceRawRead
 from src.bdk.base_block import BaseBlock
 from src.bdk.block_info import BlockInfo
 from src.bdk.params.parameter import Parameter
-from src.bdk.ports.PortBundle import PortBundle
-from src.bdk.ports.port import Port
+from src.bdk.ports.input import Input
+from src.bdk.ports.output import Output
 from src.bdk.signals.signal_wave import SignalWave
 from src.blocks.ltspice_runner.ltspice_runner_config import LTSpiceRunnerConfig
-
-from src.meow_sim.entity.param_bundle import ParamBundle
 
 
 class LTSpiceRunner(BaseBlock):
     def __init__(self):
-        self.block_info = BlockInfo(
+        self.config = Parameter(id='config', type=LTSpiceRunnerConfig)
+        self.signal_in = Input(port_id='signal_in', type=SignalWave)
+        self.signal_out = Output(port_id='signal_out', type=SignalWave)
+
+        super().__init__(BlockInfo(
             distribution_id='br.ufmg.optma.ltspice_runner',
             name='LTSpice Runner Block',
             description='Takes a signal, simulates a circuit in LTSpice and provides an output'
-        )
-        self.params = ParamBundle(
-            Parameter(id='config', type=Any, required=True)
-        )
-        self.inputs = PortBundle(
-            Port(port_id='signal_in', signal_type=SignalWave)
-        )
-        self.outputs = PortBundle(
-            Port(port_id='signal_out', signal_type=SignalWave)
-        )
-
-        super().__init__()
+        ))
 
     def run(self):
-        config = self.params.get_param('config')
-        signal = self.inputs.get_signal('signal_in')
+        config = self.config.value
+        signal = self.signal_in.signal
+
         self.write_signal_file(config, signal)
-
         self.run_ltspice(config)
-
         out_signal = self.get_output(config)
-        self.outputs.set_signal('signal_out', out_signal)
-
         self.remove_temp_files(config)
+
+        self.signal_out.signal = out_signal
 
     def write_signal_file(self, config: LTSpiceRunnerConfig, signal: SignalWave):
         file_name_in_circuit = Path(config.file_name_in_circuit).resolve()
