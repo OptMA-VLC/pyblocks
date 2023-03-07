@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
-ConnectionId = str
+from src.meow_sim.entity.connection_id import ConnectionId
+
 
 @dataclass
 class Connection:
