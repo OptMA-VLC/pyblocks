@@ -1,10 +1,9 @@
 import numpy as np
 from numpy import testing
 from scipy import signal
-import matplotlib.pyplot as plt
 
 from src.blocks.signal_generator.block import SignalGeneratorBlock
-from src.meow_sim.repository.block_adapter.block_adapter import BlockAdapter
+from src.meow_sim.block_runtime.block_adapter.block_adapter import BlockAdapter
 
 
 class TestSignalGenerator:

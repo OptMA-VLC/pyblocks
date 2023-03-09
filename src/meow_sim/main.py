@@ -1,6 +1,5 @@
 import sys
 from pathlib import Path
-from typing import List
 
 from matplotlib import pyplot as plt
 
@@ -8,15 +7,13 @@ from src.bdk.params.param_id import ParamId
 from src.bdk.ports.port_id import PortId
 from src.bdk.signals.signal_wave import SignalWave
 from src.blocks.ltspice_runner.ltspice_runner_config import LTSpiceRunnerConfig
-from src.meow_sim.entity.block import Block
 from src.meow_sim.entity.connection import Connection
 from src.meow_sim.entity.simulation.simulation_steps import SimulationStep
 from src.meow_sim.logger import logger
-from src.meow_sim.repository.block_adapter.block_adapter import BlockAdapter
 from src.meow_sim.repository.block_repository.block_repository import BlockRepository
 from src.meow_sim.repository.block_repository.indexing_result import IndexingResult, ResultItem
 from src.meow_sim.repository.signal_repository.signal_repository import SignalRepository
-from src.meow_sim.use_cases.simulation_use_cases import SimulationUseCases
+from src.meow_sim.use_case.simulation_use_cases import SimulationUseCases
 
 
 def main():
@@ -48,14 +45,7 @@ def lt_spice_demo():
     print_indexing_result(indexing_result)
 
     logger.info('Loading simulation Blocks...  ')
-    block_ltspice_class = block_repo.get_class_from_dist_name('br.ufmg.optma.ltspice_runner')
-    adapter = BlockAdapter(block_ltspice_class)
-    block_ltspice = Block(
-        distribution_id=adapter.distribution_id,
-        instance_id='1234',
-        name='LT Spice Block',
-        adapter=adapter
-    )
+    block_ltspice = block_repo.get_block('br.ufmg.optma.ltspice_runner')
     logger.info('Loading simulation Blocks...  [green]ok[/green]')
 
     input_signal = make_triangle_wave()

@@ -7,8 +7,10 @@ from src.bdk.base_block import BaseBlock
 import src.meow_sim.repository.block_repository.block_repository_helpers as helpers
 import src.meow_sim.repository.block_repository.block_repository_exceptions as repo_exceptions
 from src.bdk.block_distribution_id import BlockDistributionId
-from src.meow_sim.entity.block_instance_id import BlockInstanceId
-from src.meow_sim.repository.block_adapter.block_adapter import BlockAdapter
+from src.meow_sim.block_runtime.block_runtime.block_runtime import BlockRuntime
+from src.meow_sim.entity.block.block import Block
+from src.meow_sim.entity.block.block_instance_id import BlockInstanceId
+from src.meow_sim.entity.block.interface_block_runtime import IBlockRuntime
 from src.meow_sim.repository.block_repository.indexing_result import IndexingResult, ResultItem
 
 
@@ -31,7 +33,7 @@ class BlockRepository:
                 continue
 
             try:
-                dist_id = self.get_dist_id_from_path(block_dir)
+                dist_id = self._get_dist_id_from_path(block_dir)
                 self._indexed_blocks[dist_id] = block_dir
                 indexing_result.append(ResultItem.success(path, dist_id))
             except Exception as ex:
@@ -42,15 +44,31 @@ class BlockRepository:
     def get_indexed_blocks(self) -> Dict[BlockDistributionId, pathlib.Path]:
         return copy.deepcopy(self._indexed_blocks)
 
-    def get_class_from_dist_name(self, dist_name: BlockDistributionId) -> BaseBlock:
+    def get_block(self, dist_name: BlockDistributionId) -> Block:
         try:
             path = self._indexed_blocks[dist_name]
         except KeyError:
             raise repo_exceptions.BlockDoesNotExist(dist_name)
 
-        return self.get_class_from_path(path)
+        block_class = self._get_class_from_path(path)
+        block_runtime = BlockRuntime(block_class)
+        block_info = block_runtime.get_info()
+        return Block(
+            distribution_id=block_info.distribution_id,
+            instance_id=f'{block_info.distribution_id}@{id(block_runtime)}',
+            name=block_info.name,
+            runtime=block_runtime,
+        )
 
-    def get_class_from_path(self, path: pathlib.Path) -> BaseBlock:
+
+    def _get_dist_id_from_path(self, path: pathlib.Path) -> BlockInstanceId:
+        block_class = self._get_class_from_path(path)
+        runtime = BlockRuntime(block_class)
+        name = runtime.distribution_id
+        del runtime
+        return name
+
+    def _get_class_from_path(self, path: pathlib.Path) -> BaseBlock:
         if not path.is_dir():
             raise repo_exceptions.NotADir(path)
 
@@ -64,13 +82,6 @@ class BlockRepository:
             raise repo_exceptions.LoadModuleFailed(path) from ex
 
         return self._get_block_class(module)
-
-    def get_dist_id_from_path(self, path: pathlib.Path) -> BlockInstanceId:
-        block_class = self.get_class_from_path(path)
-        adapter = BlockAdapter(block_class)
-        name = adapter.distribution_id
-        del adapter
-        return name
 
     def _get_block_class(self, module: ModuleType) -> BaseBlock:
         try:

@@ -2,9 +2,8 @@ from typing import List, Dict, Any
 
 from src.bdk.params.param_id import ParamId
 from src.bdk.ports.port_id import PortId
-from src.meow_sim.entity.block import Block
+from src.meow_sim.entity.block.block import Block
 from src.meow_sim.entity.connection import Connection
-from src.meow_sim.entity.connection_id import ConnectionId
 from src.meow_sim.entity.simulation.simulation_steps import SimulationStep
 from src.meow_sim.logger import logger
 from src.meow_sim.repository.signal_repository.signal_repository import SignalRepository
@@ -20,7 +19,7 @@ class SimulationUseCases:
         logger.info('\n==== Running Simulation ====\n')
         try:
             for (i, step) in enumerate(steps):
-                logger.info(f'Step {i}/{len(steps)} - Simulating Block {step.block.name}')
+                logger.info(f'Step {i+1}/{len(steps)} - Simulating Block {step.block.name}')
                 self.simulate_step(step)
         except RuntimeError as ex:
             logger.error(ex)
@@ -38,7 +37,8 @@ class SimulationUseCases:
 
     def _apply_params(self, block: Block, params: Dict[ParamId, Any]):
         try:
-            block.adapter.apply_parameters(params)
+            for (param_id, value) in params.items():
+                block.runtime.set_parameter(param_id, value)
         except Exception as ex:
             raise RuntimeError(
                 f'Error applying parameters to Block {block.name} (instance_id: {block.instance_id})'
@@ -48,7 +48,7 @@ class SimulationUseCases:
         try:
             for (port_id, conn) in inputs.items():
                 signal = self._signal_repo.get(conn.id)
-                block.adapter.set_input(port_id, signal)
+                block.runtime.set_input(port_id, signal)
         except Exception as ex:
             raise RuntimeError(
                 f'Error applying inputs to Block {block.name} (instance_id: {block.instance_id})'
@@ -56,7 +56,7 @@ class SimulationUseCases:
 
     def _run(self, block: Block):
         try:
-            block.adapter.run()
+            block.runtime.run()
         except Exception as ex:
             raise RuntimeError(
                 f'The block {block.name} (instance_id: {block.instance_id}) produce an error during its execution'
@@ -65,7 +65,7 @@ class SimulationUseCases:
     def _extract_outputs(self, block: Block, outputs: Dict[PortId, Connection]):
         try:
             for (port_id, conn) in outputs.items():
-                out = block.adapter.get_output(port_id)
+                out = block.runtime.get_output(port_id)
                 self._signal_repo.set(conn.id, out)
         except Exception as ex:
             raise RuntimeError(

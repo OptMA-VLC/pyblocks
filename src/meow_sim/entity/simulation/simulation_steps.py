@@ -3,7 +3,7 @@ from typing import Any, Dict
 
 from src.bdk.params.param_id import ParamId
 from src.bdk.ports.port_id import PortId
-from src.meow_sim.entity.block import Block
+from src.meow_sim.entity.block.block import Block
 from src.meow_sim.entity.connection import Connection
 
 
