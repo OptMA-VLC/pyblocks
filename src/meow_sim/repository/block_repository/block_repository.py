@@ -1,14 +1,13 @@
 import copy
 import pathlib
 from types import ModuleType
-from typing import Dict, List
+from typing import Dict
 
 from src.bdk.base_block import BaseBlock
 import src.meow_sim.repository.block_repository.block_repository_helpers as helpers
 import src.meow_sim.repository.block_repository.block_repository_exceptions as repo_exceptions
 from src.bdk.block_distribution_id import BlockDistributionId
-from src.meow_sim.entity.block_id import BlockId
-from src.meow_sim.logger import logger
+from src.meow_sim.entity.block_instance_id import BlockInstanceId
 from src.meow_sim.repository.block_adapter.block_adapter import BlockAdapter
 from src.meow_sim.repository.block_repository.indexing_result import IndexingResult, ResultItem
 
@@ -16,7 +15,7 @@ from src.meow_sim.repository.block_repository.indexing_result import IndexingRes
 class BlockRepository:
     base_block_class = BaseBlock
 
-    _indexed_blocks: Dict[BlockId, pathlib.Path]
+    _indexed_blocks: Dict[BlockInstanceId, pathlib.Path]
 
     def __init__(self):
         self._indexed_blocks = {}
@@ -66,7 +65,7 @@ class BlockRepository:
 
         return self._get_block_class(module)
 
-    def get_dist_id_from_path(self, path: pathlib.Path) -> BlockId:
+    def get_dist_id_from_path(self, path: pathlib.Path) -> BlockInstanceId:
         block_class = self.get_class_from_path(path)
         adapter = BlockAdapter(block_class)
         name = adapter.distribution_id

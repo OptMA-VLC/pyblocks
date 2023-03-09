@@ -4,12 +4,19 @@ from typing import List
 
 from matplotlib import pyplot as plt
 
+from src.bdk.params.param_id import ParamId
+from src.bdk.ports.port_id import PortId
 from src.bdk.signals.signal_wave import SignalWave
 from src.blocks.ltspice_runner.ltspice_runner_config import LTSpiceRunnerConfig
+from src.meow_sim.entity.block import Block
+from src.meow_sim.entity.connection import Connection
+from src.meow_sim.entity.simulation.simulation_steps import SimulationStep
 from src.meow_sim.logger import logger
 from src.meow_sim.repository.block_adapter.block_adapter import BlockAdapter
 from src.meow_sim.repository.block_repository.block_repository import BlockRepository
 from src.meow_sim.repository.block_repository.indexing_result import IndexingResult, ResultItem
+from src.meow_sim.repository.signal_repository.signal_repository import SignalRepository
+from src.meow_sim.use_cases.simulation_use_cases import SimulationUseCases
 
 
 def main():
@@ -42,7 +49,13 @@ def lt_spice_demo():
 
     logger.info('Loading simulation Blocks...  ')
     block_ltspice_class = block_repo.get_class_from_dist_name('br.ufmg.optma.ltspice_runner')
-    block_ltspice = BlockAdapter(block_ltspice_class)
+    adapter = BlockAdapter(block_ltspice_class)
+    block_ltspice = Block(
+        distribution_id=adapter.distribution_id,
+        instance_id='1234',
+        name='LT Spice Block',
+        adapter=adapter
+    )
     logger.info('Loading simulation Blocks...  [green]ok[/green]')
 
     input_signal = make_triangle_wave()
@@ -56,15 +69,31 @@ def lt_spice_demo():
         probe_signals=['I(D1)']
     )
 
-    logger.info('Running block ltspice_runner...', end='')
-    block_ltspice.apply_parameters([
-        ('config', config)
-    ])
-    block_ltspice.set_input('signal_in', input_signal)
-    block_ltspice.run()
-    logger.info('[green]ok[/green]', no_tag=True)
+    conn_input = Connection(id='conn_in')
+    conn_output = Connection(id='conn_out')
 
-    output_signal = block_ltspice.get_output('signal_out')
+    steps = [
+        SimulationStep(
+            block=block_ltspice,
+            params={
+                ParamId('config'): config
+            },
+            inputs={
+                PortId('signal_in'): conn_input
+            },
+            outputs={
+                PortId('signal_out'): conn_output
+            }
+        )
+    ]
+
+    signal_repo = SignalRepository()
+    simulation_use_cases = SimulationUseCases(signal_repo)
+
+    signal_repo.set(conn_input.id, input_signal)
+    simulation_use_cases.simulate(steps)
+
+    output_signal = signal_repo.get(conn_output.id)
 
     fig, ax1 = plt.subplots()
     ax2 = ax1.twinx()

@@ -1,4 +1,4 @@
-from typing import List, Tuple, Any
+from typing import List, Tuple, Any, Dict
 
 from src.bdk.base_block import BaseBlock
 from src.bdk.block_distribution_id import BlockDistributionId
@@ -18,10 +18,10 @@ class BlockAdapter:
     def get_info(self) -> BlockInfo:
         return self._block_instance.block_info
 
-    def apply_parameters(self, params: List[Tuple[ParamId, Any]]):
+    def apply_parameters(self, params: Dict[ParamId, Any]):
         block_params = self._block_instance.params
 
-        for (param_id, value) in params:
+        for (param_id, value) in params.items():
             for block_param in block_params:
                 if block_param.id == param_id:
                     block_param.value = value

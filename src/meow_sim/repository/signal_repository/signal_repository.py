@@ -14,4 +14,8 @@ class SignalRepository:
         self._signals[connection_id] = signal
 
     def get(self, connection_id: ConnectionId) -> Any:
-        return copy.deepcopy(self._signals[connection_id])
+        try:
+            return copy.deepcopy(self._signals[connection_id])
+        except KeyError:
+            raise KeyError(f"No signal exists for connection_id '{connection_id}'")
+

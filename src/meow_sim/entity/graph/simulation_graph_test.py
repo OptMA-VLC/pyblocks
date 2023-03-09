@@ -6,7 +6,7 @@ from typing import List
 
 import pytest
 
-from src.meow_sim.entity.simulation_graph import SimulationGraph
+from src.meow_sim.entity.graph.simulation_graph import SimulationGraph
 from src.meow_sim.entity.data_structures import BlockDescription, ConnectionDescription
 
 
