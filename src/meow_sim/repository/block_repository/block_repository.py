@@ -10,7 +10,6 @@ from src.bdk.block_distribution_id import BlockDistributionId
 from src.meow_sim.block_runtime.block_runtime.block_runtime import BlockRuntime
 from src.meow_sim.entity.block.block import Block
 from src.meow_sim.entity.block.block_instance_id import BlockInstanceId
-from src.meow_sim.entity.block.interface_block_runtime import IBlockRuntime
 from src.meow_sim.repository.block_repository.indexing_result import IndexingResult, ResultItem
 
 
@@ -59,7 +58,6 @@ class BlockRepository:
             name=block_info.name,
             runtime=block_runtime,
         )
-
 
     def _get_dist_id_from_path(self, path: pathlib.Path) -> BlockInstanceId:
         block_class = self._get_class_from_path(path)

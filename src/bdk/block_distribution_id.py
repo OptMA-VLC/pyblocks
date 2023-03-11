@@ -1,1 +1,2 @@
-BlockDistributionId = str
+class BlockDistributionId(str):
+    pass

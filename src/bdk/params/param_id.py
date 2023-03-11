@@ -1,1 +1,2 @@
-ParamId = str
+class ParamId(str):
+    pass

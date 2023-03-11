@@ -9,7 +9,7 @@ from src.meow_sim.logger import logger
 from src.meow_sim.repository.signal_repository.signal_repository import SignalRepository
 
 
-class SimulationUseCases:
+class SimulateUseCase:
     _signal_repo: SignalRepository
 
     def __init__(self, signal_repo: SignalRepository):

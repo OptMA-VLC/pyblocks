@@ -1,68 +1,126 @@
-# - reject adding block with same id
-# - allow adding block with same id after removing
-#
-# - reject adding edge between non-existing blocks
-from typing import List
+from typing import Tuple
 
 import pytest
 
+from src.bdk.ports.port_id import PortId
+from src.meow_sim.entity.block.block import Block
+from src.meow_sim.entity.block.port import Port
+from src.meow_sim.entity.connection import Connection
 from src.meow_sim.entity.graph.simulation_graph import SimulationGraph
-from src.meow_sim.entity.data_structures import BlockDescription, ConnectionDescription
 
 
-class TestSimulationGraph_Blocks:
-    def test_add_node(self):
-        block = _block('block_1')
+class TestSimulationGraph:
+    def test_add_block(self):
         graph = SimulationGraph()
+        block = self._block(dist_id='block_1')
 
         graph.add_block(block)
 
         assert len(graph.blocks) is 1
 
-    def test_reject_duplicate_block(self):
-        block = _block('block_1')
+    def test_add_two_blocks_of_same_type(self):
+        block_1 = self._block(dist_id='dist_id_1', instance_id='block_1')
+        block_2 = self._block(dist_id='dist_id_1', instance_id='block_2')
         graph = SimulationGraph()
 
-        graph.add_block(block)
-        with pytest.raises(Exception):
-            graph.add_block(block)
+        graph.add_block(block_1)
+        graph.add_block(block_2)
 
-    def test_remove_block(self):
-        block = _block('block_1')
+        assert len(graph.blocks) is 2
+
+    def test_adding_existing_instance_is_update(self):
+        block_1 = self._block(dist_id='dist_id_1', instance_id='same_instance')
+        block_2 = self._block(dist_id='dist_id_2', instance_id='same_instance')
         graph = SimulationGraph()
 
-        # removing a non-existing node should be a no-op
-        graph.remove_node('foo')
-        assert len(graph.blocks) is 0
+        graph.add_block(block_1)
+        graph.add_block(block_2)
 
-        # removes a block
-        graph.add_block(block)
         assert len(graph.blocks) is 1
-        graph.remove_block(block.id)
-        assert len(graph.blocks) is 0
+        block = graph.blocks[0]
+        assert block.distribution_id is block_2.distribution_id
 
-        # should support re-adding block after removal
-        graph.add_block(block)
-        assert len(graph.blocks) is 1
-
-
-class TestSimulationGraph_Connections:
     def test_add_connection(self):
-        graph = self._graph_with_blocks(['block_1', 'block_2'])
-        conn = ConnectionDescription(
-            id='conn_1',
-            from_block='block_1',
-            to_block='block_2'
+        (graph, block_1, block_2) = self._graph_with_two_blocks()
+        conn = Connection(
+            from_port=block_1.outputs[0],
+            to_port=block_2.inputs[0]
         )
-        graph.add_connection()
 
-    def _graph_with_blocks(self, block_ids: List[str]) -> SimulationGraph:
+        graph.add_connection(conn)
+
+        assert len(graph.connections) is 1
+
+    def test_cant_connect_input_to_output(self):
+        (graph, block_1, block_2) = self._graph_with_two_blocks()
+        conn = Connection(
+            from_port=block_2.inputs[0],
+            to_port=block_1.outputs[0]
+        )
+
+        with pytest.raises(Exception):
+            graph.add_connection(conn)
+
+    def test_cant_connect_output_to_output(self):
+        (graph, block_1, block_2) = self._graph_with_two_blocks()
+        conn = Connection(
+            from_port=block_1.outputs[0],
+            to_port=block_2.outputs[0]
+        )
+
+        with pytest.raises(Exception):
+            graph.add_connection(conn)
+
+    def test_cant_connect_input_to_input(self):
+        (graph, block_1, block_2) = self._graph_with_two_blocks()
+        conn = Connection(
+            from_port=block_1.inputs[0],
+            to_port=block_2.inputs[0]
+        )
+
+        with pytest.raises(Exception):
+            graph.add_connection(conn)
+
+    def test_cant_connect_block_to_itself(self):
+        (graph, block_1, block_2) = self._graph_with_two_blocks()
+        conn = Connection(
+            from_port=block_1.outputs[0],
+            to_port=block_1.inputs[0]
+        )
+
+        with pytest.raises(Exception):
+            graph.add_connection(conn)
+
+    def test_ignore_duplicate_connection(self):
+        (graph, block_1, block_2) = self._graph_with_two_blocks()
+        conn = Connection(
+            from_port=block_1.outputs[0],
+            to_port=block_2.inputs[0]
+        )
+
+        graph.add_connection(conn)
+        assert len(graph.connections) is 1
+        graph.add_connection(conn)
+        assert len(graph.connections) is 1
+
+    def _block(self, dist_id='dist_id', instance_id='instance_id') -> Block:
+        return Block(
+            distribution_id=dist_id,
+            instance_id=instance_id,
+            name='Test Block',
+            runtime=None
+        )
+
+    def _graph_with_two_blocks(self) -> Tuple[SimulationGraph, Block, Block]:
+        block_1 = self._block(instance_id='inst_id_1', dist_id='block_1')
+        block_1.inputs = [Port(block=block_1, port_id=PortId('port_in'))]
+        block_1.outputs = [Port(block=block_1, port_id=PortId('port_out'))]
+        block_2 = self._block(instance_id='inst_id_2', dist_id='block_2')
+        block_2.inputs = [Port(block=block_2, port_id=PortId('port_in'))]
+        block_2.outputs = [Port(block=block_2, port_id=PortId('port_out'))]
+
         g = SimulationGraph()
-        for block_id in block_ids:
-            g.add_block(_block(block_id))
+        g.add_block(block_1)
+        g.add_block(block_2)
 
-        return g
-
-
-def _block(block_id: str) -> BlockDescription:
-    return BlockDescription(instance_of=f'com.test.{block_id}', id=f'{block_id}')
+        return g, block_1, block_2

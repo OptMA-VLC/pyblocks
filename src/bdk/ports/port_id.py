@@ -1,1 +1,2 @@
-PortId = str
+class PortId(str):
+    pass
