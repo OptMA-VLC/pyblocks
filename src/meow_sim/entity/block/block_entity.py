@@ -3,6 +3,8 @@ from typing import Optional, List, Union
 
 from src.bdk.block_distribution_id import BlockDistributionId
 from src.bdk.ports.port_id import PortId
+from src.meow_sim.entity.block.applied_parameter_entity import UserParameterEntity
+from src.meow_sim.entity.block.available_parameter_entity import AvailableParameterEntity
 from src.meow_sim.entity.block.block_instance_id import BlockInstanceId
 from src.meow_sim.entity.block.interface_block_runtime import IBlockRuntime
 from src.meow_sim.entity.block.port_entity import PortEntity
@@ -16,6 +18,8 @@ class BlockEntity:
     runtime: Optional[IBlockRuntime] = None
     inputs: List[PortEntity] = field(default_factory=list)
     outputs: List[PortEntity] = field(default_factory=list)
+    available_params: List[AvailableParameterEntity] = field(default_factory=list)
+    user_params: List[UserParameterEntity] = field(default_factory=list)
 
     def get_input(self, port: Union[PortEntity, PortId]):
         return self._get_port_in_list(self.inputs, port)

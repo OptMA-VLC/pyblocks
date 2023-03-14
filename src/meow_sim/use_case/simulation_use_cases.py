@@ -1,11 +1,6 @@
-from typing import List, Dict, Any, Tuple
+from typing import List
 
-import networkx.algorithms.dag
-
-from src.bdk.params.param_id import ParamId
-from src.bdk.ports.port_id import PortId
 from src.meow_sim.entity.block.block_entity import BlockEntity
-from src.meow_sim.entity.block.block_instance_id import BlockInstanceId
 from src.meow_sim.entity.connection import Connection
 from src.meow_sim.entity.graph.simulation_graph import SimulationGraph
 from src.meow_sim.entity.simulation.simulation_steps import SimulationStep
@@ -19,15 +14,14 @@ class SimulationUseCases:
     def __init__(self, signal_repo: SignalRepository):
         self._signal_repo = signal_repo
 
-    def create_simulation_steps(
-            self, graph: SimulationGraph,
-    ) -> List[SimulationStep]:
+    def create_simulation_steps(self, graph: SimulationGraph) -> List[SimulationStep]:
         steps = []
-        for block in graph.topological_sort():
 
+        blocks_in_execution_order = graph.topological_sort()
+
+        for block in blocks_in_execution_order:
             steps.append(SimulationStep(
                 block=block,
-                params={},  # TODO: implement params
                 input_connections=graph.get_incoming_connections(block.instance_id),
             ))
 
@@ -48,15 +42,15 @@ class SimulationUseCases:
     def simulate_step(self, step: SimulationStep):
         block = step.block
 
-        self._apply_params(block, step.params)
+        self._apply_params(block)
         self._apply_inputs(block, step.input_connections)
         self._run(block)
         self._extract_outputs(block)
 
-    def _apply_params(self, block: BlockEntity, params: Dict[ParamId, Any]):
+    def _apply_params(self, block: BlockEntity):
         try:
-            for (param_id, value) in params.items():
-                block.runtime.set_parameter(param_id, value)
+            for param in block.user_params:
+                block.runtime.set_parameter(param.param_id, param.value)
         except Exception as ex:
             raise RuntimeError(
                 f'Error applying parameters to Block {block.name} (instance_id: {block.instance_id})'

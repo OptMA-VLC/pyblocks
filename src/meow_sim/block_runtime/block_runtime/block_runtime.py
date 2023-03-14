@@ -3,7 +3,7 @@ from typing import List, Any
 from src.bdk.base_block import BaseBlock
 from src.bdk.block_distribution_id import BlockDistributionId
 from src.bdk.block_info import BlockInfo
-from src.bdk.params.parameter import ParamId
+from src.bdk.params.parameter import ParamId, Parameter
 from src.bdk.ports.port import Port
 from src.bdk.ports.port_id import PortId
 from src.meow_sim.entity.block.interface_block_runtime import IBlockRuntime
@@ -25,6 +25,9 @@ class BlockRuntime(IBlockRuntime):
 
     def list_outputs(self) -> List[Port]:
         return self._block_instance.outputs
+
+    def list_params(self) -> List[Parameter]:
+        return self._block_instance.params
 
     def set_parameter(self, param_id: ParamId, value: Any):
         block_params = self._block_instance.params

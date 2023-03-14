@@ -8,6 +8,7 @@ import src.meow_sim.repository.block_repository.block_repository_helpers as help
 import src.meow_sim.repository.block_repository.block_repository_exceptions as repo_exceptions
 from src.bdk.block_distribution_id import BlockDistributionId
 from src.meow_sim.block_runtime.block_runtime.block_runtime import BlockRuntime
+from src.meow_sim.entity.block.available_parameter_entity import AvailableParameterEntity
 from src.meow_sim.entity.block.block_entity import BlockEntity
 from src.meow_sim.entity.block.block_instance_id import BlockInstanceId
 from src.meow_sim.entity.block.port_entity import PortEntity
@@ -68,6 +69,9 @@ class BlockRepository:
         ]
         block.outputs = [
             PortEntity(block=block, port_id=port.id, type=port.type) for port in block_runtime.list_outputs()
+        ]
+        block.available_params = [
+            AvailableParameterEntity(param_id=param.id, type=param.type) for param in block_runtime.list_params()
         ]
 
         return block
