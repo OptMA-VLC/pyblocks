@@ -17,14 +17,29 @@ class Block:
     inputs: List[Port] = field(default_factory=list)
     outputs: List[Port] = field(default_factory=list)
 
+    def get_input(self, port: Union[Port, PortId]):
+        return self._get_port_in_list(self.inputs, port)
+
     def has_input(self, port: Union[Port, PortId]) -> bool:
-        return self._is_port_in_list(self.inputs, port)
+        try:
+            self._get_port_in_list(self.inputs, port)
+        except KeyError:
+            return False
+
+        return True
+
+    def get_output(self, port: Union[Port, PortId]):
+        return self._get_port_in_list(self.outputs, port)
 
     def has_output(self, port: Union[Port, PortId]) -> bool:
-        return self._is_port_in_list(self.outputs, port)
+        try:
+            self._get_port_in_list(self.outputs, port)
+        except KeyError:
+            return False
 
-    def _is_port_in_list(self, port_list: List[Port], port: Union[Port, PortId]) -> bool:
-        print(f'{PortId.__name__}')
+        return True
+
+    def _get_port_in_list(self, port_list: List[Port], port: Union[Port, PortId]) -> Port:
         if isinstance(port, Port):
             port_id = port.port_id
         elif isinstance(port, PortId):
@@ -34,5 +49,6 @@ class Block:
 
         for port in port_list:
             if port.port_id == port_id:
-                return True
-        return False
+                return port
+
+        raise KeyError(f"Port '{port_id}' does not exist")

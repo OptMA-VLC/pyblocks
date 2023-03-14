@@ -2,14 +2,15 @@ from typing import Tuple
 
 import pytest
 
-from src.bdk.ports.port_id import PortId
+from src.bdk.block_distribution_id import BlockDistributionId
 from src.meow_sim.entity.block.block import Block
-from src.meow_sim.entity.block.port import Port
+from src.meow_sim.entity.block.block_instance_id import BlockInstanceId
 from src.meow_sim.entity.connection import Connection
+from src.meow_sim.entity.graph.graph_builder_util import GraphBuilderUtil
 from src.meow_sim.entity.graph.simulation_graph import SimulationGraph
 
 
-class TestSimulationGraph:
+class TestSimulationGraph_Blocks:
     def test_add_block(self):
         graph = SimulationGraph()
         block = self._block(dist_id='block_1')
@@ -40,8 +41,24 @@ class TestSimulationGraph:
         block = graph.blocks[0]
         assert block.distribution_id is block_2.distribution_id
 
+    def _block(self, dist_id='dist_id', instance_id='instance_id') -> Block:
+        return Block(
+            distribution_id=BlockDistributionId(dist_id),
+            instance_id=BlockInstanceId(instance_id),
+            name='Test Block',
+            runtime=None
+        )
+
+
+class TestSimulationGraph_Connections:
     def test_add_connection(self):
-        (graph, block_1, block_2) = self._graph_with_two_blocks()
+        graph_builder = GraphBuilderUtil() \
+            .with_block('block_1', inputs=['in'], outputs=['out']) \
+            .with_block('block_2', inputs=['in'], outputs=['out'])
+        graph = graph_builder.build()
+        block_1 = graph_builder.get_block('block_1')
+        block_2 = graph_builder.get_block('block_2')
+
         conn = Connection(
             from_port=block_1.outputs[0],
             to_port=block_2.inputs[0]
@@ -52,7 +69,13 @@ class TestSimulationGraph:
         assert len(graph.connections) is 1
 
     def test_cant_connect_input_to_output(self):
-        (graph, block_1, block_2) = self._graph_with_two_blocks()
+        graph_builder = GraphBuilderUtil() \
+            .with_block('block_1', inputs=['in'], outputs=['out']) \
+            .with_block('block_2', inputs=['in'], outputs=['out'])
+        graph = graph_builder.build()
+        block_1 = graph_builder.get_block('block_1')
+        block_2 = graph_builder.get_block('block_2')
+
         conn = Connection(
             from_port=block_2.inputs[0],
             to_port=block_1.outputs[0]
@@ -62,7 +85,13 @@ class TestSimulationGraph:
             graph.add_connection(conn)
 
     def test_cant_connect_output_to_output(self):
-        (graph, block_1, block_2) = self._graph_with_two_blocks()
+        graph_builder = GraphBuilderUtil() \
+            .with_block('block_1', inputs=['in'], outputs=['out']) \
+            .with_block('block_2', inputs=['in'], outputs=['out'])
+        graph = graph_builder.build()
+        block_1 = graph_builder.get_block('block_1')
+        block_2 = graph_builder.get_block('block_2')
+
         conn = Connection(
             from_port=block_1.outputs[0],
             to_port=block_2.outputs[0]
@@ -72,7 +101,13 @@ class TestSimulationGraph:
             graph.add_connection(conn)
 
     def test_cant_connect_input_to_input(self):
-        (graph, block_1, block_2) = self._graph_with_two_blocks()
+        graph_builder = GraphBuilderUtil() \
+            .with_block('block_1', inputs=['in'], outputs=['out']) \
+            .with_block('block_2', inputs=['in'], outputs=['out'])
+        graph = graph_builder.build()
+        block_1 = graph_builder.get_block('block_1')
+        block_2 = graph_builder.get_block('block_2')
+
         conn = Connection(
             from_port=block_1.inputs[0],
             to_port=block_2.inputs[0]
@@ -82,7 +117,11 @@ class TestSimulationGraph:
             graph.add_connection(conn)
 
     def test_cant_connect_block_to_itself(self):
-        (graph, block_1, block_2) = self._graph_with_two_blocks()
+        graph_builder = GraphBuilderUtil() \
+            .with_block('block_1', inputs=['in'], outputs=['out'])
+        graph = graph_builder.build()
+        block_1 = graph_builder.get_block('block_1')
+
         conn = Connection(
             from_port=block_1.outputs[0],
             to_port=block_1.inputs[0]
@@ -91,36 +130,25 @@ class TestSimulationGraph:
         with pytest.raises(Exception):
             graph.add_connection(conn)
 
-    def test_ignore_duplicate_connection(self):
-        (graph, block_1, block_2) = self._graph_with_two_blocks()
-        conn = Connection(
+    def test_cant_add_two_connections_to_same_input(self):
+        graph_builder = GraphBuilderUtil() \
+            .with_block('block_1', outputs=['out']) \
+            .with_block('block_2', outputs=['out']) \
+            .with_block('block_3', inputs=['in'])
+        graph = graph_builder.build()
+        block_1 = graph_builder.get_block('block_1')
+        block_2 = graph_builder.get_block('block_2')
+        block_3 = graph_builder.get_block('block_3')
+
+        conn_1 = Connection(
             from_port=block_1.outputs[0],
-            to_port=block_2.inputs[0]
+            to_port=block_3.inputs[0]
+        )
+        conn_2 = Connection(
+            from_port=block_2.outputs[0],
+            to_port=block_3.inputs[0]
         )
 
-        graph.add_connection(conn)
-        assert len(graph.connections) is 1
-        graph.add_connection(conn)
-        assert len(graph.connections) is 1
-
-    def _block(self, dist_id='dist_id', instance_id='instance_id') -> Block:
-        return Block(
-            distribution_id=dist_id,
-            instance_id=instance_id,
-            name='Test Block',
-            runtime=None
-        )
-
-    def _graph_with_two_blocks(self) -> Tuple[SimulationGraph, Block, Block]:
-        block_1 = self._block(instance_id='inst_id_1', dist_id='block_1')
-        block_1.inputs = [Port(block=block_1, port_id=PortId('port_in'))]
-        block_1.outputs = [Port(block=block_1, port_id=PortId('port_out'))]
-        block_2 = self._block(instance_id='inst_id_2', dist_id='block_2')
-        block_2.inputs = [Port(block=block_2, port_id=PortId('port_in'))]
-        block_2.outputs = [Port(block=block_2, port_id=PortId('port_out'))]
-
-        g = SimulationGraph()
-        g.add_block(block_1)
-        g.add_block(block_2)
-
-        return g, block_1, block_2
+        graph.add_connection(conn_1)
+        with pytest.raises(Exception):
+            graph.add_connection(conn_2)

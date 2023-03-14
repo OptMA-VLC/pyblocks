@@ -1,1 +1,2 @@
-BlockInstanceId = str
+class BlockInstanceId(str):
+    pass

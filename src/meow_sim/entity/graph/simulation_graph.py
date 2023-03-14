@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import networkx as nx
 
 from src.meow_sim.entity.block.block import Block
+from src.meow_sim.entity.block.block_instance_id import BlockInstanceId
 from src.meow_sim.entity.block.port import Port
 from src.meow_sim.entity.connection import Connection
 from src.meow_sim.entity.connection_id import ConnectionId
@@ -52,6 +53,16 @@ class SimulationGraph:
         if not destination_block.has_input(destination_port):
             raise ValueError(f"Port '{destination_port.port_id}' is not an input of block '{destination_block.name}'")
 
+        for conn in self.connections:
+            is_to_same_block = conn.to_port.block.instance_id == destination_port.block.instance_id
+            is_to_same_port = conn.to_port.port_id == destination_port.port_id
+
+            if is_to_same_port and is_to_same_block:
+                raise ValueError(
+                    f"Can't add connection to block '{destination_block.name}', port '{destination_port.port_id}' "
+                    f"because there is already a connection to that port (with connection id '{conn.id}')"
+                )
+
         self._graph.add_edge(origin_block.instance_id, destination_block.instance_id, connection=connection)
 
     def plot_graph(self):
@@ -63,4 +74,3 @@ class SimulationGraph:
             with_labels=True
         )
         plt.show()
-

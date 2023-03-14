@@ -13,7 +13,7 @@ from src.meow_sim.logger import logger
 from src.meow_sim.repository.block_repository.block_repository import BlockRepository
 from src.meow_sim.repository.block_repository.indexing_result import IndexingResult, ResultItem
 from src.meow_sim.repository.signal_repository.signal_repository import SignalRepository
-from src.meow_sim.use_case.simulate_use_case import SimulateUseCase
+from src.meow_sim.use_case.simulation_use_cases import SimulationUseCases
 
 
 def main():
@@ -78,7 +78,7 @@ def lt_spice_demo():
     ]
 
     signal_repo = SignalRepository()
-    simulation_use_cases = SimulateUseCase(signal_repo)
+    simulation_use_cases = SimulationUseCases(signal_repo)
 
     signal_repo.set(conn_input.id, input_signal)
     simulation_use_cases.simulate(steps)

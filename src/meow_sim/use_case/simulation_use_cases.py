@@ -4,16 +4,21 @@ from src.bdk.params.param_id import ParamId
 from src.bdk.ports.port_id import PortId
 from src.meow_sim.entity.block.block import Block
 from src.meow_sim.entity.connection import Connection
+from src.meow_sim.entity.graph.simulation_graph import SimulationGraph
 from src.meow_sim.entity.simulation.simulation_steps import SimulationStep
 from src.meow_sim.logger import logger
 from src.meow_sim.repository.signal_repository.signal_repository import SignalRepository
 
 
-class SimulateUseCase:
+class SimulationUseCases:
     _signal_repo: SignalRepository
 
     def __init__(self, signal_repo: SignalRepository):
         self._signal_repo = signal_repo
+
+    def create_simulation_steps(self, graph: SimulationGraph) -> List[SimulationStep]:
+        #
+        pass
 
     def simulate(self, steps: List[SimulationStep]):
         logger.info('\n==== Running Simulation ====\n')
