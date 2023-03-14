@@ -1,8 +1,11 @@
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Tuple
+
+import networkx.algorithms.dag
 
 from src.bdk.params.param_id import ParamId
 from src.bdk.ports.port_id import PortId
 from src.meow_sim.entity.block.block_entity import BlockEntity
+from src.meow_sim.entity.block.block_instance_id import BlockInstanceId
 from src.meow_sim.entity.connection import Connection
 from src.meow_sim.entity.graph.simulation_graph import SimulationGraph
 from src.meow_sim.entity.simulation.simulation_steps import SimulationStep
@@ -16,9 +19,19 @@ class SimulationUseCases:
     def __init__(self, signal_repo: SignalRepository):
         self._signal_repo = signal_repo
 
-    def create_simulation_steps(self, graph: SimulationGraph) -> List[SimulationStep]:
-        #
-        pass
+    def create_simulation_steps(
+            self, graph: SimulationGraph,
+    ) -> List[SimulationStep]:
+        steps = []
+        for block in graph.topological_sort():
+
+            steps.append(SimulationStep(
+                block=block,
+                params={},  # TODO: implement params
+                input_connections=graph.get_incoming_connections(block.instance_id),
+            ))
+
+        return steps
 
     def simulate(self, steps: List[SimulationStep]):
         logger.info('\n==== Running Simulation ====\n')

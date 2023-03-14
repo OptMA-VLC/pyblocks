@@ -3,6 +3,7 @@ from typing import List
 
 import matplotlib.pyplot as plt
 import networkx as nx
+import networkx.algorithms.dag
 
 from src.meow_sim.entity.block.block_entity import BlockEntity
 from src.meow_sim.entity.block.block_instance_id import BlockInstanceId
@@ -57,13 +58,32 @@ class SimulationGraph:
             is_to_same_block = conn.to_port.block.instance_id == destination_port.block.instance_id
             is_to_same_port = conn.to_port.port_id == destination_port.port_id
 
-            if is_to_same_port and is_to_same_block:
+            if is_to_same_block and is_to_same_port:
                 raise ValueError(
                     f"Can't add connection to block '{destination_block.name}', port '{destination_port.port_id}' "
                     f"because there is already a connection to that port (with connection id '{conn.id}')"
                 )
 
         self._graph.add_edge(origin_block.instance_id, destination_block.instance_id, connection=connection)
+
+    def get_incoming_connections(self, block_id: BlockInstanceId) -> List[Connection]:
+        incoming_conns = []
+        for _, _, edge_data in self._graph.in_edges(block_id, data=True):
+            incoming_conns.append(edge_data['connection'])
+        return incoming_conns
+
+    def topological_sort(self) -> List[BlockEntity]:
+        if not networkx.algorithms.dag.is_directed_acyclic_graph(self._graph):
+            raise RuntimeError("Can't sort the simulation graph because it contains a cyclical dependency")
+
+        nodes = list(networkx.algorithms.dag.topological_sort(self._graph))
+        blocks = []
+
+        for node in nodes:
+            block = self._graph.nodes[node]['block']
+            blocks.append(block)
+
+        return blocks
 
     def plot_graph(self):
         fig, ax = plt.subplots()

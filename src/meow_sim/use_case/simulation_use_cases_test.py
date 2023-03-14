@@ -59,8 +59,8 @@ class TestGenerateSteps:
             .with_block('block_b', inputs=['in'], outputs=['out']) \
             .with_block('block_c', inputs=['in'], outputs=['out']) \
             .with_block('block_d', inputs=['in'], outputs=['out']) \
-            .with_connection('block_a', 'out', 'block_b', 'in_a') \
-            .with_connection('block_c', 'out', 'block_d', 'in_b')
+            .with_connection('block_a', 'out', 'block_b', 'in') \
+            .with_connection('block_c', 'out', 'block_d', 'in')
         graph = graph_builder.build()
 
         steps = self._use_case.create_simulation_steps(graph)

@@ -33,7 +33,10 @@ class GraphBuilderUtil:
         port_u = block_u.get_output(PortId(port_u))
         block_v = self.get_block(name_v)
         port_v = block_v.get_input(PortId(port_v))
+
         self._g.add_connection(Connection(from_port=port_u, to_port=port_v))
+
+        return self
 
     def build(self) -> SimulationGraph:
         return self._g
