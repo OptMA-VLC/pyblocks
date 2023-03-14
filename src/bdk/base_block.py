@@ -57,7 +57,7 @@ class BaseBlock(ABC):
         return result
 
     def _assert_no_duplicate_port_ids(self):
-        ids = [port.id for port in self.inputs] + [port.id for port in self.inputs]
+        ids = [port.id for port in self.inputs] + [port.id for port in self.outputs]
         seen_ids = []
 
         for port_id in ids:

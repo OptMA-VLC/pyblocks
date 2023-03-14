@@ -10,10 +10,9 @@ from src.meow_sim.use_case.simulation_use_cases import SimulationUseCases
 
 
 class TestGenerateSteps:
-    _use_case: SimulationUseCases
-
-    def __init__(self):
-        self._use_case = SimulationUseCases(signal_repo=SignalRepository())
+    @property
+    def _use_case(self) -> SimulationUseCases:
+        return SimulationUseCases(signal_repo=SignalRepository())
 
     def test_simple_graph(self):
         graph_builder = GraphBuilderUtil() \
