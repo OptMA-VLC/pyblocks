@@ -1,4 +1,5 @@
 from src.bdk.base_block import BaseBlock
+from src.bdk.block_distribution_id import BlockDistributionId
 from src.bdk.block_info import BlockInfo
 from src.bdk.params.param_id import ParamId
 from src.bdk.params.parameter import Parameter
@@ -38,11 +39,11 @@ class TestBlockRuntime:
 
 class TestBlock(BaseBlock):
     def __init__(self):
-        self.param_1 = Parameter(id='param_1', type=str)
+        self.param_1 = Parameter(id=ParamId('param_1'), type=str)
         self.in_1 = Input(port_id='in_1', type=str)
         self.out_1 = Output(port_id='out_1', type=str)
         super().__init__(BlockInfo(
-            distribution_id='test_block', name='', description=''
+            distribution_id=BlockDistributionId('test_block'), name='', description=''
         ))
 
     def run(self):

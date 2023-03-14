@@ -2,7 +2,7 @@ from typing import List
 
 import pytest
 
-from src.meow_sim.entity.block.block import Block
+from src.meow_sim.entity.block.block_entity import BlockEntity
 from src.meow_sim.entity.graph.graph_builder_util import GraphBuilderUtil
 from src.meow_sim.entity.simulation.simulation_steps import SimulationStep
 from src.meow_sim.repository.signal_repository.signal_repository import SignalRepository
@@ -110,7 +110,7 @@ class TestGenerateSteps:
         with pytest.raises(Exception):
             self._use_case.create_simulation_steps(graph)
 
-    def _find_block_position_in_steps(self, steps: List[SimulationStep], block: Block):
+    def _find_block_position_in_steps(self, steps: List[SimulationStep], block: BlockEntity):
         for (idx, step) in enumerate(steps):
             if step.block.instance_id == block.instance_id:
                 return idx

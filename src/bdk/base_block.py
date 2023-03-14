@@ -6,6 +6,7 @@ from .block_info import BlockInfo
 from .params.parameter import Parameter
 from .ports.input import Input
 from .ports.output import Output
+from .ports.port import Port
 
 
 class BaseBlock(ABC):
@@ -20,6 +21,8 @@ class BaseBlock(ABC):
         self.params = self._get_class_attributes(matching_type=Parameter)
         self.inputs = self._get_class_attributes(matching_type=Input)
         self.outputs = self._get_class_attributes(matching_type=Output)
+
+        self._assert_no_duplicate_port_ids()
 
     @abstractmethod
     def run(self):
@@ -53,29 +56,12 @@ class BaseBlock(ABC):
 
         return result
 
+    def _assert_no_duplicate_port_ids(self):
+        ids = [port.id for port in self.inputs] + [port.id for port in self.inputs]
+        seen_ids = []
 
-def _assert_required_fields(self):
-    pass
-    # if self.block_info is None:
-    #     raise NotImplementedError('Block class must set the \'block_info\' class property')
-    #
-    # if not isinstance(self.block_info, BlockInfo):
-    #     raise TypeError(
-    #         f'Required property \'self.block_info\' must be a {BlockInfo} object but is of type {self.block_info.__class__}'
-    #     )
-    #
-    # if not isinstance(self.params, ParamBundle):
-    #     raise TypeError(
-    #         f'Required property \'self.params\' must be a {ParamBundle} object but is of type {self.params.__class__}'
-    #     )
-    #
-    # if not isinstance(self.inputs, PortBundle):
-    #     raise TypeError(
-    #         f'Required property \'self.inputs\' must be a {PortBundle} object but is of type {self.inputs.__class__}'
-    #     )
-    #
-    # if not isinstance(self.outputs, PortBundle):
-    #     raise TypeError(
-    #         f'Required property \'self.outputs\' must be a {PortBundle} object but is of type {self.outputs.__class__}'
-    #     )
-
+        for port_id in ids:
+            if port_id in seen_ids:
+                raise RuntimeError(f"Two ports (inputs or outputs) have the id '{port_id}'. PortEntity ids must be unique.")
+            else:
+                seen_ids.append(port_id)

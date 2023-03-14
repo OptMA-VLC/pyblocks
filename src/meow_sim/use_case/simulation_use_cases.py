@@ -2,7 +2,7 @@ from typing import List, Dict, Any
 
 from src.bdk.params.param_id import ParamId
 from src.bdk.ports.port_id import PortId
-from src.meow_sim.entity.block.block import Block
+from src.meow_sim.entity.block.block_entity import BlockEntity
 from src.meow_sim.entity.connection import Connection
 from src.meow_sim.entity.graph.simulation_graph import SimulationGraph
 from src.meow_sim.entity.simulation.simulation_steps import SimulationStep
@@ -36,11 +36,11 @@ class SimulationUseCases:
         block = step.block
 
         self._apply_params(block, step.params)
-        self._apply_inputs(block, step.inputs)
+        self._apply_inputs(block, step.input_connections)
         self._run(block)
-        self._extract_outputs(block, step.outputs)
+        self._extract_outputs(block)
 
-    def _apply_params(self, block: Block, params: Dict[ParamId, Any]):
+    def _apply_params(self, block: BlockEntity, params: Dict[ParamId, Any]):
         try:
             for (param_id, value) in params.items():
                 block.runtime.set_parameter(param_id, value)
@@ -49,17 +49,17 @@ class SimulationUseCases:
                 f'Error applying parameters to Block {block.name} (instance_id: {block.instance_id})'
             ) from ex
 
-    def _apply_inputs(self, block: Block, inputs: Dict[PortId, Connection]):
-        try:
-            for (port_id, conn) in inputs.items():
-                signal = self._signal_repo.get(conn.id)
-                block.runtime.set_input(port_id, signal)
-        except Exception as ex:
-            raise RuntimeError(
-                f'Error applying inputs to Block {block.name} (instance_id: {block.instance_id})'
-            ) from ex
+    def _apply_inputs(self, block: BlockEntity, input_connections: List[Connection]):
+        for conn in input_connections:
+            try:
+                signal = self._signal_repo.get(conn.from_port.instance_id)
+                block.runtime.set_input(conn.to_port.port_id, signal)
+            except Exception as ex:
+                raise RuntimeError(
+                    f"Error transferring signal from port '{conn.from_port.instance_id}' to port '{conn.to_port.instance_id}'"
+                ) from ex
 
-    def _run(self, block: Block):
+    def _run(self, block: BlockEntity):
         try:
             block.runtime.run()
         except Exception as ex:
@@ -67,12 +67,12 @@ class SimulationUseCases:
                 f'The block {block.name} (instance_id: {block.instance_id}) produce an error during its execution'
             ) from ex
 
-    def _extract_outputs(self, block: Block, outputs: Dict[PortId, Connection]):
-        try:
-            for (port_id, conn) in outputs.items():
-                out = block.runtime.get_output(port_id)
-                self._signal_repo.set(conn.id, out)
-        except Exception as ex:
-            raise RuntimeError(
-                f'Error extracting outputs from Block {block.name} (instance_id: {block.instance_id})'
-            ) from ex
+    def _extract_outputs(self, block: BlockEntity):
+        for output_port in block.outputs:
+            try:
+                output_signal = block.runtime.get_output(output_port.port_id)
+                self._signal_repo.set(output_port.instance_id, output_signal)
+            except Exception as ex:
+                raise RuntimeError(
+                    f"Error extracting outputs from PortEntity '{output_port.instance_id}'"
+                ) from ex

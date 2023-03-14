@@ -1,15 +1,13 @@
 from dataclasses import dataclass
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 from src.bdk.params.param_id import ParamId
-from src.bdk.ports.port_id import PortId
-from src.meow_sim.entity.block.block import Block
+from src.meow_sim.entity.block.block_entity import BlockEntity
 from src.meow_sim.entity.connection import Connection
 
 
 @dataclass
 class SimulationStep:
-    block: Block
+    block: BlockEntity
     params: Dict[ParamId, Any]
-    inputs: Dict[PortId, Connection]
-    outputs: Dict[PortId, Connection]
+    input_connections: List[Connection]

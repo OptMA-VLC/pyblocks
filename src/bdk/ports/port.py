@@ -8,8 +8,8 @@ class Port:
     type: Type
     signal: Any
 
-    def __init__(self, port_id: PortId, type: Type):
-        self.id = port_id
+    def __init__(self, port_id: str, type: Type):
+        self.id = PortId(port_id)
         self.type = type
         self.signal = None
 

@@ -45,7 +45,7 @@ def lt_spice_demo():
     print_indexing_result(indexing_result)
 
     logger.info('Loading simulation Blocks...  ')
-    block_ltspice = block_repo.get_block('br.ufmg.optma.ltspice_runner')
+    block_ltspice = block_repo.load_block('br.ufmg.optma.ltspice_runner')
     logger.info('Loading simulation Blocks...  [green]ok[/green]')
 
     input_signal = make_triangle_wave()

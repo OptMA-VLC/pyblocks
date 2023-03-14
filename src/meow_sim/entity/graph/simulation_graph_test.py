@@ -3,7 +3,7 @@ from typing import Tuple
 import pytest
 
 from src.bdk.block_distribution_id import BlockDistributionId
-from src.meow_sim.entity.block.block import Block
+from src.meow_sim.entity.block.block_entity import BlockEntity
 from src.meow_sim.entity.block.block_instance_id import BlockInstanceId
 from src.meow_sim.entity.connection import Connection
 from src.meow_sim.entity.graph.graph_builder_util import GraphBuilderUtil
@@ -41,8 +41,8 @@ class TestSimulationGraph_Blocks:
         block = graph.blocks[0]
         assert block.distribution_id is block_2.distribution_id
 
-    def _block(self, dist_id='dist_id', instance_id='instance_id') -> Block:
-        return Block(
+    def _block(self, dist_id='dist_id', instance_id='instance_id') -> BlockEntity:
+        return BlockEntity(
             distribution_id=BlockDistributionId(dist_id),
             instance_id=BlockInstanceId(instance_id),
             name='Test Block',
