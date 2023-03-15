@@ -32,8 +32,8 @@ class _Logger:
             no_tag = True
             del kwargs['no_tag']
 
-        has_string_arg = len(args_list) > 0 and isinstance(args_list[0], str)
-        if has_string_arg and no_tag is False:
+        # has_string_arg = len(args_list) > 0 and isinstance(args_list[0], str)
+        if len(args_list) > 0 and no_tag is False:
             args_list[0] = f'{tag} {args_list[0]}'
 
         self._console.print(*tuple(args_list), **kwargs)

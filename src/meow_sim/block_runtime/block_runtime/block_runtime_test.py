@@ -39,7 +39,7 @@ class TestBlockRuntime:
 
 class TestBlock(BaseBlock):
     def __init__(self):
-        self.param_1 = Parameter(id=ParamId('param_1'), type=str)
+        self.param_1 = Parameter(param_id=ParamId('param_1'), param_type=str)
         self.in_1 = Input(port_id='in_1', type=str)
         self.out_1 = Output(port_id='out_1', type=str)
         super().__init__(BlockInfo(

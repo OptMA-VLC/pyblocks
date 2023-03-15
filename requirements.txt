@@ -1,9 +1,11 @@
 rich==13.0.0
 networkx==2.8.8
+sentinel==1.0.0
 
 matplotlib==3.6.2
 
 pytest~=7.2.0
+
 
 # block dependencies
 PyLTSpice~=3.1

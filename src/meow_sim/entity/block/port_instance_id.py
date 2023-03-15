@@ -17,4 +17,4 @@ class PortInstanceId:
         return str(self) == str(other)
 
     def __hash__(self):
-        return hash(self.__str__)
+        return hash((self.block_instance_id, self.port_id))

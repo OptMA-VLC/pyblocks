@@ -3,7 +3,7 @@ from typing import Optional, List, Union
 
 from src.bdk.block_distribution_id import BlockDistributionId
 from src.bdk.ports.port_id import PortId
-from src.meow_sim.entity.block.applied_parameter_entity import UserParameterEntity
+from src.meow_sim.entity.block.user_parameter_entity import UserParameterEntity
 from src.meow_sim.entity.block.available_parameter_entity import AvailableParameterEntity
 from src.meow_sim.entity.block.block_instance_id import BlockInstanceId
 from src.meow_sim.entity.block.interface_block_runtime import IBlockRuntime
