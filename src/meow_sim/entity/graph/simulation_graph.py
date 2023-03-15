@@ -9,7 +9,7 @@ from src.meow_sim.entity.block.block_entity import BlockEntity
 from src.meow_sim.entity.block.block_instance_id import BlockInstanceId
 from src.meow_sim.entity.block.port_entity import PortEntity
 from src.meow_sim.entity.connection import Connection
-from src.meow_sim.entity.connection_id import ConnectionId
+from src.meow_sim.entity.connection_instance_id import ConnectionInstanceId
 
 
 class SimulationGraph:

@@ -8,8 +8,8 @@ class BlockRepositoryException(Exception):
 
 
 class BlockDoesNotExist(BlockRepositoryException):
-    def __init__(self, name: str):
-        super().__init__(f'No block with distribution name {name} is known to the BlockRepository')
+    def __init__(self, dist_id: str):
+        super().__init__(f'No block with distribution id {dist_id} is known to the BlockRepository')
 
 
 class NotADir(BlockRepositoryException):

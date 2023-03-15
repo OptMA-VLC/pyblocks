@@ -17,7 +17,7 @@ from src.blocks.ltspice_runner.ltspice_runner_config import LTSpiceRunnerConfig
 
 class LTSpiceRunner(BaseBlock):
     def __init__(self):
-        self.config = Parameter(id='config', type=LTSpiceRunnerConfig)
+        self.config = Parameter(param_id='config', param_type=LTSpiceRunnerConfig)
         self.signal_in = Input(port_id='signal_in', type=SignalWave)
         self.signal_out = Output(port_id='signal_out', type=SignalWave)
 
@@ -50,7 +50,7 @@ class LTSpiceRunner(BaseBlock):
     def run_ltspice(self, config: LTSpiceRunnerConfig):
         schematic_path = Path(config.schematic_file)
         if not schematic_path.exists():
-            raise RuntimeError(f'Schematic file could not be found in the provided path {schematic_path}')
+            raise RuntimeError(f'Schematic file could not be found in the provided path {schematic_path.resolve()}')
 
         sim_commander = SimCommander(str(schematic_path))
         sim_commander.reset_netlist()

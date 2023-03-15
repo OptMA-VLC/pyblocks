@@ -10,10 +10,10 @@ from src.bdk.signals.signal_wave import SignalWave
 
 class SignalGeneratorBlock(BaseBlock):
     def __init__(self):
-        self.freq = Parameter(id='frequency', type=float)
-        self.sample_freq = Parameter(id='sample_frequency', type=float)
-        self.duration = Parameter(id='duration', type=float)
-        self.duty = Parameter(id='duty', type=float, default=0.5)
+        self.freq = Parameter(param_id='frequency', param_type=float, default=1000.0)
+        self.sample_freq = Parameter(param_id='sample_frequency', param_type=float, default=10000.0)
+        self.duration = Parameter(param_id='duration', param_type=float, default=0.01)
+        self.duty = Parameter(param_id='duty', param_type=float, default=0.5)
 
         self.signal_out = Output(port_id='signal_out', type=SignalWave)
 
@@ -29,7 +29,7 @@ class SignalGeneratorBlock(BaseBlock):
         duration = self.duration.value
         duty = self.duty.value
 
-        t = np.linspace(0, duration, f_sample+1)
+        t = np.linspace(0, duration, int(f_sample)+1)
         square_wave = scipy.signal.square(2*np.pi * f * t, duty=duty)
 
         self.signal_out.signal = SignalWave(t, square_wave)

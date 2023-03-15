@@ -1,0 +1,2 @@
+class ConnectionInstanceId(str):
+    pass

@@ -2,7 +2,7 @@ import copy
 from typing import Any, Dict
 
 from src.meow_sim.entity.block.port_instance_id import PortInstanceId
-from src.meow_sim.entity.connection_id import ConnectionId
+from src.meow_sim.entity.connection_instance_id import ConnectionInstanceId
 
 
 class SignalRepository:

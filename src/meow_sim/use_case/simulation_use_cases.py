@@ -28,7 +28,7 @@ class SimulationUseCases:
         return steps
 
     def simulate(self, steps: List[SimulationStep]):
-        logger.info('\n==== Running Simulation ====\n')
+        logger.info('  ==== Running Simulation ====')
         try:
             for (i, step) in enumerate(steps):
                 logger.info(f'Step {i+1}/{len(steps)} - Simulating Block {step.block.name}')
@@ -37,7 +37,7 @@ class SimulationUseCases:
             logger.error(ex)
             raise
         finally:
-            logger.info('\n============================\n')
+            logger.info('  ============================\n')
 
     def simulate_step(self, step: SimulationStep):
         block = step.block
@@ -71,7 +71,7 @@ class SimulationUseCases:
             block.runtime.run()
         except Exception as ex:
             raise RuntimeError(
-                f'The block {block.name} (instance_id: {block.instance_id}) produce an error during its execution'
+                f"The block '{block.name}' (instance_id: '{block.instance_id}') produced an error during its execution"
             ) from ex
 
     def _extract_outputs(self, block: BlockEntity):

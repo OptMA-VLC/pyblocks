@@ -4,11 +4,11 @@ from pathlib import Path
 from matplotlib import pyplot as plt
 
 from src.bdk.params.param_id import ParamId
-from src.bdk.ports.port_id import PortId
 from src.bdk.signals.signal_wave import SignalWave
 from src.blocks.ltspice_runner.ltspice_runner_config import LTSpiceRunnerConfig
+from src.meow_sim.entity.block.user_parameter_entity import UserParameterEntity
 from src.meow_sim.entity.connection import Connection
-from src.meow_sim.entity.simulation.simulation_steps import SimulationStep
+from src.meow_sim.entity.graph.simulation_graph import SimulationGraph
 from src.meow_sim.logger import logger
 from src.meow_sim.repository.block_repository.block_repository import BlockRepository
 from src.meow_sim.repository.block_repository.indexing_result import IndexingResult, ResultItem
@@ -31,7 +31,7 @@ def print_indexing_result(result: IndexingResult):
             logger.verbose(f'  /{item.path.name.ljust(20)} - [green]Success[/green]')
         elif item.type is ResultItem.ResultType.FAILED:
             logger.verbose(f'  /{item.path.name.ljust(20)} - [red]Failed[/red]')
-            logger.verbose(f'    (failed with exception {item.exception.__class__.__name__})')
+            logger.verbose(f'    (failed with exception {item.exception.__class__.__name__} - {item.exception})')
         elif item.type is ResultItem.ResultType.SKIPPED:
             logger.verbose(f'  /{item.path.name.ljust(20)} - [white]Skipped[/white]')
 
@@ -39,51 +39,46 @@ def print_indexing_result(result: IndexingResult):
 def lt_spice_demo():
     logger.info('Loading block library...  ')
     block_repo = BlockRepository()
-    block_lib_path = Path('./blocks')
+    block_lib_path = Path('../blocks')
     indexing_result = block_repo.index_dir(block_lib_path)
     logger.info('Loading block library...  [green]ok[/green]')
     print_indexing_result(indexing_result)
 
     logger.info('Loading simulation Blocks...  ')
+    block_signal_gen = block_repo.load_block('br.ufmg.optma.signal_generator')
     block_ltspice = block_repo.load_block('br.ufmg.optma.ltspice_runner')
     logger.info('Loading simulation Blocks...  [green]ok[/green]')
 
-    input_signal = make_triangle_wave()
-    config = LTSpiceRunnerConfig(
-        schematic_file='blocks/ltspice_runner/test_data/Transmissor.asc',
-        file_name_in_circuit='TX_input.txt',
-        add_instructions=[
-            '; Simulation settings',
-            '.tran 0 1000m 0 1u'
-        ],
-        probe_signals=['I(D1)']
-    )
-
-    conn_input = Connection(id='conn_in')
-    conn_output = Connection(id='conn_out')
-
-    steps = [
-        SimulationStep(
-            block=block_ltspice,
-            params={
-                ParamId('config'): config
-            },
-            inputs={
-                PortId('signal_in'): conn_input
-            },
-            outputs={
-                PortId('signal_out'): conn_output
-            }
+    block_ltspice.user_params = [
+        UserParameterEntity(
+            block_instance_id=block_ltspice.instance_id,
+            param_id=ParamId('config'),
+            value=LTSpiceRunnerConfig(
+                schematic_file='../blocks/ltspice_runner/test_data/Transmissor.asc',
+                file_name_in_circuit='TX_input.txt',
+                add_instructions=[
+                    '; Simulation settings',
+                    '.tran 0 10m 0 1u'
+                ],
+                probe_signals=['I(D1)']
+            )
         )
     ]
 
+    simulation_graph = SimulationGraph()
+    simulation_graph.add_block(block_signal_gen)
+    simulation_graph.add_block(block_ltspice)
+    simulation_graph.add_connection(Connection(
+        from_port=block_signal_gen.outputs[0], to_port=block_ltspice.inputs[0]
+    ))
+
     signal_repo = SignalRepository()
-    simulation_use_cases = SimulationUseCases(signal_repo)
+    use_cases = SimulationUseCases(signal_repo)
+    steps = use_cases.create_simulation_steps(simulation_graph)
+    use_cases.simulate(steps)
 
-    signal_repo.set(conn_input.id, input_signal)
-    simulation_use_cases.simulate(steps)
-
-    output_signal = signal_repo.get(conn_output.id)
+    input_signal = signal_repo.get(block_signal_gen.outputs[0].instance_id)
+    output_signal = signal_repo.get(block_ltspice.outputs[0].instance_id)
 
     fig, ax1 = plt.subplots()
     ax2 = ax1.twinx()
