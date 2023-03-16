@@ -45,14 +45,14 @@ class BlockRepository:
     def get_indexed_blocks(self) -> Dict[BlockDistributionId, pathlib.Path]:
         return copy.deepcopy(self._indexed_blocks)
 
-    def load_block(self, dist_name: Union[BlockDistributionId, str]) -> BlockEntity:
-        if isinstance(dist_name, str):
-            dist_name = BlockDistributionId(dist_name)
+    def load_block(self, dist_id: Union[BlockDistributionId, str]) -> BlockEntity:
+        if isinstance(dist_id, str):
+            dist_id = BlockDistributionId(dist_id)
 
         try:
-            path = self._indexed_blocks[dist_name]
+            path = self._indexed_blocks[dist_id]
         except KeyError:
-            raise repo_exceptions.BlockDoesNotExist(dist_name)
+            raise repo_exceptions.BlockDoesNotExist(dist_id)
 
         block_class = self._get_class_from_path(path)
         block_runtime = BlockRuntime(block_class)
@@ -60,7 +60,6 @@ class BlockRepository:
 
         block = BlockEntity(
             distribution_id=block_info.distribution_id,
-            instance_id=BlockInstanceId(f'{block_info.distribution_id}@{id(block_runtime)}'),
             name=block_info.name,
             runtime=block_runtime,
         )

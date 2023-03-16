@@ -1,10 +1,7 @@
-from typing import Tuple
-
 import pytest
 
 from src.bdk.block_distribution_id import BlockDistributionId
 from src.meow_sim.entity.block.block_entity import BlockEntity
-from src.meow_sim.entity.block.block_instance_id import BlockInstanceId
 from src.meow_sim.entity.connection import Connection
 from src.meow_sim.entity.graph.graph_builder_util import GraphBuilderUtil
 from src.meow_sim.entity.graph.simulation_graph import SimulationGraph
@@ -17,34 +14,30 @@ class TestSimulationGraph_Blocks:
 
         graph.add_block(block)
 
-        assert len(graph.blocks) is 1
+        assert len(graph.blocks) == 1
 
     def test_add_two_blocks_of_same_type(self):
-        block_1 = self._block(dist_id='dist_id_1', instance_id='block_1')
-        block_2 = self._block(dist_id='dist_id_1', instance_id='block_2')
+        block_1 = self._block(dist_id='dist_id_1')
+        block_2 = self._block(dist_id='dist_id_1')
         graph = SimulationGraph()
 
         graph.add_block(block_1)
         graph.add_block(block_2)
 
-        assert len(graph.blocks) is 2
+        assert len(graph.blocks) == 2
 
     def test_adding_existing_instance_is_update(self):
-        block_1 = self._block(dist_id='dist_id_1', instance_id='same_instance')
-        block_2 = self._block(dist_id='dist_id_2', instance_id='same_instance')
+        block_1 = self._block(dist_id='dist_id_1')
         graph = SimulationGraph()
 
         graph.add_block(block_1)
-        graph.add_block(block_2)
+        graph.add_block(block_1)
 
-        assert len(graph.blocks) is 1
-        block = graph.blocks[0]
-        assert block.distribution_id is block_2.distribution_id
+        assert len(graph.blocks) == 1
 
-    def _block(self, dist_id='dist_id', instance_id='instance_id') -> BlockEntity:
+    def _block(self, dist_id='dist_id') -> BlockEntity:
         return BlockEntity(
             distribution_id=BlockDistributionId(dist_id),
-            instance_id=BlockInstanceId(instance_id),
             name='Test Block',
             runtime=None
         )
@@ -66,7 +59,7 @@ class TestSimulationGraph_Connections:
 
         graph.add_connection(conn)
 
-        assert len(graph.connections) is 1
+        assert len(graph.connections) == 1
 
     def test_cant_connect_input_to_output(self):
         graph_builder = GraphBuilderUtil() \

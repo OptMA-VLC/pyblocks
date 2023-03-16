@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+from enum import Enum, auto
 from typing import Optional, List, Union
 
 from src.bdk.block_distribution_id import BlockDistributionId
@@ -12,7 +13,6 @@ from src.meow_sim.entity.block.port_entity import PortEntity
 
 @dataclass
 class BlockEntity:
-    instance_id: BlockInstanceId
     distribution_id: BlockDistributionId
     name: str
     runtime: Optional[IBlockRuntime] = None
@@ -20,6 +20,10 @@ class BlockEntity:
     outputs: List[PortEntity] = field(default_factory=list)
     available_params: List[AvailableParameterEntity] = field(default_factory=list)
     user_params: List[UserParameterEntity] = field(default_factory=list)
+
+    @property
+    def instance_id(self):
+        return BlockInstanceId(f'{self.distribution_id}@{id(self)}')
 
     def get_input(self, port: Union[PortEntity, PortId]):
         return self._get_port_in_list(self.inputs, port)

@@ -26,16 +26,16 @@ class TestGenerateSteps:
 
         steps = self._use_case.create_simulation_steps(graph)
 
-        assert len(steps) is 2
-        assert steps[0].block.instance_id is block_1.instance_id
-        assert steps[1].block.instance_id is block_2.instance_id
+        assert len(steps) == 2
+        assert steps[0].block.instance_id == block_1.instance_id
+        assert steps[1].block.instance_id == block_2.instance_id
 
     def test_single_block(self):
         graph = GraphBuilderUtil().with_block('block_1').build()
 
         steps = self._use_case.create_simulation_steps(graph)
 
-        assert len(steps) is 1
+        assert len(steps) == 1
 
     def test_c_depends_on_a_and_b(self):
         graph_builder = GraphBuilderUtil() \
@@ -49,9 +49,9 @@ class TestGenerateSteps:
 
         steps = self._use_case.create_simulation_steps(graph)
 
-        assert len(steps) is 3
+        assert len(steps) == 3
         # order between block_a and block_b is not important
-        assert steps[2].block.instance_id is block_c.instance_id
+        assert steps[2].block.instance_id == block_c.instance_id
 
     def test_independent_sub_graphs(self):
         graph_builder = GraphBuilderUtil() \
@@ -65,7 +65,7 @@ class TestGenerateSteps:
 
         steps = self._use_case.create_simulation_steps(graph)
 
-        assert len(steps) is 4
+        assert len(steps) == 4
 
         block_a_pos = self._find_block_position_in_steps(steps, graph_builder.get_block('block_a'))
         block_b_pos = self._find_block_position_in_steps(steps, graph_builder.get_block('block_b'))
@@ -87,7 +87,7 @@ class TestGenerateSteps:
 
         steps = self._use_case.create_simulation_steps(graph)
 
-        assert len(steps) is 3
+        assert len(steps) == 3
 
         block_a_pos = self._find_block_position_in_steps(steps, graph_builder.get_block('block_a'))
         block_b_pos = self._find_block_position_in_steps(steps, graph_builder.get_block('block_b'))

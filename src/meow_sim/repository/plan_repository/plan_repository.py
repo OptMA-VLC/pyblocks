@@ -1,13 +1,30 @@
-from src.meow_sim.entity.plan_description.block_description import BlockDescription
-from src.meow_sim.entity.plan_description.connection_description import ConnectionDescription
-from src.meow_sim.entity.plan_description.param_description import ParamDescription
-from src.meow_sim.entity.plan_description.simulation_plan import SimulationPlan
+from src.meow_sim.entity.graph.simulation_graph import SimulationGraph
 
 
 class PlanRepository:
-    def load(self) -> SimulationPlan:
-        return _create_simple_plan_for_dev()
+    def load(self) -> SimulationGraph:
+        # create blocks
+        #   have:
+        #     - dist_id
+        #     - instance_id
+        #     - name
+        #   missing:
+        #     - runtime
+        #     - inputs, outputs, params
+        # create connections
+        #
+        #
 
+        # block states?
+        #   - created
+        #   - loaded
+
+
+        plan_file = PlanFile()
+
+
+class PlanFile:
+    pass
 
 def _create_simple_plan_for_dev() -> SimulationPlan:
     return SimulationPlan(
