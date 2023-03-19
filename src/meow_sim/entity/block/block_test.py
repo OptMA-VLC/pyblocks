@@ -11,14 +11,11 @@ class TestBlock:
         port_2 = PortEntity(block=block, port_id=PortId('port_2'))
 
         block.outputs = [port_1]
-        assert block.has_input(port_1) is False
         assert block.has_input(port_1.port_id) is False
 
         block.outputs = []
         block.inputs = [port_1]
-        assert block.has_input(port_1) is True
         assert block.has_input(port_1.port_id) is True
-        assert block.has_input(port_2) is False
         assert block.has_input(port_2.port_id) is False
 
     def test_has_output(self):
@@ -27,12 +24,9 @@ class TestBlock:
         port_2 = PortEntity(block=block, port_id=PortId('port_2'))
 
         block.inputs = [port_1]
-        assert block.has_output(port_1) is False
         assert block.has_output(port_1.port_id) is False
 
         block.inputs = []
         block.outputs = [port_1]
-        assert block.has_output(port_1) is True
         assert block.has_output(port_1.port_id) is True
-        assert block.has_output(port_2) is False
         assert block.has_output(port_2.port_id) is False

@@ -3,14 +3,14 @@ import pathlib
 from types import ModuleType
 from typing import Dict, Union
 
-from src.bdk.base_block import BaseBlock
-import src.meow_sim.repository.block_repository.block_repository_helpers as helpers
 import src.meow_sim.repository.block_repository.block_repository_exceptions as repo_exceptions
+import src.meow_sim.repository.block_repository.block_repository_helpers as helpers
+from src.bdk.base_block import BaseBlock
 from src.bdk.block_distribution_id import BlockDistributionId
 from src.meow_sim.block_runtime.block_runtime.block_runtime import BlockRuntime
 from src.meow_sim.entity.block.available_parameter_entity import AvailableParameterEntity
 from src.meow_sim.entity.block.block_entity import BlockEntity
-from src.meow_sim.entity.block.block_instance_id import BlockInstanceId
+from src.meow_sim.entity.block.interface_block_runtime import IBlockRuntime
 from src.meow_sim.entity.block.port_entity import PortEntity
 from src.meow_sim.repository.block_repository.indexing_result import IndexingResult, ResultItem
 
@@ -55,7 +55,7 @@ class BlockRepository:
             raise repo_exceptions.BlockDoesNotExist(dist_id)
 
         block_class = self._get_class_from_path(path)
-        block_runtime = BlockRuntime(block_class)
+        block_runtime: IBlockRuntime = BlockRuntime(block_class)
         block_info = block_runtime.get_info()
 
         block = BlockEntity(
@@ -63,15 +63,7 @@ class BlockRepository:
             name=block_info.name,
             runtime=block_runtime,
         )
-        block.inputs = [
-            PortEntity(block=block, port_id=port.id, type=port.type) for port in block_runtime.list_inputs()
-        ]
-        block.outputs = [
-            PortEntity(block=block, port_id=port.id, type=port.type) for port in block_runtime.list_outputs()
-        ]
-        block.available_params = [
-            AvailableParameterEntity(param_id=param.id, type=param.type) for param in block_runtime.list_params()
-        ]
+        block.load(block_runtime)
 
         return block
 

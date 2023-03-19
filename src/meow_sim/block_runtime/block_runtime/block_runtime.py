@@ -3,10 +3,12 @@ from typing import List, Any
 from src.bdk.base_block import BaseBlock
 from src.bdk.block_distribution_id import BlockDistributionId
 from src.bdk.block_info import BlockInfo
-from src.bdk.params.parameter import ParamId, Parameter
-from src.bdk.ports.port import Port
+from src.bdk.params.parameter import ParamId
 from src.bdk.ports.port_id import PortId
+from src.meow_sim.entity.block.available_parameter_entity import AvailableParameterEntity
+from src.meow_sim.entity.block.block_entity import BlockEntity
 from src.meow_sim.entity.block.interface_block_runtime import IBlockRuntime
+from src.meow_sim.entity.block.port_entity import PortEntity
 
 
 class BlockRuntime(IBlockRuntime):
@@ -20,14 +22,23 @@ class BlockRuntime(IBlockRuntime):
     def get_info(self) -> BlockInfo:
         return self._block_instance.block_info
 
-    def list_inputs(self) -> List[Port]:
-        return self._block_instance.inputs
+    def list_inputs(self, block_entity: BlockEntity) -> List[PortEntity]:
+        return [
+            PortEntity(block=block_entity, port_id=port.id, type=port.type)
+            for port in self._block_instance.inputs
+        ]
 
-    def list_outputs(self) -> List[Port]:
-        return self._block_instance.outputs
+    def list_outputs(self, block_entity: BlockEntity) -> List[PortEntity]:
+        return [
+            PortEntity(block=block_entity, port_id=port.id, type=port.type)
+            for port in self._block_instance.outputs
+        ]
 
-    def list_params(self) -> List[Parameter]:
-        return self._block_instance.params
+    def list_params(self) -> List[AvailableParameterEntity]:
+        return [
+            AvailableParameterEntity(param_id=param.id, type=param.type)
+            for param in self._block_instance.params
+        ]
 
     def set_parameter(self, param_id: ParamId, value: Any):
         block_params = self._block_instance.params

@@ -1,4 +1,3 @@
-import uuid
 from typing import List
 
 import matplotlib.pyplot as plt
@@ -7,9 +6,7 @@ import networkx.algorithms.dag
 
 from src.meow_sim.entity.block.block_entity import BlockEntity
 from src.meow_sim.entity.block.block_instance_id import BlockInstanceId
-from src.meow_sim.entity.block.port_entity import PortEntity
 from src.meow_sim.entity.connection import Connection
-from src.meow_sim.entity.connection_instance_id import ConnectionInstanceId
 
 
 class SimulationGraph:
@@ -48,10 +45,10 @@ class SimulationGraph:
         if origin_block.instance_id == destination_block.instance_id:
             raise ValueError('Connecting a Block to itself is not supported')
 
-        if not origin_block.has_output(origin_port):
+        if not origin_block.has_output(origin_port.port_id):
             raise ValueError(f"PortEntity '{origin_port.port_id}' is not an output of block '{origin_block.name}'")
 
-        if not destination_block.has_input(destination_port):
+        if not destination_block.has_input(destination_port.port_id):
             raise ValueError(f"PortEntity '{destination_port.port_id}' is not an input of block '{destination_block.name}'")
 
         for conn in self.connections:

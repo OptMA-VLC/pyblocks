@@ -1,8 +1,11 @@
+from src.meow_sim.entity.block.block_entity import BlockEntity
 from src.meow_sim.entity.graph.simulation_graph import SimulationGraph
 
 
 class PlanRepository:
     def load(self) -> SimulationGraph:
+        BlockEntity
+
         # create blocks
         #   have:
         #     - dist_id

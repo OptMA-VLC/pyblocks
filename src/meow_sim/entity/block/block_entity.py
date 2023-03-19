@@ -13,8 +13,13 @@ from src.meow_sim.entity.block.port_entity import PortEntity
 
 @dataclass
 class BlockEntity:
+    class State(Enum):
+        CREATED = auto()
+        LOADED = auto()
+
     distribution_id: BlockDistributionId
     name: str
+    state: State = State.CREATED
     runtime: Optional[IBlockRuntime] = None
     inputs: List[PortEntity] = field(default_factory=list)
     outputs: List[PortEntity] = field(default_factory=list)
@@ -25,10 +30,17 @@ class BlockEntity:
     def instance_id(self):
         return BlockInstanceId(f'{self.distribution_id}@{id(self)}')
 
-    def get_input(self, port: Union[PortEntity, PortId]):
+    def load(self, runtime: IBlockRuntime):
+        self.runtime = runtime
+        self.inputs = runtime.list_inputs(self)
+        self.outputs = runtime.list_outputs(self)
+        self.available_params = runtime.list_params()
+        self.state = BlockEntity.State.LOADED
+
+    def get_input(self, port: PortId) -> PortEntity:
         return self._get_port_in_list(self.inputs, port)
 
-    def has_input(self, port: Union[PortEntity, PortId]) -> bool:
+    def has_input(self, port: PortId) -> bool:
         try:
             self._get_port_in_list(self.inputs, port)
         except KeyError:
@@ -36,10 +48,10 @@ class BlockEntity:
 
         return True
 
-    def get_output(self, port: Union[PortEntity, PortId]):
+    def get_output(self, port: PortId) -> PortEntity:
         return self._get_port_in_list(self.outputs, port)
 
-    def has_output(self, port: Union[PortEntity, PortId]) -> bool:
+    def has_output(self, port: PortId) -> bool:
         try:
             self._get_port_in_list(self.outputs, port)
         except KeyError:
@@ -47,16 +59,9 @@ class BlockEntity:
 
         return True
 
-    def _get_port_in_list(self, port_list: List[PortEntity], port: Union[PortEntity, PortId]) -> PortEntity:
-        if isinstance(port, PortEntity):
-            port_id = port.port_id
-        elif isinstance(port, PortId):
-            port_id = port
-        else:
-            raise ValueError(f'port is not an instance of {PortEntity.__name__} or {PortId.__name__}')
-
+    def _get_port_in_list(self, port_list: List[PortEntity], port_id: PortId) -> PortEntity:
         for port in port_list:
             if port.port_id == port_id:
                 return port
 
-        raise KeyError(f"PortEntity '{port_id}' does not exist")
+        raise KeyError(f"The Block '{self.name}' has no port '{port_id}'")
