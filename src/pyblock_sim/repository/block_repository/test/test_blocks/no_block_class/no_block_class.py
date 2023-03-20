@@ -1,0 +1,2 @@
+class FakeBlock(object):
+    pass
