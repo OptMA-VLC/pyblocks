@@ -39,7 +39,7 @@ def print_indexing_result(result: IndexingResult):
 def lt_spice_demo():
     logger.info('Loading block library...  ')
     block_repo = BlockRepository()
-    block_lib_path = Path('../blocks')
+    block_lib_path = Path('../block_library')
     indexing_result = block_repo.index_dir(block_lib_path)
     logger.info('Loading block library...  [green]ok[/green]')
     print_indexing_result(indexing_result)
@@ -54,7 +54,7 @@ def lt_spice_demo():
             block_instance_id=block_ltspice.instance_id,
             param_id=ParamId('config'),
             value=LTSpiceRunnerConfig(
-                schematic_file='../blocks/ltspice_runner/test_data/Transmissor.asc',
+                schematic_file='../block_library/ltspice_runner/test_data/Transmissor.asc',
                 file_name_in_circuit='TX_input.txt',
                 add_instructions=[
                     '; Simulation settings',

@@ -1,4 +1,4 @@
-* Z:\home\user\Documents\optma\pyblocks-sim\src\blocks\ltspice_runner\test_data\Transmissor.asc
+* Z:\home\user\Documents\optma\pyblocks-sim\src\block_library\ltspice_runner\test_data\Transmissor.asc
 V1 Feed 0 7
 V2 Data 0 PWL file=TX_input.txt
 R2 N003 0 1k
