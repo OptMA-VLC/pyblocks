@@ -6,7 +6,7 @@ import networkx.algorithms.dag
 
 from src.pyblock_sim.entity.block.block_entity import BlockEntity
 from src.pyblock_sim.entity.block.block_instance_id import BlockInstanceId
-from src.pyblock_sim.entity.connection import Connection
+from src.pyblock_sim.entity.graph.connection_entity import ConnectionEntity
 
 
 class SimulationGraph:
@@ -23,7 +23,7 @@ class SimulationGraph:
         return blocks
 
     @property
-    def connections(self) -> List[Connection]:
+    def connections(self) -> List[ConnectionEntity]:
         connections = []
         for (_, _, conn) in self._graph.edges.data(data='connection'):
             connections.append(conn)
@@ -33,37 +33,39 @@ class SimulationGraph:
         self._graph.add_node(block.instance_id, block=block)
         pass
 
-    def add_connection(self, connection: Connection):
-        origin_port = connection.from_port
-        origin_block: BlockEntity = origin_port.block
-        destination_port = connection.to_port
-        destination_block: BlockEntity = destination_port.block
+    def get_block(self, block_id: BlockInstanceId) -> BlockEntity:
+        for block in self.blocks:
+            if block.instance_id == block_id:
+                return block
 
-        if None in [connection, origin_port, origin_block, destination_port, destination_block]:
-            raise ValueError('Required information to add connection missing')
+        raise KeyError(f"Block with instance id '{block_id}' does not exist in simulation graph")
+
+    def add_connection(self, connection: ConnectionEntity):
+        origin_block = self.get_block(connection.origin_block)
+        destination_block = self.get_block(connection.destination_block)
 
         if origin_block.instance_id == destination_block.instance_id:
             raise ValueError('Connecting a Block to itself is not supported')
 
-        if not origin_block.has_output(origin_port.port_id):
-            raise ValueError(f"PortEntity '{origin_port.port_id}' is not an output of block '{origin_block.name}'")
+        if not origin_block.has_output(connection.origin_port):
+            raise ValueError(f"Port with Id '{connection.origin_port}' is not an output of block '{origin_block.instance_id}'")
 
-        if not destination_block.has_input(destination_port.port_id):
-            raise ValueError(f"PortEntity '{destination_port.port_id}' is not an input of block '{destination_block.name}'")
+        if not destination_block.has_input(connection.destination_port):
+            raise ValueError(f"Port with Id '{connection.destination_port}' is not an input of block '{destination_block.instance_id}'")
 
-        for conn in self.connections:
-            is_to_same_block = conn.to_port.block.instance_id == destination_port.block.instance_id
-            is_to_same_port = conn.to_port.port_id == destination_port.port_id
+        for existing_conn in self.connections:
+            is_to_same_block = existing_conn.destination_block == connection.destination_block
+            is_to_same_port = existing_conn.destination_port == connection.destination_port
 
             if is_to_same_block and is_to_same_port:
                 raise ValueError(
-                    f"Can't add connection to block '{destination_block.name}', port '{destination_port.port_id}' "
-                    f"because there is already a connection to that port (with connection id '{conn.id}')"
+                    f"Can't add connection to block '{destination_block.instance_id}', port '{connection.destination_port}' "
+                    f"because there is already a connection to that port (with connection id '{existing_conn.id}')"
                 )
 
         self._graph.add_edge(origin_block.instance_id, destination_block.instance_id, connection=connection)
 
-    def get_incoming_connections(self, block_id: BlockInstanceId) -> List[Connection]:
+    def get_incoming_connections(self, block_id: BlockInstanceId) -> List[ConnectionEntity]:
         incoming_conns = []
         for _, _, edge_data in self._graph.in_edges(block_id, data=True):
             incoming_conns.append(edge_data['connection'])

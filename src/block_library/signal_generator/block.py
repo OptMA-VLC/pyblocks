@@ -4,7 +4,7 @@ import scipy
 from src.pyblock.block.base_block import BaseBlock
 from src.pyblock.block.block_info import BlockInfo
 from src.pyblock.block.params.param import Param
-from src.pyblock.block.ports.output import Output
+from src.pyblock.block.ports.output_port import OutputPort
 from src.pyblock.signals.signal_wave import SignalWave
 
 
@@ -15,7 +15,7 @@ class SignalGeneratorBlock(BaseBlock):
         self.duration = Param(param_id='duration', param_type=float, default=0.01)
         self.duty = Param(param_id='duty', param_type=float, default=0.5)
 
-        self.signal_out = Output(port_id='signal_out', type=SignalWave)
+        self.signal_out = OutputPort(port_id='signal_out', type=SignalWave)
 
         super().__init__(BlockInfo(
             distribution_id='br.ufmg.optma.signal_generator',

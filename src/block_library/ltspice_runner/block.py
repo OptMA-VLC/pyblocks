@@ -8,8 +8,8 @@ from PyLTSpice.LTSpice_RawRead import LTSpiceRawRead
 from src.pyblock.block.base_block import BaseBlock
 from src.pyblock.block.block_info import BlockInfo
 from src.pyblock.block.params.param import Param
-from src.pyblock.block.ports.input import Input
-from src.pyblock.block.ports.output import Output
+from src.pyblock.block.ports.input_port import InputPort
+from src.pyblock.block.ports.output_port import OutputPort
 from src.pyblock.signals.signal_wave import SignalWave
 from src.block_library.ltspice_runner.ltspice_runner_config import LTSpiceRunnerConfig
 
@@ -17,8 +17,8 @@ from src.block_library.ltspice_runner.ltspice_runner_config import LTSpiceRunner
 class LTSpiceRunner(BaseBlock):
     def __init__(self):
         self.config = Param(param_id='config', param_type=LTSpiceRunnerConfig)
-        self.signal_in = Input(port_id='signal_in', type=SignalWave)
-        self.signal_out = Output(port_id='signal_out', type=SignalWave)
+        self.signal_in = InputPort(port_id='signal_in', type=SignalWave)
+        self.signal_out = OutputPort(port_id='signal_out', type=SignalWave)
 
         super().__init__(BlockInfo(
             distribution_id='br.ufmg.optma.ltspice_runner',

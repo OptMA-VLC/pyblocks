@@ -3,8 +3,8 @@ from src.pyblock.block.block_distribution_id import BlockDistributionId
 from src.pyblock.block.block_info import BlockInfo
 from src.pyblock.block.params.param_id import ParamId
 from src.pyblock.block.params.param import Param
-from src.pyblock.block.ports.input import Input
-from src.pyblock.block.ports.output import Output
+from src.pyblock.block.ports.input_port import InputPort
+from src.pyblock.block.ports.output_port import OutputPort
 from src.pyblock_sim.block_runtime.block_runtime.block_runtime import BlockRuntime
 
 
@@ -40,8 +40,8 @@ class TestBlockRuntime:
 class TestBlock(BaseBlock):
     def __init__(self):
         self.param_1 = Param(param_id=ParamId('param_1'), param_type=str)
-        self.in_1 = Input(port_id='in_1', type=str)
-        self.out_1 = Output(port_id='out_1', type=str)
+        self.in_1 = InputPort(port_id='in_1', type=str)
+        self.out_1 = OutputPort(port_id='out_1', type=str)
         super().__init__(BlockInfo(
             distribution_id=BlockDistributionId('test_block'), name='', description=''
         ))

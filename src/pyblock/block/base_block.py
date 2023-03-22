@@ -4,15 +4,15 @@ from typing import List
 
 from .block_info import BlockInfo
 from src.pyblock.block.params.param import Param
-from src.pyblock.block.ports.input import Input
-from src.pyblock.block.ports.output import Output
+from src.pyblock.block.ports.input_port import InputPort
+from src.pyblock.block.ports.output_port import OutputPort
 
 
 class BaseBlock(ABC):
     block_info: BlockInfo
     params: List[Param]
-    inputs: List[Input]
-    outputs: List[Output]
+    inputs: List[InputPort]
+    outputs: List[OutputPort]
 
     def __init__(self, block_info: BlockInfo = None):
         if block_info is None:
@@ -22,8 +22,8 @@ class BaseBlock(ABC):
         self.block_info = block_info
 
         self.params = self._get_class_attributes(matching_type=Param)
-        self.inputs = self._get_class_attributes(matching_type=Input)
-        self.outputs = self._get_class_attributes(matching_type=Output)
+        self.inputs = self._get_class_attributes(matching_type=InputPort)
+        self.outputs = self._get_class_attributes(matching_type=OutputPort)
 
         self._assert_no_duplicate_port_ids()
 

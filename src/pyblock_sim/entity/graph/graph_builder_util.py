@@ -4,7 +4,7 @@ from src.pyblock.block.block_distribution_id import BlockDistributionId
 from src.pyblock.block.ports.port_id import PortId
 from src.pyblock_sim.entity.block.block_entity import BlockEntity
 from src.pyblock_sim.entity.block.port_entity import PortEntity
-from src.pyblock_sim.entity.connection import Connection
+from src.pyblock_sim.entity.graph.connection_entity import ConnectionEntity
 from src.pyblock_sim.entity.graph.simulation_graph import SimulationGraph
 
 
@@ -33,7 +33,7 @@ class GraphBuilderUtil:
         block_v = self.get_block(name_v)
         port_v = block_v.get_input(PortId(port_v))
 
-        self._g.add_connection(Connection(from_port=port_u, to_port=port_v))
+        self._g.add_connection(ConnectionEntity.from_port_entity(from_port=port_u, to_port=port_v))
 
         return self
 

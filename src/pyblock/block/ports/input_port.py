@@ -1,5 +1,5 @@
 from src.pyblock.block.ports.port import Port
 
 
-class Input(Port):
+class InputPort(Port):
     pass

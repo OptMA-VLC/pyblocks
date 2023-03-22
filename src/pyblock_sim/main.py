@@ -7,7 +7,7 @@ from src.block_library.ltspice_runner.ltspice_runner_config import LTSpiceRunner
 from src.pyblock.block.params.param_id import ParamId
 from src.pyblock.signals.signal_wave import SignalWave
 from src.pyblock_sim.entity.block.user_parameter_entity import UserParameterEntity
-from src.pyblock_sim.entity.connection import Connection
+from src.pyblock_sim.entity.graph.connection_entity import ConnectionEntity
 from src.pyblock_sim.entity.graph.simulation_graph import SimulationGraph
 from src.pyblock_sim.repository.block_repository.block_repository import BlockRepository
 from src.pyblock_sim.repository.block_repository.indexing_result import IndexingResult, ResultItem
@@ -68,7 +68,7 @@ def lt_spice_demo():
     simulation_graph = SimulationGraph()
     simulation_graph.add_block(block_signal_gen)
     simulation_graph.add_block(block_ltspice)
-    simulation_graph.add_connection(Connection(
+    simulation_graph.add_connection(ConnectionEntity(
         from_port=block_signal_gen.outputs[0], to_port=block_ltspice.inputs[0]
     ))
 

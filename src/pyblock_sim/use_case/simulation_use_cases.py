@@ -1,7 +1,7 @@
 from typing import List
 
 from src.pyblock_sim.entity.block.block_entity import BlockEntity
-from src.pyblock_sim.entity.connection import Connection
+from src.pyblock_sim.entity.graph.connection_entity import ConnectionEntity
 from src.pyblock_sim.entity.graph.simulation_graph import SimulationGraph
 from src.pyblock_sim.entity.simulation.simulation_steps import SimulationStep
 from src.pyblock_sim.util.logger import logger
@@ -56,7 +56,7 @@ class SimulationUseCases:
                 f'Error applying parameters to Block {block.name} (instance_id: {block.instance_id})'
             ) from ex
 
-    def _apply_inputs(self, block: BlockEntity, input_connections: List[Connection]):
+    def _apply_inputs(self, block: BlockEntity, input_connections: List[ConnectionEntity]):
         for conn in input_connections:
             try:
                 signal = self._signal_repo.get(conn.from_port.instance_id)
