@@ -1,7 +1,7 @@
 import copy
 import pathlib
 from types import ModuleType
-from typing import Dict, Union
+from typing import Dict
 
 import src.pyblock_sim.repository.block_repository.block_repository_exceptions as repo_exceptions
 import src.pyblock_sim.repository.block_repository.block_repository_helpers as helpers
@@ -11,22 +11,23 @@ from src.pyblock_sim.block_runtime.block_runtime.block_runtime import BlockRunti
 from src.pyblock_sim.entity.block.block_entity import BlockEntity
 from src.pyblock_sim.entity.block.interface_block_runtime import IBlockRuntime
 from src.pyblock_sim.repository.block_repository.indexing_result import IndexingResult, ResultItem
+from src.pyblock_sim.repository.block_repository.interface_block_repository import IBlockRepository
 
 
-class BlockRepository:
-    base_block_class = BaseBlock
-
+class BlockRepository(IBlockRepository):
     _indexed_blocks: Dict[BlockDistributionId, pathlib.Path]
+    _block_library_path: pathlib.Path
 
-    def __init__(self):
+    def __init__(self, block_library_path: pathlib.Path):
+        self._block_library_path = block_library_path
         self._indexed_blocks = {}
 
-    def index_dir(self, path: pathlib.Path) -> IndexingResult:
-        if not path.is_dir():
-            raise repo_exceptions.NotADir(path)
+    def index_blocks(self) -> IndexingResult:
+        if not self._block_library_path.is_dir():
+            raise repo_exceptions.NotADir(self._block_library_path)
 
-        indexing_result = IndexingResult(path)
-        for block_dir in helpers.get_subdirectories(path):
+        indexing_result = IndexingResult(self._block_library_path)
+        for block_dir in helpers.get_subdirectories(self._block_library_path):
             if block_dir.name.startswith('__'):
                 indexing_result.append(ResultItem.skipped(block_dir))
                 continue
@@ -40,10 +41,13 @@ class BlockRepository:
 
         return indexing_result
 
-    def get_indexed_blocks(self) -> Dict[BlockDistributionId, pathlib.Path]:
+    def list_blocks(self) -> Dict[BlockDistributionId, pathlib.Path]:
         return copy.deepcopy(self._indexed_blocks)
 
-    def load_block(self, dist_id: Union[BlockDistributionId, str]) -> BlockEntity:
+    def is_block_known(self, distribution_id: BlockDistributionId) -> bool:
+        return distribution_id in self._indexed_blocks
+
+    def get_runtime(self, dist_id: BlockDistributionId) -> IBlockRuntime:
         if isinstance(dist_id, str):
             dist_id = BlockDistributionId(dist_id)
 
@@ -53,17 +57,7 @@ class BlockRepository:
             raise repo_exceptions.BlockDoesNotExist(dist_id)
 
         block_class = self._get_class_from_path(path)
-        block_runtime: IBlockRuntime = BlockRuntime(block_class)
-        block_info = block_runtime.get_info()
-
-        block = BlockEntity(
-            distribution_id=block_info.distribution_id,
-            name=block_info.name,
-            runtime=block_runtime,
-        )
-        block.load(block_runtime)
-
-        return block
+        return BlockRuntime(block_class)
 
     def _get_dist_id_from_path(self, path: pathlib.Path) -> BlockDistributionId:
         block_class = self._get_class_from_path(path)
@@ -90,7 +84,7 @@ class BlockRepository:
     def _get_block_class(self, module: ModuleType) -> BaseBlock:
         try:
             classes = helpers.get_classes(module)
-            block_classes = helpers.filter_subclasses_of(classes, BlockRepository.base_block_class)
+            block_classes = helpers.filter_subclasses_of(classes, BaseBlock)
         except Exception as ex:
             raise repo_exceptions.LoadBlockClassFailed(
                 f'Exception {type(ex).__name__} raised while getting classes in block.py module'

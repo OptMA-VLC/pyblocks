@@ -6,7 +6,7 @@ from src.pyblock_sim.repository.block_repository.indexing_result import Indexing
 
 class TestBlockRepository:
     def test_indexing(self, tmp_path):
-        indexing_result = BlockRepository().index_dir(self._discover_block_path())
+        indexing_result = BlockRepository(self._discover_block_path()).index_blocks()
 
         self._assert_indexing_result(indexing_result, 'simple_test_block', ResultItem.ResultType.SUCCESS)
         self._assert_indexing_result(indexing_result, 'no_block_file', ResultItem.ResultType.FAILED)

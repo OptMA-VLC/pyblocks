@@ -1,20 +1,22 @@
 import copy
-from typing import Any, Dict
+from typing import Any, Dict, Tuple
 
+from src.pyblock.block.ports.port_id import PortId
+from src.pyblock_sim.entity.block.block_instance_id import BlockInstanceId
 from src.pyblock_sim.entity.block.port_instance_id import PortInstanceId
 
 
 class SignalRepository:
-    _signals: Dict[PortInstanceId, Any]
+    _signals: Dict[Tuple[BlockInstanceId, PortId], Any]
 
     def __init__(self):
         self._signals = {}
 
-    def set(self, port_instance_id: PortInstanceId, signal: Any):
-        self._signals[port_instance_id] = signal
+    def set(self, block_instance_id: BlockInstanceId, port_id: PortId, signal: Any):
+        self._signals[(block_instance_id, port_id)] = signal
 
-    def get(self, port_instance_id: PortInstanceId) -> Any:
+    def get(self, block_instance_id: BlockInstanceId, port_id: PortId) -> Any:
         try:
-            return copy.deepcopy(self._signals[port_instance_id])
+            return copy.deepcopy(self._signals[(block_instance_id, port_id)])
         except KeyError:
-            raise KeyError(f"No signal exists for port_instance_id '{port_instance_id}'")
+            raise KeyError(f"No signal exists for (block_instance: '{block_instance_id}', port: '{port_id}')")

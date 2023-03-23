@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import networkx as nx
 import networkx.algorithms.dag
 
+from src.pyblock.block.ports.port_id import PortId
 from src.pyblock_sim.entity.block.block_entity import BlockEntity
 from src.pyblock_sim.entity.block.block_instance_id import BlockInstanceId
 from src.pyblock_sim.entity.graph.connection_entity import ConnectionEntity
@@ -30,6 +31,11 @@ class SimulationGraph:
         return connections
 
     def add_block(self, block: BlockEntity):
+        for existing_block in self.blocks:
+            if existing_block.instance_id == block.instance_id:
+                raise RuntimeError(f"Can't add block with instance id '{block.instance_id}' "
+                                   f"because it already exists in graph")
+
         self._graph.add_node(block.instance_id, block=block)
         pass
 
@@ -53,15 +59,11 @@ class SimulationGraph:
         if not destination_block.has_input(connection.destination_port):
             raise ValueError(f"Port with Id '{connection.destination_port}' is not an input of block '{destination_block.instance_id}'")
 
-        for existing_conn in self.connections:
-            is_to_same_block = existing_conn.destination_block == connection.destination_block
-            is_to_same_port = existing_conn.destination_port == connection.destination_port
-
-            if is_to_same_block and is_to_same_port:
-                raise ValueError(
-                    f"Can't add connection to block '{destination_block.instance_id}', port '{connection.destination_port}' "
-                    f"because there is already a connection to that port (with connection id '{existing_conn.id}')"
-                )
+        if self._has_connection_to_port(connection.destination_block, connection.destination_port):
+            raise ValueError(
+                f"Can't add connection to block '{destination_block.instance_id}', "
+                f"port '{connection.destination_port}' because there is already a connection to that port"
+            )
 
         self._graph.add_edge(origin_block.instance_id, destination_block.instance_id, connection=connection)
 
@@ -83,6 +85,14 @@ class SimulationGraph:
             blocks.append(block)
 
         return blocks
+
+    def _has_connection_to_port(self, block_id: BlockInstanceId, port_id: PortId) -> bool:
+        incoming_connections = self.get_incoming_connections(block_id)
+        for conn in incoming_connections:
+            if conn.destination_port == port_id:
+                return True
+
+        return False
 
     def plot_graph(self):
         fig, ax = plt.subplots()

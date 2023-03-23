@@ -18,17 +18,33 @@ class BlockEntity:
         LOADED = auto()
 
     distribution_id: BlockDistributionId
+    instance_id: BlockInstanceId
     name: str
-    state: State = State.CREATED
-    runtime: Optional[IBlockRuntime] = None
-    inputs: List[PortEntity] = field(default_factory=list)
-    outputs: List[PortEntity] = field(default_factory=list)
-    available_params: List[AvailableParameterEntity] = field(default_factory=list)
-    user_params: List[UserParameterEntity] = field(default_factory=list)
+    state: State
+    runtime: Optional[IBlockRuntime]
+    inputs: List[PortEntity]
+    outputs: List[PortEntity]
+    available_params: List[AvailableParameterEntity]
+    user_params: List[UserParameterEntity]
 
-    @property
-    def instance_id(self):
-        return BlockInstanceId(f'{self.distribution_id}@{id(self)}')
+    def __init__(
+            self,
+            distribution_id: BlockDistributionId,
+            name: str,
+            instance_id: BlockInstanceId = None
+    ):
+        self.distribution_id = distribution_id
+        self.name = name
+        self.state = BlockEntity.State.CREATED
+        self.runtime = None
+        self.inputs = []
+        self.outputs = []
+        self.user_params = []
+
+        if instance_id is None:
+            self.instance_id = BlockInstanceId(f'{self.distribution_id}@{id(self)}')
+        else:
+            self.instance_id = instance_id
 
     def load(self, runtime: IBlockRuntime):
         self.runtime = runtime

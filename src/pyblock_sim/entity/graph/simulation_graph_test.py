@@ -28,12 +28,16 @@ class TestSimulationGraph_Blocks:
 
         assert len(graph.blocks) == 2
 
-    def test_adding_existing_instance_is_update(self):
+    def test_cant_add_existing_instance(self):
         block_1 = self._block(dist_id='dist_id_1')
         graph = SimulationGraph()
 
         graph.add_block(block_1)
-        graph.add_block(block_1)
+
+        assert len(graph.blocks) == 1
+
+        with pytest.raises(Exception):
+            graph.add_block(block_1)
 
         assert len(graph.blocks) == 1
 
@@ -41,7 +45,6 @@ class TestSimulationGraph_Blocks:
         return BlockEntity(
             distribution_id=BlockDistributionId(dist_id),
             name='Test Block',
-            runtime=None
         )
 
 

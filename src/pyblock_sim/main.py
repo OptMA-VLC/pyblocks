@@ -5,14 +5,19 @@ from matplotlib import pyplot as plt
 
 from src.block_library.ltspice_runner.ltspice_runner_config import LTSpiceRunnerConfig
 from src.pyblock.block.params.param_id import ParamId
+from src.pyblock.block.ports.port_id import PortId
 from src.pyblock.signals.signal_wave import SignalWave
+from src.pyblock_sim.entity.block.block_instance_id import BlockInstanceId
 from src.pyblock_sim.entity.block.user_parameter_entity import UserParameterEntity
 from src.pyblock_sim.entity.graph.connection_entity import ConnectionEntity
 from src.pyblock_sim.entity.graph.simulation_graph import SimulationGraph
 from src.pyblock_sim.repository.block_repository.block_repository import BlockRepository
 from src.pyblock_sim.repository.block_repository.indexing_result import IndexingResult, ResultItem
+from src.pyblock_sim.repository.project_repository.project_repository import ProjectRepository
 from src.pyblock_sim.repository.signal_repository.signal_repository import SignalRepository
-from src.pyblock_sim.use_case.simulation_use_cases import SimulationUseCases
+from src.pyblock_sim.use_case.build_simulation_graph_use_case import BuildSimulationGraphUseCase
+from src.pyblock_sim.use_case.compute_simulation_steps_use_case import ComputeSimulationStepsUseCase
+from src.pyblock_sim.use_case.simulate_use_case import SimulateUseCase
 from src.pyblock_sim.util.logger import logger
 
 
@@ -37,48 +42,36 @@ def print_indexing_result(result: IndexingResult):
 
 
 def lt_spice_demo():
-    logger.info('Loading block library...  ')
-    block_repo = BlockRepository()
-    block_lib_path = Path('../block_library')
-    indexing_result = block_repo.index_dir(block_lib_path)
-    logger.info('Loading block library...  [green]ok[/green]')
+    block_repo = BlockRepository(Path('../block_library'))
+    signal_repo = SignalRepository()
+
+    build_graph_use_case = BuildSimulationGraphUseCase(block_repo)
+    compute_simulation_steps_use_case = ComputeSimulationStepsUseCase()
+    simulate_use_case = SimulateUseCase(signal_repo, block_repo)
+
+    logger.info('Loading block library...      ', end='')
+    indexing_result = block_repo.index_blocks()
+    logger.info('[green]ok[/green]', no_tag=True)
     print_indexing_result(indexing_result)
 
-    logger.info('Loading simulation Blocks...  ')
-    block_signal_gen = block_repo.load_block('br.ufmg.optma.signal_generator')
-    block_ltspice = block_repo.load_block('br.ufmg.optma.ltspice_runner')
-    logger.info('Loading simulation Blocks...  [green]ok[/green]')
+    logger.info('Loading project...            ', end='')
+    project = ProjectRepository().load()
+    logger.info('[green]ok[/green]', no_tag=True)
 
-    block_ltspice.user_params = [
-        UserParameterEntity(
-            block_instance_id=block_ltspice.instance_id,
-            param_id=ParamId('config'),
-            value=LTSpiceRunnerConfig(
-                schematic_file='../block_library/ltspice_runner/test_data/Transmissor.asc',
-                file_name_in_circuit='TX_input.txt',
-                add_instructions=[
-                    '; Simulation settings',
-                    '.tran 0 10m 0 1u'
-                ],
-                probe_signals=['I(D1)']
-            )
-        )
-    ]
+    logger.info('Building simulation graph...  ', end='')
+    simulation_graph = build_graph_use_case.build_simulation_graph(project.graph_spec)
+    logger.info('[green]ok[/green]', no_tag=True)
 
-    simulation_graph = SimulationGraph()
-    simulation_graph.add_block(block_signal_gen)
-    simulation_graph.add_block(block_ltspice)
-    simulation_graph.add_connection(ConnectionEntity(
-        from_port=block_signal_gen.outputs[0], to_port=block_ltspice.inputs[0]
-    ))
+    logger.info('Computing simulation steps... ', end='')
+    simulation_steps = compute_simulation_steps_use_case.compute_simulation_steps(simulation_graph)
+    logger.info('[green]ok[/green]', no_tag=True)
 
-    signal_repo = SignalRepository()
-    use_cases = SimulationUseCases(signal_repo)
-    steps = use_cases.create_simulation_steps(simulation_graph)
-    use_cases.simulate(steps)
+    logger.info('Starting Simulation...')
+    simulate_use_case.simulate(simulation_steps)
+    logger.info('Simulation Done.')
 
-    input_signal = signal_repo.get(block_signal_gen.outputs[0].instance_id)
-    output_signal = signal_repo.get(block_ltspice.outputs[0].instance_id)
+    input_signal = signal_repo.get(BlockInstanceId('sig_gen_1'), PortId('signal_out'))
+    output_signal = signal_repo.get(BlockInstanceId('ltspice_1'), PortId('signal_out'))
 
     fig, ax1 = plt.subplots()
     ax2 = ax1.twinx()

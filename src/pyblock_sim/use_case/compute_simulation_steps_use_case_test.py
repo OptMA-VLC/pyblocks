@@ -5,14 +5,13 @@ import pytest
 from src.pyblock_sim.entity.block.block_entity import BlockEntity
 from src.pyblock_sim.entity.graph.graph_builder_util import GraphBuilderUtil
 from src.pyblock_sim.entity.simulation.simulation_steps import SimulationStep
-from src.pyblock_sim.repository.signal_repository.signal_repository import SignalRepository
-from src.pyblock_sim.use_case.simulation_use_cases import SimulationUseCases
+from src.pyblock_sim.use_case.compute_simulation_steps_use_case import ComputeSimulationStepsUseCase
 
 
-class TestGenerateSteps:
+class TestComputeSimulationStepsUseCase:
     @property
-    def _use_case(self) -> SimulationUseCases:
-        return SimulationUseCases(signal_repo=SignalRepository())
+    def _use_case(self) -> ComputeSimulationStepsUseCase:
+        return ComputeSimulationStepsUseCase()
 
     def test_simple_graph(self):
         graph_builder = GraphBuilderUtil() \
@@ -24,7 +23,7 @@ class TestGenerateSteps:
         block_1 = graph_builder.get_block('block_1')
         block_2 = graph_builder.get_block('block_2')
 
-        steps = self._use_case.create_simulation_steps(graph)
+        steps = self._use_case.compute_simulation_steps(graph)
 
         assert len(steps) == 2
         assert steps[0].block.instance_id == block_1.instance_id
@@ -33,7 +32,7 @@ class TestGenerateSteps:
     def test_single_block(self):
         graph = GraphBuilderUtil().with_block('block_1').build()
 
-        steps = self._use_case.create_simulation_steps(graph)
+        steps = self._use_case.compute_simulation_steps(graph)
 
         assert len(steps) == 1
 
@@ -47,7 +46,7 @@ class TestGenerateSteps:
         graph = graph_builder.build()
         block_c = graph_builder.get_block('block_c')
 
-        steps = self._use_case.create_simulation_steps(graph)
+        steps = self._use_case.compute_simulation_steps(graph)
 
         assert len(steps) == 3
         # order between block_a and block_b is not important
@@ -63,7 +62,7 @@ class TestGenerateSteps:
             .with_connection('block_c', 'out', 'block_d', 'in')
         graph = graph_builder.build()
 
-        steps = self._use_case.create_simulation_steps(graph)
+        steps = self._use_case.compute_simulation_steps(graph)
 
         assert len(steps) == 4
 
@@ -85,7 +84,7 @@ class TestGenerateSteps:
             .with_connection('block_b', 'out', 'block_c', 'in_1')
         graph = graph_builder.build()
 
-        steps = self._use_case.create_simulation_steps(graph)
+        steps = self._use_case.compute_simulation_steps(graph)
 
         assert len(steps) == 3
 
@@ -107,7 +106,7 @@ class TestGenerateSteps:
         graph = graph_builder.build()
 
         with pytest.raises(Exception):
-            self._use_case.create_simulation_steps(graph)
+            self._use_case.compute_simulation_steps(graph)
 
     def _find_block_position_in_steps(self, steps: List[SimulationStep], block: BlockEntity):
         for (idx, step) in enumerate(steps):
