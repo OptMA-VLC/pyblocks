@@ -55,7 +55,7 @@ def lt_spice_demo():
     print_indexing_result(indexing_result)
 
     logger.info('Loading project...            ', end='')
-    project = ProjectRepository().load()
+    project = ProjectRepository().load(Path('../examples/ltspice_integration/project.json'))
     logger.info('[green]ok[/green]', no_tag=True)
 
     logger.info('Building simulation graph...  ', end='')
@@ -83,7 +83,7 @@ def lt_spice_demo():
 
 def check_requirements():
     major_ver, minor_ver, _, _, _ = sys.version_info
-    if major_ver < 2:
+    if major_ver < 3:
         logger.error('Python 2 is not supported. This program was written in Python 3.8')
         raise RuntimeError('Python 2 not supported.')
 

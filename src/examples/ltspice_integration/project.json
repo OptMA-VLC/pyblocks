@@ -1,0 +1,26 @@
+{
+  "blocks": [
+    {
+      "instance_of": "br.ufmg.optma.signal_generator",
+      "instance_id": "sig_gen_1",
+      "name": "Signal Generator"
+    },
+    {
+      "instance_of": "br.ufmg.optma.ltspice_runner",
+      "instance_id": "ltspice_1",
+      "name": "LTSpice Integration",
+      "parameters": [
+        {
+          "param_id": "config_path",
+          "value": "../examples/ltspice_integration/ltspice_integration_config.json"
+        }
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "from": "sig_gen_1::signal_out",
+      "to": "ltspice_1::signal_in"
+    }
+  ]
+}

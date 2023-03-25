@@ -16,7 +16,7 @@ from src.block_library.ltspice_runner.ltspice_runner_config import LTSpiceRunner
 
 class LTSpiceRunner(BaseBlock):
     def __init__(self):
-        self.config = Param(param_id='config', param_type=LTSpiceRunnerConfig)
+        self.config_path = Param(param_id='config_path', param_type=str)
         self.signal_in = InputPort(port_id='signal_in', type=SignalWave)
         self.signal_out = OutputPort(port_id='signal_out', type=SignalWave)
 
@@ -27,7 +27,8 @@ class LTSpiceRunner(BaseBlock):
         ))
 
     def run(self):
-        config = self.config.value
+        config_path = self.config_path.value
+        config = LTSpiceRunnerConfig.from_path(config_path)
         signal = self.signal_in.signal
 
         self.write_signal_file(config, signal)
