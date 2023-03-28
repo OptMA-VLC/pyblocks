@@ -1,3 +1,4 @@
+import os.path
 import sys
 from pathlib import Path
 
@@ -15,33 +16,23 @@ from src.pyblock_sim.use_case.build_simulation_graph_use_case import BuildSimula
 from src.pyblock_sim.use_case.compute_simulation_steps_use_case import ComputeSimulationStepsUseCase
 from src.pyblock_sim.use_case.simulate_use_case import SimulateUseCase
 from src.pyblock_sim.util.logger import logger
+from src.pyblock_sim.util.set_directory import set_directory
 
 
 def main():
     logger.info('Meow!  :cat:')
     check_requirements()
 
-    lt_spice_demo()
+    project_path = Path('../examples/ltspice_integration/project.json')
+
+    library_rel_path = Path('../block_library')
+    library_path = Path(os.path.relpath(library_rel_path, project_path.parent))
+    with set_directory(project_path.parent):
+        run_simulator(library_path, Path(project_path.name))
 
 
-def print_indexing_result(result: IndexingResult):
-    logger.verbose(f'Checked {result.indexed_path.absolute()} for blocks')
-
-    for item in result.items:
-        if item.outcome is ResultItem.ResultType.SUCCESS:
-            logger.verbose(f'  /{item.path.name.ljust(20)} - [green]Success[/green]')
-        elif item.outcome is ResultItem.ResultType.FAILED:
-            if isinstance(item.exception, NoBlockPyFile):
-                logger.verbose(f'  /{item.path.name.ljust(20)} - [white]Not a Block[/white]')
-            else:
-                logger.verbose(f'  /{item.path.name.ljust(20)} - [red]Failed[/red]')
-                logger.verbose(f'    (failed with exception {item.exception.__class__.__name__} - {item.exception})')
-        elif item.outcome is ResultItem.ResultType.SKIPPED:
-            logger.verbose(f'  /{item.path.name.ljust(20)} - [white]Skipped[/white]')
-
-
-def lt_spice_demo():
-    block_repo = BlockRepository(Path('../block_library'))
+def run_simulator(library_path: Path, project_path: Path):
+    block_repo = BlockRepository(library_path)
     signal_repo = SignalRepository()
 
     build_graph_use_case = BuildSimulationGraphUseCase(block_repo)
@@ -54,7 +45,7 @@ def lt_spice_demo():
     print_indexing_result(indexing_result)
 
     logger.info('Loading project...            ', end='')
-    project = ProjectRepository().load(Path('../examples/ltspice_integration/project.json'))
+    project = ProjectRepository().load(project_path)
     logger.info('[green]ok[/green]', no_tag=True)
 
     logger.info('Building simulation graph...  ', end='')
@@ -78,6 +69,22 @@ def lt_spice_demo():
     ax2.plot(output_signal.time, output_signal.wave, label='output')
     plt.legend()
     plt.show()
+
+
+def print_indexing_result(result: IndexingResult):
+    logger.verbose(f'Checked {result.indexed_path.absolute()} for blocks')
+
+    for item in result.items:
+        if item.outcome is ResultItem.ResultType.SUCCESS:
+            logger.verbose(f'  /{item.path.name.ljust(20)} - [green]Success[/green]')
+        elif item.outcome is ResultItem.ResultType.FAILED:
+            if isinstance(item.exception, NoBlockPyFile):
+                logger.verbose(f'  /{item.path.name.ljust(20)} - [white]Not a Block[/white]')
+            else:
+                logger.verbose(f'  /{item.path.name.ljust(20)} - [red]Failed[/red]')
+                logger.verbose(f'    (failed with exception {item.exception.__class__.__name__} - {item.exception})')
+        elif item.outcome is ResultItem.ResultType.SKIPPED:
+            logger.verbose(f'  /{item.path.name.ljust(20)} - [white]Skipped[/white]')
 
 
 def check_requirements():

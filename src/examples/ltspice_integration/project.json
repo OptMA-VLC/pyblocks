@@ -12,7 +12,7 @@
       "parameters": [
         {
           "param_id": "config_path",
-          "value": "../examples/ltspice_integration/ltspice_tx_config.json"
+          "value": "./ltspice_tx_config.json"
         }
       ]
     },
@@ -34,7 +34,7 @@
       "parameters": [
         {
           "param_id": "config_path",
-          "value": "../examples/ltspice_integration/ltspice_rx_config.json"
+          "value": "./ltspice_rx_config.json"
         }
       ]
     }
