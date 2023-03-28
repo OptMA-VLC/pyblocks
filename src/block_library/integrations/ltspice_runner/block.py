@@ -11,7 +11,7 @@ from src.pyblock.block.params.param import Param
 from src.pyblock.block.ports.input_port import InputPort
 from src.pyblock.block.ports.output_port import OutputPort
 from src.pyblock.signals.signal_wave import SignalWave
-from src.block_library.ltspice_runner.ltspice_runner_config import LTSpiceRunnerConfig
+from src.block_library.integrations.ltspice_runner.ltspice_runner_config import LTSpiceRunnerConfig
 
 
 class LTSpiceRunner(BaseBlock):
@@ -21,7 +21,7 @@ class LTSpiceRunner(BaseBlock):
         self.signal_out = OutputPort(port_id='signal_out', type=SignalWave)
 
         super().__init__(BlockInfo(
-            distribution_id='br.ufmg.optma.ltspice_runner',
+            distribution_id='br.ufmg.optma.integrations.ltspice',
             name='LTSpice Runner Block',
             description='Takes a signal, simulates a circuit in LTSpice and provides an output'
         ))
@@ -66,7 +66,14 @@ class LTSpiceRunner(BaseBlock):
         print(f'Successful/Total Simulations: {str(sim_commander.okSim)}/{str(sim_commander.runno)}')
 
     def get_output(self, config) -> SignalWave:
-        raw_data = LTSpiceRawRead(f'{Path(config.schematic_file).stem}.raw')
+        try:
+            raw_data = LTSpiceRawRead(f'{Path(config.schematic_file).stem}.raw')
+        except FileNotFoundError:
+            with open(f'{Path(config.schematic_file.stem)}.fail') as fail_file:
+                error_msg = fail_file.read()
+            raise RuntimeError(
+                f'LTSpice simulation failed with message: {error_msg}'
+            )
 
         signal_trace_dict = {'time': raw_data.get_axis()}
         signal_trace_dict.update({signal: raw_data.get_trace(signal) for signal in config.probe_signals})

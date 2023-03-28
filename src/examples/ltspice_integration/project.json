@@ -1,18 +1,40 @@
 {
   "blocks": [
     {
-      "instance_of": "br.ufmg.optma.signal_generator",
+      "instance_of": "br.ufmg.optma.basic.signal_generator",
       "instance_id": "sig_gen_1",
       "name": "Signal Generator"
     },
     {
-      "instance_of": "br.ufmg.optma.ltspice_runner",
-      "instance_id": "ltspice_1",
+      "instance_of": "br.ufmg.optma.integrations.ltspice",
+      "instance_id": "ltspice_tx",
       "name": "LTSpice Integration",
       "parameters": [
         {
           "param_id": "config_path",
-          "value": "../examples/ltspice_integration/ltspice_integration_config.json"
+          "value": "../examples/ltspice_integration/ltspice_tx_config.json"
+        }
+      ]
+    },
+    {
+      "instance_of": "br.ufmg.optma.basic.gain",
+      "instance_id": "gain",
+      "name": "Gain",
+      "parameters": [
+        {
+          "param_id": "gain_db",
+          "value": -6.0
+        }
+      ]
+    },
+        {
+      "instance_of": "br.ufmg.optma.integrations.ltspice",
+      "instance_id": "ltspice_rx",
+      "name": "LTSpice Integration",
+      "parameters": [
+        {
+          "param_id": "config_path",
+          "value": "../examples/ltspice_integration/ltspice_rx_config.json"
         }
       ]
     }
@@ -20,7 +42,15 @@
   "connections": [
     {
       "from": "sig_gen_1::signal_out",
-      "to": "ltspice_1::signal_in"
+      "to": "ltspice_tx::signal_in"
+    },
+    {
+      "from": "ltspice_tx::signal_out",
+      "to": "gain::signal_in"
+    },
+    {
+      "from": "gain::signal_out",
+      "to": "ltspice_rx::signal_in"
     }
   ]
 }

@@ -6,7 +6,7 @@ from typing import Any, List
 
 
 def get_subdirectories(path: pathlib.Path) -> List[pathlib.Path]:
-    return [path for path in path.iterdir() if path.is_dir()]
+    return [path for path in path.rglob('*') if path.is_dir()]
 
 
 def load_module(name: str, path: pathlib.Path) -> ModuleType:

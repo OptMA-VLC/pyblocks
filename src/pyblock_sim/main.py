@@ -3,15 +3,11 @@ from pathlib import Path
 
 from matplotlib import pyplot as plt
 
-from src.block_library.ltspice_runner.ltspice_runner_config import LTSpiceRunnerConfig
-from src.pyblock.block.params.param_id import ParamId
 from src.pyblock.block.ports.port_id import PortId
 from src.pyblock.signals.signal_wave import SignalWave
 from src.pyblock_sim.entity.block.block_instance_id import BlockInstanceId
-from src.pyblock_sim.entity.block.user_parameter_entity import UserParameterEntity
-from src.pyblock_sim.entity.graph.connection_entity import ConnectionEntity
-from src.pyblock_sim.entity.graph.simulation_graph import SimulationGraph
 from src.pyblock_sim.repository.block_repository.block_repository import BlockRepository
+from src.pyblock_sim.repository.block_repository.block_repository_exceptions import NoBlockPyFile
 from src.pyblock_sim.repository.block_repository.indexing_result import IndexingResult, ResultItem
 from src.pyblock_sim.repository.project_repository.project_repository import ProjectRepository
 from src.pyblock_sim.repository.signal_repository.signal_repository import SignalRepository
@@ -35,8 +31,11 @@ def print_indexing_result(result: IndexingResult):
         if item.outcome is ResultItem.ResultType.SUCCESS:
             logger.verbose(f'  /{item.path.name.ljust(20)} - [green]Success[/green]')
         elif item.outcome is ResultItem.ResultType.FAILED:
-            logger.verbose(f'  /{item.path.name.ljust(20)} - [red]Failed[/red]')
-            logger.verbose(f'    (failed with exception {item.exception.__class__.__name__} - {item.exception})')
+            if isinstance(item.exception, NoBlockPyFile):
+                logger.verbose(f'  /{item.path.name.ljust(20)} - [white]Not a Block[/white]')
+            else:
+                logger.verbose(f'  /{item.path.name.ljust(20)} - [red]Failed[/red]')
+                logger.verbose(f'    (failed with exception {item.exception.__class__.__name__} - {item.exception})')
         elif item.outcome is ResultItem.ResultType.SKIPPED:
             logger.verbose(f'  /{item.path.name.ljust(20)} - [white]Skipped[/white]')
 
@@ -71,7 +70,7 @@ def lt_spice_demo():
     logger.info('Simulation Done.')
 
     input_signal = signal_repo.get(BlockInstanceId('sig_gen_1'), PortId('signal_out'))
-    output_signal = signal_repo.get(BlockInstanceId('ltspice_1'), PortId('signal_out'))
+    output_signal = signal_repo.get(BlockInstanceId('ltspice_rx'), PortId('signal_out'))
 
     fig, ax1 = plt.subplots()
     ax2 = ax1.twinx()
