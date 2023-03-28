@@ -41,8 +41,8 @@ class SimulateUseCase:
 
     def _apply_params(self, block: BlockEntity):
         try:
-            for param in block.user_params:
-                block.runtime.set_parameter(param.param_id, param.value)
+            for param in block.param_manager.get_params():
+                block.runtime.set_parameter(param)
         except Exception as ex:
             raise RuntimeError(
                 f'Error applying parameters to Block {block.name} (instance_id: {block.instance_id})'

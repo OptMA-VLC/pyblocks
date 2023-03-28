@@ -1,10 +1,8 @@
 from src.pyblock_sim.entity.block.block_entity import BlockEntity
-from src.pyblock_sim.entity.block.user_parameter_entity import UserParameterEntity
 from src.pyblock_sim.entity.graph.connection_entity import ConnectionEntity
 from src.pyblock_sim.entity.graph.simulation_graph import SimulationGraph
 from src.pyblock_sim.entity.project.graph_specification import GraphSpecification
 from src.pyblock_sim.repository.block_repository.interface_block_repository import IBlockRepository
-from src.pyblock_sim.repository.signal_repository.signal_repository import SignalRepository
 
 
 class BuildSimulationGraphUseCase:
@@ -35,15 +33,9 @@ class BuildSimulationGraphUseCase:
                 name=block_spec.name
             )
 
-            for param_spec in block_spec.params:
-                block.user_params.append(UserParameterEntity(
-                    block_instance_id=block.instance_id,
-                    param_id=param_spec.param_id,
-                    value=param_spec.value
-                ))
-
             runtime = self._block_repo.get_runtime(block_spec.dist_id)
             block.load(runtime)
+            block.param_manager.set_user_params(block_spec.params)
 
             graph.add_block(block)
 

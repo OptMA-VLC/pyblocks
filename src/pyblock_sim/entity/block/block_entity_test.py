@@ -4,7 +4,7 @@ from src.pyblock_sim.entity.block.block_entity import BlockEntity
 from src.pyblock_sim.entity.block.port_entity import PortEntity
 
 
-class TestBlock:
+class TestBlockEntity:
     def test_has_input(self):
         block = BlockEntity(distribution_id=BlockDistributionId('dist_id'), name='')
         port_1 = PortEntity(block=block, port_id=PortId('port_1'))

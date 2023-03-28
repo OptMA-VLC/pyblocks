@@ -3,7 +3,13 @@
     {
       "instance_of": "br.ufmg.optma.basic.signal_generator",
       "instance_id": "sig_gen_1",
-      "name": "Signal Generator"
+      "name": "Signal Generator",
+      "parameters": [
+        {
+          "param_id": "freq",
+          "value": "100"
+        }
+      ]
     },
     {
       "instance_of": "br.ufmg.optma.integrations.ltspice",

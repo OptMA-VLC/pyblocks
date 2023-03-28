@@ -4,10 +4,9 @@ from typing import Optional, List
 
 from src.pyblock.block.block_distribution_id import BlockDistributionId
 from src.pyblock.block.ports.port_id import PortId
-from src.pyblock_sim.entity.block.user_parameter_entity import UserParameterEntity
-from src.pyblock_sim.entity.block.available_parameter_entity import AvailableParameterEntity
 from src.pyblock_sim.entity.block.block_instance_id import BlockInstanceId
 from src.pyblock_sim.entity.block.interface_block_runtime import IBlockRuntime
+from src.pyblock_sim.entity.block.param_manager import ParameterManager
 from src.pyblock_sim.entity.block.port_entity import PortEntity
 
 
@@ -21,11 +20,10 @@ class BlockEntity:
     instance_id: BlockInstanceId
     name: str
     state: State
+    param_manager: Optional[ParameterManager]
     runtime: Optional[IBlockRuntime]
     inputs: List[PortEntity]
     outputs: List[PortEntity]
-    available_params: List[AvailableParameterEntity]
-    user_params: List[UserParameterEntity]
 
     def __init__(
             self,
@@ -36,10 +34,10 @@ class BlockEntity:
         self.distribution_id = distribution_id
         self.name = name
         self.state = BlockEntity.State.CREATED
+        self.param_manager = ParameterManager()
         self.runtime = None
         self.inputs = []
         self.outputs = []
-        self.user_params = []
 
         if instance_id is None:
             self.instance_id = BlockInstanceId(f'{self.distribution_id}@{id(self)}')
@@ -50,7 +48,8 @@ class BlockEntity:
         self.runtime = runtime
         self.inputs = runtime.list_inputs(self)
         self.outputs = runtime.list_outputs(self)
-        self.available_params = runtime.list_params()
+        self.param_manager.set_block_params(runtime.list_parameters())
+
         self.state = BlockEntity.State.LOADED
 
     def get_input(self, port: PortId) -> PortEntity:

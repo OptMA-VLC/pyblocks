@@ -7,7 +7,7 @@ from src.pyblock_sim.entity.block.block_instance_id import BlockInstanceId
 from src.pyblock_sim.entity.project.block_specification import BlockSpecification
 from src.pyblock_sim.entity.project.connection_specification import ConnectionSpecification
 from src.pyblock_sim.entity.project.graph_specification import GraphSpecification
-from src.pyblock_sim.entity.project.param_specification import ParamSpecification
+from src.pyblock_sim.entity.block.parameter_entity import ParameterEntity
 from src.pyblock_sim.entity.project.project_entity import ProjectEntity
 
 
@@ -75,7 +75,7 @@ class ProjectRepository:
             params=params
         )
 
-    def _parse_params_list(self, params_list: List) -> List[ParamSpecification]:
+    def _parse_params_list(self, params_list: List) -> List[ParameterEntity]:
         params = []
         for param in params_list:
             param_id = self._get_dict_key(
@@ -87,7 +87,7 @@ class ProjectRepository:
                 f"Can't parse parameter '{param_id}' because it does not contain a 'value' value"
             )
 
-            params.append(ParamSpecification(param_id=param_id, value=value))
+            params.append(ParameterEntity(param_id=param_id, value=value))
 
         return params
 
