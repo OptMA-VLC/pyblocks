@@ -15,6 +15,7 @@ from src.pyblock_sim.repository.signal_repository.signal_repository import Signa
 from src.pyblock_sim.use_case.build_simulation_graph_use_case import BuildSimulationGraphUseCase
 from src.pyblock_sim.use_case.compute_simulation_steps_use_case import ComputeSimulationStepsUseCase
 from src.pyblock_sim.use_case.simulate_use_case import SimulateUseCase
+from src.pyblock_sim.use_case.simulation_report import SimulationReport
 from src.pyblock_sim.util.logger import logger
 from src.pyblock_sim.util.set_directory import set_directory
 
@@ -30,7 +31,6 @@ def main():
     with set_directory(project_path.parent):
         run_simulator(library_path, Path(project_path.name))
 
-
 def run_simulator(library_path: Path, project_path: Path):
     block_repo = BlockRepository(library_path)
     signal_repo = SignalRepository()
@@ -39,26 +39,31 @@ def run_simulator(library_path: Path, project_path: Path):
     compute_simulation_steps_use_case = ComputeSimulationStepsUseCase()
     simulate_use_case = SimulateUseCase(signal_repo, block_repo)
 
-    logger.info('Loading block library...      ', end='')
+    logger.info('Loading block library......... ', end='')
     indexing_result = block_repo.index_blocks()
     logger.info('[green]ok[/green]', no_tag=True)
     print_indexing_result(indexing_result)
 
-    logger.info('Loading project...            ', end='')
+    logger.info('Loading project............... ', end='')
     project = ProjectRepository().load(project_path)
     logger.info('[green]ok[/green]', no_tag=True)
 
-    logger.info('Building simulation graph...  ', end='')
+    logger.info('Building simulation graph..... ', end='')
     simulation_graph = build_graph_use_case.build_simulation_graph(project.graph_spec)
     logger.info('[green]ok[/green]', no_tag=True)
 
-    logger.info('Computing simulation steps... ', end='')
+    logger.info('Computing simulation steps.... ', end='')
     simulation_steps = compute_simulation_steps_use_case.compute_simulation_steps(simulation_graph)
     logger.info('[green]ok[/green]', no_tag=True)
 
-    logger.info('Starting Simulation...')
-    simulate_use_case.simulate(simulation_steps)
-    logger.info('Simulation Done.')
+    logger.info('Starting Simulation........... ', end='')
+    simulation_report = simulate_use_case.simulate(simulation_steps)
+    if simulation_report.success:
+        logger.info('[green]ok[/green]', no_tag=True)
+    else:
+        logger.info('[red]error[/red]', no_tag=True)
+
+    print_simulation_report(simulation_report)
 
     input_signal = signal_repo.get(BlockInstanceId('sig_gen_1'), PortId('signal_out'))
     output_signal = signal_repo.get(BlockInstanceId('ltspice_rx'), PortId('signal_out'))
@@ -85,6 +90,22 @@ def print_indexing_result(result: IndexingResult):
                 logger.verbose(f'    (failed with exception {item.exception.__class__.__name__} - {item.exception})')
         elif item.outcome is ResultItem.ResultType.SKIPPED:
             logger.verbose(f'  /{item.path.name.ljust(20)} - [white]Skipped[/white]')
+
+
+def print_simulation_report(report: SimulationReport):
+    logger.info('==================== Simulation Report ====================')
+    num_steps = len(report.steps)
+    for (i, step) in enumerate(report.steps):
+        block_name = f'Block {str(step.block_instance_id).ljust(25)}'
+        exec_time = f'time: {step.execution_time:.2f} s'
+        logger.info(f"Step {i+1}/{num_steps} - {block_name} - {exec_time} - ", end='')
+        if step.success:
+            logger.info('[green]ok[/green]', no_tag=True)
+        else:
+            logger.info('[red]error[/red]', no_tag=True)
+            logger.info(f'Step failed with error: {step.exception}')
+            break
+    logger.info('===========================================================')
 
 
 def check_requirements():
