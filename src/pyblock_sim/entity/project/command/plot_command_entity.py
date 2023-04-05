@@ -9,7 +9,7 @@ from src.pyblock_sim.entity.project.signal_selector import SignalSelector
 @dataclass
 class PlotCommandEntity(CommandEntity):
     signals: List[SignalSelector]
-    save_path: Optional[Path]
+    save_path: Optional[str]
 
     @staticmethod
     def parse_args(args_json_dict: Dict) -> 'PlotCommandEntity':

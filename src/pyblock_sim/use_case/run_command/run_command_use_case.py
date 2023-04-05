@@ -1,8 +1,10 @@
+from pathlib import Path
+
 import numpy as np
 from matplotlib import pyplot as plt
 
 from src.pyblock import SignalWave
-from src.pyblock_sim.entity.project.command.command_entity import CommandEntity, CommandType
+from src.pyblock_sim.entity.project.command.command_entity import CommandEntity
 from src.pyblock_sim.entity.project.command.plot_command_entity import PlotCommandEntity
 from src.pyblock_sim.repository.signal_repository.signal_repository import SignalRepository
 
@@ -40,4 +42,11 @@ class RunCommandUseCase:
                 )
 
         plt.legend()
+
+        if command.save_path is not None:
+            save_path = Path(command.save_path)
+            if not save_path.parent.exists():
+                raise ValueError(f"The specified path to save the plot '{save_path.resolve()}' does not exist")
+            plt.savefig(save_path)
+
         plt.show()
