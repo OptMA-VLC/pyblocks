@@ -1,13 +1,14 @@
 import json
 from pathlib import Path
-from typing import Dict, Any, List, Tuple
+from typing import Dict, Any, List
 
-from src.pyblock.block.ports.port_id import PortId
-from src.pyblock_sim.entity.block.block_instance_id import BlockInstanceId
+from src.pyblock_sim.entity.block.parameter_entity import ParameterEntity
 from src.pyblock_sim.entity.project.block_specification import BlockSpecification
+from src.pyblock_sim.entity.project.command.command_entity import CommandEntity
+from src.pyblock_sim.entity.project.command.command_parser import CommandParser
 from src.pyblock_sim.entity.project.connection_specification import ConnectionSpecification
 from src.pyblock_sim.entity.project.graph_specification import GraphSpecification
-from src.pyblock_sim.entity.block.parameter_entity import ParameterEntity
+from src.pyblock_sim.entity.project.port_selector import PortSelector
 from src.pyblock_sim.entity.project.project_entity import ProjectEntity
 
 
@@ -27,11 +28,17 @@ class ProjectRepository:
         )
         connections = self._parse_connections_list(connections_list)
 
+        commands_list = json_dict.get('commands', [])
+        commands = []
+        for command_dict in commands_list:
+            commands.append(CommandParser.parse(command_dict))
+
         return ProjectEntity(
             graph_spec=GraphSpecification(
                 blocks=blocks,
                 connections=connections
-            )
+            ),
+            commands=commands
         )
 
     def _load_json(self, path: Path) -> Dict:
@@ -102,27 +109,13 @@ class ProjectRepository:
                 conn, 'to',
                 "Connection does not have a valuer for 'to'"
             )
-            origin_block, origin_port = self._parse_port_str(from_str)
-            destination_block, destination_port = self._parse_port_str(to_str)
 
             connections.append(ConnectionSpecification(
-                origin_block=origin_block,
-                origin_port=origin_port,
-                destination_block=destination_block,
-                destination_port=destination_port
+                origin=PortSelector.parse(from_str),
+                destination=PortSelector.parse(to_str)
             ))
 
         return connections
-
-    def _parse_port_str(self, port_str: str) -> Tuple[BlockInstanceId, PortId]:
-        parts = port_str.split('::')
-        if len(parts) != 2:
-            raise ValueError(
-                f"Error parsing the port name '{port_str}', ports must "
-                f"be specified in the format 'block_instance_id::port_id'"
-            )
-
-        return BlockInstanceId(parts[0]), PortId(parts[1])
 
     def _get_dict_key(self, target_dict: Dict, key: str, error_str: str) -> Any:
         try:

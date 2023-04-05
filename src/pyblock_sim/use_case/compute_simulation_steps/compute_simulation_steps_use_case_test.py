@@ -5,7 +5,7 @@ import pytest
 from src.pyblock_sim.entity.block.block_entity import BlockEntity
 from src.pyblock_sim.entity.graph.graph_builder_util import GraphBuilderUtil
 from src.pyblock_sim.entity.simulation.simulation_steps import SimulationStep
-from src.pyblock_sim.use_case.compute_simulation_steps_use_case import ComputeSimulationStepsUseCase
+from src.pyblock_sim.use_case.compute_simulation_steps.compute_simulation_steps_use_case import ComputeSimulationStepsUseCase
 
 
 class TestComputeSimulationStepsUseCase:

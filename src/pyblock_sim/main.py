@@ -5,17 +5,20 @@ from pathlib import Path
 from matplotlib import pyplot as plt
 
 from src.pyblock.block.ports.port_id import PortId
-from src.pyblock.signals.signal_wave import SignalWave
 from src.pyblock_sim.entity.block.block_instance_id import BlockInstanceId
+from src.pyblock_sim.entity.project.command.command_entity import CommandEntity, CommandType
+from src.pyblock_sim.entity.project.command.plot_command_entity import PlotCommandEntity
 from src.pyblock_sim.repository.block_repository.block_repository import BlockRepository
 from src.pyblock_sim.repository.block_repository.block_repository_exceptions import NoBlockPyFile
 from src.pyblock_sim.repository.block_repository.indexing_result import IndexingResult, ResultItem
 from src.pyblock_sim.repository.project_repository.project_repository import ProjectRepository
 from src.pyblock_sim.repository.signal_repository.signal_repository import SignalRepository
-from src.pyblock_sim.use_case.build_simulation_graph_use_case import BuildSimulationGraphUseCase
-from src.pyblock_sim.use_case.compute_simulation_steps_use_case import ComputeSimulationStepsUseCase
-from src.pyblock_sim.use_case.simulate_use_case import SimulateUseCase
-from src.pyblock_sim.use_case.simulation_report import SimulationReport
+from src.pyblock_sim.use_case.build_simulation_graph.build_simulation_graph_use_case import BuildSimulationGraphUseCase
+from src.pyblock_sim.use_case.compute_simulation_steps.compute_simulation_steps_use_case import \
+    ComputeSimulationStepsUseCase
+from src.pyblock_sim.use_case.run_command.run_command_use_case import RunCommandUseCase
+from src.pyblock_sim.use_case.simulate.simulate_use_case import SimulateUseCase
+from src.pyblock_sim.use_case.simulate.simulation_report import SimulationReport
 from src.pyblock_sim.util.logger import logger
 from src.pyblock_sim.util.set_directory import set_directory
 
@@ -31,6 +34,7 @@ def main():
     with set_directory(project_path.parent):
         run_simulator(library_path, Path(project_path.name))
 
+
 def run_simulator(library_path: Path, project_path: Path):
     block_repo = BlockRepository(library_path)
     signal_repo = SignalRepository()
@@ -38,6 +42,7 @@ def run_simulator(library_path: Path, project_path: Path):
     build_graph_use_case = BuildSimulationGraphUseCase(block_repo)
     compute_simulation_steps_use_case = ComputeSimulationStepsUseCase()
     simulate_use_case = SimulateUseCase(signal_repo, block_repo)
+    run_command_use_case = RunCommandUseCase(signal_repo)
 
     logger.info('Loading block library......... ', end='')
     indexing_result = block_repo.index_blocks()
@@ -65,15 +70,15 @@ def run_simulator(library_path: Path, project_path: Path):
 
     print_simulation_report(simulation_report)
 
-    input_signal = signal_repo.get(BlockInstanceId('sig_gen_1'), PortId('signal_out'))
-    output_signal = signal_repo.get(BlockInstanceId('ltspice_rx'), PortId('signal_out'))
-
-    fig, ax1 = plt.subplots()
-    ax2 = ax1.twinx()
-    ax1.plot(input_signal.time, input_signal.wave, color='r', label='input')
-    ax2.plot(output_signal.time, output_signal.wave, label='output')
-    plt.legend()
-    plt.show()
+    for cmd in project.commands:
+        logger.info(f'Running command {cmd.type.value}'.ljust(30, '.'), end=' ')
+        try:
+            run_command_use_case.run_command(cmd)
+            logger.info('[green]ok[/green]', no_tag=True)
+        except Exception as ex:
+            logger.info('[red]error[/red]', no_tag=True)
+            logger.error(f"Command {cmd.type.value} failed with the error - {ex}")
+            break
 
 
 def print_indexing_result(result: IndexingResult):
@@ -93,19 +98,21 @@ def print_indexing_result(result: IndexingResult):
 
 
 def print_simulation_report(report: SimulationReport):
-    logger.info('==================== Simulation Report ====================')
+    logger.info('========================= Simulation Report =========================')
     num_steps = len(report.steps)
-    for (i, step) in enumerate(report.steps):
+    i = 0
+    for step in report.steps:
+        i += 1
         block_name = f'Block {str(step.block_instance_id).ljust(25)}'
         exec_time = f'time: {step.execution_time:.2f} s'
-        logger.info(f"Step {i+1}/{num_steps} - {block_name} - {exec_time} - ", end='')
+        logger.info(f"Step {i}/{num_steps} - {block_name} - {exec_time} - ", end='')
         if step.success:
             logger.info('[green]ok[/green]', no_tag=True)
         else:
             logger.info('[red]error[/red]', no_tag=True)
             logger.info(f'Step failed with error: {step.exception}')
-            break
-    logger.info('===========================================================')
+            logger.info(f'The following error caused this failure: {step.exception.inner_exception}')
+    logger.info('=====================================================================\n')
 
 
 def check_requirements():
@@ -126,26 +133,6 @@ def check_requirements():
         logger.warn('Can\'t import tkinter. Plotting will fail.')
         logger.warn('tkinter can\'t be installed by pip and is needed as a backend to matplotlib.')
         logger.warn('To install on Linux run: sudo apt-get install python3-tk')
-
-
-def make_triangle_wave(end_time=1, step=0.001, period=0.2):
-    time = []
-    wave = []
-
-    current_time = 0
-    current_wave = 0
-    wave_delta = 1/(period/step)
-    while current_time <= end_time:
-        time.append(current_time)
-        wave.append(current_wave)
-
-        current_time += step
-        current_wave += wave_delta
-
-        if current_wave > 1:
-            current_wave = 0
-
-    return SignalWave(time, wave)
 
 
 if __name__ == "__main__":

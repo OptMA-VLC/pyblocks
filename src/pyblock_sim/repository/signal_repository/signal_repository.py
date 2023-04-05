@@ -3,7 +3,6 @@ from typing import Any, Dict, Tuple
 
 from src.pyblock.block.ports.port_id import PortId
 from src.pyblock_sim.entity.block.block_instance_id import BlockInstanceId
-from src.pyblock_sim.entity.block.port_instance_id import PortInstanceId
 
 
 class SignalRepository:

@@ -29,7 +29,7 @@
       "parameters": [
         {
           "param_id": "gain_db",
-          "value": "foo"
+          "value": -20.0
         }
       ]
     },
@@ -57,6 +57,15 @@
     {
       "from": "gain::signal_out",
       "to": "ltspice_rx::signal_in"
+    }
+  ],
+  "commands": [
+    {
+      "command": "plot",
+      "args": {
+        "signals": ["gain::signal_out", "ltspice_rx::signal_out"],
+        "save_path": "./output_plot.png"
+      }
     }
   ]
 }

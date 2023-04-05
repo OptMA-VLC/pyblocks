@@ -5,13 +5,13 @@ from pathlib import Path
 from PyLTSpice import SimCommander
 from PyLTSpice.LTSpice_RawRead import LTSpiceRawRead
 
+from src.block_library.integrations.ltspice.ltspice_runner_config import LTSpiceRunnerConfig
 from src.pyblock.block.base_block import BaseBlock
 from src.pyblock.block.block_info import BlockInfo
 from src.pyblock.block.params.param import Param
 from src.pyblock.block.ports.input_port import InputPort
 from src.pyblock.block.ports.output_port import OutputPort
 from src.pyblock.signals.signal_wave import SignalWave
-from src.block_library.integrations.ltspice_runner.ltspice_runner_config import LTSpiceRunnerConfig
 
 
 class LTSpiceRunner(BaseBlock):
