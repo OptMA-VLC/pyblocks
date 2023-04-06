@@ -11,14 +11,14 @@ from src.pyblock.block.block_info import BlockInfo
 from src.pyblock.block.params.param import Param
 from src.pyblock.block.ports.input_port import InputPort
 from src.pyblock.block.ports.output_port import OutputPort
-from src.pyblock.signals.signal_wave import SignalWave
+from src.pyblock.signals.time_signal import TimeSignal
 
 
 class LTSpiceRunner(BaseBlock):
     def __init__(self):
         self.config_path = Param(param_id='config_path', param_type=str)
-        self.signal_in = InputPort(port_id='signal_in', type=SignalWave)
-        self.signal_out = OutputPort(port_id='signal_out', type=SignalWave)
+        self.signal_in = InputPort(port_id='signal_in', type=TimeSignal)
+        self.signal_out = OutputPort(port_id='signal_out', type=TimeSignal)
 
         super().__init__(BlockInfo(
             distribution_id='br.ufmg.optma.integrations.ltspice',
@@ -38,7 +38,7 @@ class LTSpiceRunner(BaseBlock):
 
         self.signal_out.signal = out_signal
 
-    def write_signal_file(self, config: LTSpiceRunnerConfig, signal: SignalWave):
+    def write_signal_file(self, config: LTSpiceRunnerConfig, signal: TimeSignal):
         file_name_in_circuit = Path(config.file_name_in_circuit).resolve()
 
         with open(file_name_in_circuit, "w") as file_in_circuit:
@@ -65,7 +65,7 @@ class LTSpiceRunner(BaseBlock):
         # Sim Statistics
         print(f'Successful/Total Simulations: {str(sim_commander.okSim)}/{str(sim_commander.runno)}')
 
-    def get_output(self, config) -> SignalWave:
+    def get_output(self, config) -> TimeSignal:
         try:
             raw_data = LTSpiceRawRead(f'{Path(config.schematic_file).stem}.raw')
         except FileNotFoundError:
@@ -91,7 +91,7 @@ class LTSpiceRunner(BaseBlock):
         if out_signal is None:
             raise RuntimeError('Could not recover a signal from simulation to use as output')
 
-        return SignalWave(time, out_signal)
+        return TimeSignal(time, out_signal)
 
     def remove_temp_files(self, config: LTSpiceRunnerConfig):
         ltspice_file = Path().cwd() / Path("LtSpice") / Path(config.schematic_file)

@@ -4,7 +4,7 @@ from typing import Type, List
 import numpy as np
 
 
-class SignalWave:
+class TimeSignal:
     """
     Represents a time-series signal
     <wave> has the np.array for the actual signal amplitude.
@@ -42,81 +42,81 @@ class SignalWave:
             raise ValueError('SignalWave.wave and SignalWave.time should always have the same length.')
         return len(self.wave)
 
-    def __add__(self, other: 'SignalWave' or Real) -> 'SignalWave':
+    def __add__(self, other: 'TimeSignal' or Real) -> 'TimeSignal':
         """Operator <add> overload for SignalWave"""
         if isinstance(other, Real):
-            return SignalWave(signal=self.wave + other, time=self.time)
+            return TimeSignal(signal=self.wave + other, time=self.time)
         self._assert_type(other, self.__class__)
-        return SignalWave(signal=self.wave + other.wave, time=self.time)
+        return TimeSignal(signal=self.wave + other.wave, time=self.time)
 
-    def __sub__(self, other: 'SignalWave' or Real) -> 'SignalWave':
+    def __sub__(self, other: 'TimeSignal' or Real) -> 'TimeSignal':
         """Operator <sub> overload for SignalWave"""
         if isinstance(other, Real):
-            return SignalWave(signal=self.wave - other, time=self.time)
+            return TimeSignal(signal=self.wave - other, time=self.time)
         self._assert_type(other, self.__class__)
-        return SignalWave(signal=self.wave - other.wave, time=self.time)
+        return TimeSignal(signal=self.wave - other.wave, time=self.time)
 
-    def __mul__(self, other: 'SignalWave' or Real) -> 'SignalWave':
+    def __mul__(self, other: 'TimeSignal' or Real) -> 'TimeSignal':
         """Operator <mul> overload for SignalWave"""
         if isinstance(other, Real):
-            return SignalWave(signal=self.wave * other, time=self.time)
+            return TimeSignal(signal=self.wave * other, time=self.time)
         self._assert_type(other, self.__class__)
-        return SignalWave(signal=self.wave * other.wave, time=self.time)
+        return TimeSignal(signal=self.wave * other.wave, time=self.time)
 
-    def __truediv__(self, other: 'SignalWave' or Real) -> 'SignalWave':
+    def __truediv__(self, other: 'TimeSignal' or Real) -> 'TimeSignal':
         """Operator <truediv> overload for SignalWave"""
         if isinstance(other, Real):
-            return SignalWave(signal=self.wave / other, time=self.time)
+            return TimeSignal(signal=self.wave / other, time=self.time)
         self._assert_type(other, self.__class__)
-        return SignalWave(signal=self.wave / other.wave, time=self.time)
+        return TimeSignal(signal=self.wave / other.wave, time=self.time)
 
-    def __pow__(self, other: int) -> 'SignalWave':
+    def __pow__(self, other: int) -> 'TimeSignal':
         """Operator <pow> overload for SignalWave"""
         if isinstance(other, int):
-            return SignalWave(signal=self.wave ** other, time=self.time)
+            return TimeSignal(signal=self.wave ** other, time=self.time)
 
-    def __abs__(self) -> 'SignalWave':
+    def __abs__(self) -> 'TimeSignal':
         """Operator <abs> overload for SignalWave"""
-        return SignalWave(signal=abs(self.wave), time=self.time)
+        return TimeSignal(signal=abs(self.wave), time=self.time)
 
-    def __lt__(self, other: 'SignalWave' or Real) -> List:
+    def __lt__(self, other: 'TimeSignal' or Real) -> List:
         """Operator <lt> overload for SignalWave"""
-        if isinstance(other, SignalWave):
+        if isinstance(other, TimeSignal):
             return [point < other[idx] for idx, point in enumerate(self.wave)]
         self._assert_type(other, self.__class__)
         return [point < other for point in self.wave]
 
-    def __le__(self, other: 'SignalWave' or Real) -> List:
+    def __le__(self, other: 'TimeSignal' or Real) -> List:
         """Operator <le> overload for SignalWave"""
-        if isinstance(other, SignalWave):
+        if isinstance(other, TimeSignal):
             return [point <= other[idx] for idx, point in enumerate(self.wave)]
         self._assert_type(other, self.__class__)
         return [point <= other for point in self.wave]
 
-    def __gt__(self, other: 'SignalWave' or Real) -> List:
+    def __gt__(self, other: 'TimeSignal' or Real) -> List:
         """Operator <gt> overload for SignalWave"""
-        if isinstance(other, SignalWave):
+        if isinstance(other, TimeSignal):
             return [point > other[idx] for idx, point in enumerate(self.wave)]
         self._assert_type(other, self.__class__)
         return [point > other for point in self.wave]
 
-    def __ge__(self, other: 'SignalWave' or Real) -> List:
+    def __ge__(self, other: 'TimeSignal' or Real) -> List:
         """Operator <ge> overload for SignalWave"""
-        if isinstance(other, SignalWave):
+        if isinstance(other, TimeSignal):
             return [point >= other[idx] for idx, point in enumerate(self.wave)]
         self._assert_type(other, self.__class__)
         return [point >= other for point in self.wave]
 
-    def __eq__(self, other: 'SignalWave' or Real) -> List:
+    def __eq__(self, other: 'TimeSignal' or Real) -> List:
         """Operator <eq> overload for SignalWave"""
-        if isinstance(other, SignalWave):
+        if isinstance(other, TimeSignal):
             return [point == other[idx] for idx, point in enumerate(self.wave)]
         self._assert_type(other, self.__class__)
         return [point == other for point in self.wave]
 
-    def __ne__(self, other: 'SignalWave' or Real) -> List:
+    def __ne__(self, other: 'TimeSignal' or Real) -> List:
         """Operator <ne> overload for SignalWave"""
-        if isinstance(other, SignalWave):
+        if isinstance(other, TimeSignal):
             return [point != other[idx] for idx, point in enumerate(self.wave)]
         self._assert_type(other, self.__class__)
         return [point != other for point in self.wave]

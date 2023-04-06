@@ -7,7 +7,15 @@
       "parameters": [
         {
           "param_id": "freq",
-          "value": "100"
+          "value": 1000
+        },
+        {
+          "param_id": "amplitude",
+          "value": 5.0
+        },
+        {
+          "param_id": "sample_freq",
+          "value": 10000
         }
       ]
     },
@@ -29,7 +37,7 @@
       "parameters": [
         {
           "param_id": "gain_db",
-          "value": -20.0
+          "value": -60.0
         }
       ]
     },
@@ -63,7 +71,7 @@
     {
       "command": "plot",
       "args": {
-        "signals": ["gain::signal_out", "ltspice_rx::signal_out"],
+        "signals": ["ltspice_tx::signal_out", "gain::signal_out","ltspice_rx::signal_out"],
         "save_path": "./output_plot.png"
       }
     }
