@@ -5,7 +5,9 @@ from src.pyblock.block.params.param_id import ParamId
 from src.pyblock.block.params.param import Param
 from src.pyblock.block.ports.input_port import InputPort
 from src.pyblock.block.ports.output_port import OutputPort
+from src.pyblock.block.ports.port_id import PortId
 from src.pyblock_sim.block_runtime.block_runtime.block_runtime import BlockRuntime
+from src.pyblock_sim.entity.block.parameter_entity import ParameterEntity
 
 
 class TestBlockRuntime:
@@ -13,7 +15,7 @@ class TestBlockRuntime:
         runtime = BlockRuntime(TestBlock)
         block: TestBlock = runtime._block_instance
 
-        runtime.set_parameter(ParamId('param_1'), 'Hello')
+        runtime.set_parameter(ParameterEntity(ParamId('param_1'), 'Hello'))
 
         assert block.param_1.value == 'Hello'
 
@@ -21,7 +23,7 @@ class TestBlockRuntime:
         runtime = BlockRuntime(TestBlock)
         block: TestBlock = runtime._block_instance
 
-        runtime.set_input('in_1', 'Hello')
+        runtime.set_input(PortId('in_1'), 'Hello')
 
         assert block.in_1.signal == 'Hello'
 
@@ -29,10 +31,10 @@ class TestBlockRuntime:
         runtime = BlockRuntime(TestBlock)
         block: TestBlock = runtime._block_instance
 
-        runtime.set_parameter('param_1', 'World!')
-        runtime.set_input('in_1', 'Hello ')
+        runtime.set_parameter(ParameterEntity(ParamId('param_1'), 'World!'))
+        runtime.set_input(PortId('in_1'), 'Hello ')
         runtime.run()
-        out = runtime.get_output('out_1')
+        out = runtime.get_output(PortId('out_1'))
 
         assert out == 'Hello World!'
 

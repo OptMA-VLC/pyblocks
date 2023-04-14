@@ -29,11 +29,11 @@ class RunCommandUseCase:
         signals = {}
         for signal_selector in command.signals:
             try:
-                signals[str(signal_selector)] = self._signal_repo.get(signal_selector.block, signal_selector.port)
+                signals[str(signal_selector)] = self._signal_repo.get_by_selector(signal_selector)
             except KeyError:
                 raise KeyError(f"The signal '{signal_selector}' can't be plotted because it was not found")
 
-        fig, ax = plt.subplots()
+        fig, ax = plt.subplots(1, 1, figsize=(10, 6))
         for (selector, signal) in signals.items():
             if isinstance(signal, np.ndarray):
                 ax.plot(signal, label=str(selector))
@@ -45,7 +45,12 @@ class RunCommandUseCase:
                     f"plotting the type '{signal.type}' is not supported"
                 )
 
-        plt.legend()
+        # Shrink current axis by 20%
+        box = ax.get_position()
+        ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
+
+        # Put a legend to the right of the current axis
+        ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
 
         if command.save_path is not None:
             save_path = Path(command.save_path)
@@ -63,7 +68,7 @@ class RunCommandUseCase:
         signals_table = []
         for signal_selector in command.signals:
             try:
-                signal = self._signal_repo.get(signal_selector.block, signal_selector.port)
+                signal = self._signal_repo.get_by_selector(signal_selector)
                 if isinstance(signal, np.ndarray):
                     sig_list = signal.tolist()
                     arr = [str(signal_selector)] + sig_list

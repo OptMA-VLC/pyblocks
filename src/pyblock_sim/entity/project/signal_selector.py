@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from typing import Optional
 
 from src.pyblock.block.ports.port_id import PortId
+from src.pyblock.signals.signal_name import SignalName
 from src.pyblock_sim.entity.block.block_instance_id import BlockInstanceId
 
 
@@ -9,7 +10,7 @@ from src.pyblock_sim.entity.block.block_instance_id import BlockInstanceId
 class SignalSelector:
     block: BlockInstanceId
     port: PortId
-    signal_name: Optional[str]
+    signal_name: Optional[SignalName] = None
 
     def __str__(self):
         s = f'{self.block}::{self.port}'
@@ -41,14 +42,17 @@ class SignalSelector:
                 signal_part = close_brackets_split[0]
             else:
                 raise format_error
-
         except IndexError as ex:
             raise format_error from ex
 
-        return SignalSelector(
+        selector = SignalSelector(
             block=BlockInstanceId(block_part),
-            port=PortId(port_part),
-            signal_name=signal_part
+            port=PortId(port_part)
         )
+
+        if signal_part is not None and signal_part != '':
+            selector.signal_name = SignalName(signal_part)
+
+        return selector
 
 

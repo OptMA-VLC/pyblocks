@@ -8,7 +8,11 @@ class BlockInfo:
     name: str
     description: str
 
-    def __init__(self, distribution_id: Union[BlockDistributionId, str], name: str, description: str):
+    def __init__(
+            self, distribution_id: Union[BlockDistributionId, str],
+            name: str = '',
+            description: str = ''
+    ):
         if isinstance(distribution_id, str):
             distribution_id = BlockDistributionId(distribution_id)
 
