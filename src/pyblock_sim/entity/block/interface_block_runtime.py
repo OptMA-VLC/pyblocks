@@ -2,7 +2,6 @@ import abc
 from typing import Any, List
 
 from src.pyblock.block.block_info import BlockInfo
-from src.pyblock.block.params.param_id import ParamId
 from src.pyblock.block.ports.port_id import PortId
 from src.pyblock_sim.entity.block.parameter_entity import ParameterEntity
 from src.pyblock_sim.entity.block.port_entity import PortEntity

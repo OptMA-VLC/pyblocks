@@ -6,16 +6,13 @@
       "name": "Signal Generator",
       "parameters": [
         {
-          "param_id": "freq",
-          "value": 1000
+          "param_id": "freq", "value": 1000
         },
         {
-          "param_id": "amplitude",
-          "value": 5.0
+          "param_id": "amplitude", "value": 5.0
         },
         {
-          "param_id": "sample_freq",
-          "value": 10000
+          "param_id": "sample_freq", "value": 10000
         }
       ]
     },
@@ -25,8 +22,19 @@
       "name": "LTSpice Integration",
       "parameters": [
         {
-          "param_id": "config_path",
-          "value": "./ltspice_tx_config.json"
+          "param_id": "schematic_file", "value": "./transmissor.asc"
+        },
+        {
+          "param_id": "file_name_in_circuit", "value": "TX_input.txt"
+        },
+        {
+          "param_id": "add_instructions", "value": [
+            "; Simulation settings",
+            ".tran 0 10m 0 1u"
+          ]
+        },
+        {
+          "param_id": "probe_signals", "value": ["I(D1)"]
         }
       ]
     },
@@ -36,8 +44,7 @@
       "name": "Gain",
       "parameters": [
         {
-          "param_id": "gain_db",
-          "value": -60.0
+          "param_id": "gain_db", "value": -60.0
         }
       ]
     },
@@ -47,8 +54,19 @@
       "name": "LTSpice Integration",
       "parameters": [
         {
-          "param_id": "config_path",
-          "value": "./ltspice_rx_config.json"
+          "param_id": "schematic_file", "value": "./receptor.asc"
+        },
+        {
+          "param_id": "file_name_in_circuit", "value": "RX_input.txt"
+        },
+        {
+          "param_id": "add_instructions", "value": [
+            "; Simulation settings",
+            ".tran 0 10m 0 1u"
+          ]
+        },
+        {
+          "param_id": "probe_signals", "value": ["V(Saida)"]
         }
       ]
     }
@@ -59,7 +77,7 @@
       "to": "ltspice_tx::signal_in"
     },
     {
-      "from": "ltspice_tx::signal_out",
+      "from": "ltspice_tx::signal_out[I(D1)]",
       "to": "gain::signal_in"
     },
     {
@@ -71,7 +89,11 @@
     {
       "command": "plot",
       "args": {
-        "signals": ["ltspice_tx::signal_out", "gain::signal_out","ltspice_rx::signal_out"],
+        "signals": [
+          "ltspice_tx::signal_out[I(D1)]",
+          "gain::signal_out",
+          "ltspice_rx::signal_out[V(Saida)]"
+        ],
         "save_path": "./output_plot.png"
       }
     }

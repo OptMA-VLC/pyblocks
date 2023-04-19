@@ -2,12 +2,6 @@ import os.path
 import sys
 from pathlib import Path
 
-from matplotlib import pyplot as plt
-
-from src.pyblock.block.ports.port_id import PortId
-from src.pyblock_sim.entity.block.block_instance_id import BlockInstanceId
-from src.pyblock_sim.entity.project.command.command_entity import CommandEntity, CommandType
-from src.pyblock_sim.entity.project.command.plot_command_entity import PlotCommandEntity
 from src.pyblock_sim.repository.block_repository.block_repository import BlockRepository
 from src.pyblock_sim.repository.block_repository.block_repository_exceptions import NoBlockPyFile
 from src.pyblock_sim.repository.block_repository.indexing_result import IndexingResult, ResultItem

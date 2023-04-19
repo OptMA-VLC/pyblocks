@@ -47,22 +47,22 @@ class SimulationGraph:
         raise KeyError(f"Block with instance id '{block_id}' does not exist in simulation graph")
 
     def add_connection(self, connection: ConnectionEntity):
-        origin_block = self.get_block(connection.origin_block)
-        destination_block = self.get_block(connection.destination_block)
+        origin_block = self.get_block(connection.origin.block)
+        destination_block = self.get_block(connection.destination.block)
 
         if origin_block.instance_id == destination_block.instance_id:
             raise ValueError('Connecting a Block to itself is not supported')
 
-        if not origin_block.has_output(connection.origin_port):
-            raise ValueError(f"Port with Id '{connection.origin_port}' is not an output of block '{origin_block.instance_id}'")
+        if not origin_block.has_output(connection.origin.port):
+            raise ValueError(f"Port with Id '{connection.origin.port}' is not an output of block '{origin_block.instance_id}'")
 
-        if not destination_block.has_input(connection.destination_port):
-            raise ValueError(f"Port with Id '{connection.destination_port}' is not an input of block '{destination_block.instance_id}'")
+        if not destination_block.has_input(connection.destination.port):
+            raise ValueError(f"Port with Id '{connection.destination.port}' is not an input of block '{destination_block.instance_id}'")
 
-        if self._has_connection_to_port(connection.destination_block, connection.destination_port):
+        if self._has_connection_to_port(connection.destination.block, connection.destination.port):
             raise ValueError(
                 f"Can't add connection to block '{destination_block.instance_id}', "
-                f"port '{connection.destination_port}' because there is already a connection to that port"
+                f"port '{connection.destination.port}' because there is already a connection to that port"
             )
 
         self._graph.add_edge(origin_block.instance_id, destination_block.instance_id, connection=connection)
@@ -89,7 +89,7 @@ class SimulationGraph:
     def _has_connection_to_port(self, block_id: BlockInstanceId, port_id: PortId) -> bool:
         incoming_connections = self.get_incoming_connections(block_id)
         for conn in incoming_connections:
-            if conn.destination_port == port_id:
+            if conn.destination.port == port_id:
                 return True
 
         return False

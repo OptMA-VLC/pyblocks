@@ -1,5 +1,3 @@
-import numpy as np
-
 from src.pyblock import TimeSignal
 from src.pyblock.block.base_block import BaseBlock
 from src.pyblock.block.block_info import BlockInfo
@@ -10,7 +8,7 @@ from src.pyblock.block.ports.output_port import OutputPort
 
 class GainBlock(BaseBlock):
     def __init__(self):
-        self.gain_db = Param(param_id='gain_db', param_type=float, default=0.0)
+        self.gain_db = Param(param_id='gain_db', type=float, default=0.0)
         self.signal_in = InputPort(port_id='signal_in', type=TimeSignal)
         self.signal_out = OutputPort(port_id='signal_out', type=TimeSignal)
 

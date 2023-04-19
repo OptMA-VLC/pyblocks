@@ -7,6 +7,7 @@ from src.pyblock_sim.entity.block.block_instance_id import BlockInstanceId
 from src.pyblock_sim.entity.graph.connection_entity import ConnectionEntity
 from src.pyblock_sim.entity.graph.graph_builder_util import GraphBuilderUtil
 from src.pyblock_sim.entity.graph.simulation_graph import SimulationGraph
+from src.pyblock_sim.entity.project.port_selector import PortSelector
 
 
 class TestSimulationGraph_Blocks:
@@ -58,7 +59,7 @@ class TestSimulationGraph_Connections:
         block_2 = graph_builder.get_block('block_2')
 
         conn = ConnectionEntity.from_port_entity(
-            from_port=block_1.outputs[0], to_port=block_2.inputs[0]
+            origin=block_1.outputs[0], destination=block_2.inputs[0]
         )
 
         graph.add_connection(conn)
@@ -73,10 +74,8 @@ class TestSimulationGraph_Connections:
         block_1 = graph_builder.get_block('block_1')
 
         conn = ConnectionEntity(
-            origin_block=block_1.instance_id,
-            origin_port=block_1.outputs[0].port_id,
-            destination_block=BlockInstanceId('does_not_exist'),
-            destination_port=PortId('some_port')
+            origin=PortSelector(block_1.instance_id, block_1.outputs[0].port_id),
+            destination=PortSelector(BlockInstanceId('does_not_exist'), PortId('some_port'))
         )
 
         with pytest.raises(Exception):
@@ -91,7 +90,7 @@ class TestSimulationGraph_Connections:
         block_2 = graph_builder.get_block('block_2')
 
         conn = ConnectionEntity.from_port_entity(
-            from_port=block_2.inputs[0], to_port=block_1.outputs[0]
+            origin=block_2.inputs[0], destination=block_1.outputs[0]
         )
 
         with pytest.raises(Exception):
@@ -106,7 +105,7 @@ class TestSimulationGraph_Connections:
         block_2 = graph_builder.get_block('block_2')
 
         conn = ConnectionEntity.from_port_entity(
-            from_port=block_1.outputs[0], to_port=block_2.outputs[0]
+            origin=block_1.outputs[0], destination=block_2.outputs[0]
         )
 
         with pytest.raises(Exception):
@@ -121,7 +120,7 @@ class TestSimulationGraph_Connections:
         block_2 = graph_builder.get_block('block_2')
 
         conn = ConnectionEntity.from_port_entity(
-            from_port=block_1.inputs[0], to_port=block_2.inputs[0]
+            origin=block_1.inputs[0], destination=block_2.inputs[0]
         )
 
         with pytest.raises(Exception):
@@ -134,7 +133,7 @@ class TestSimulationGraph_Connections:
         block_1 = graph_builder.get_block('block_1')
 
         conn = ConnectionEntity.from_port_entity(
-            from_port=block_1.outputs[0], to_port=block_1.inputs[0]
+            origin=block_1.outputs[0], destination=block_1.inputs[0]
         )
 
         with pytest.raises(Exception):
@@ -151,10 +150,10 @@ class TestSimulationGraph_Connections:
         block_3 = graph_builder.get_block('block_3')
 
         conn_1 = ConnectionEntity.from_port_entity(
-            from_port=block_1.outputs[0], to_port=block_3.inputs[0]
+            origin=block_1.outputs[0], destination=block_3.inputs[0]
         )
         conn_2 = ConnectionEntity.from_port_entity(
-            from_port=block_2.outputs[0], to_port=block_3.inputs[0]
+            origin=block_2.outputs[0], destination=block_3.inputs[0]
         )
 
         graph.add_connection(conn_1)

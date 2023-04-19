@@ -1,6 +1,7 @@
 import glob
 import os
 from pathlib import Path
+from typing import List
 
 from PyLTSpice import SimCommander
 from PyLTSpice.LTSpice_RawRead import LTSpiceRawRead
@@ -11,14 +12,20 @@ from src.pyblock.block.block_info import BlockInfo
 from src.pyblock.block.params.param import Param
 from src.pyblock.block.ports.input_port import InputPort
 from src.pyblock.block.ports.output_port import OutputPort
+from src.pyblock.signals.multi_signal import MultiSignal
+from src.pyblock.signals.signal_name import SignalName
 from src.pyblock.signals.time_signal import TimeSignal
 
 
 class LTSpiceRunner(BaseBlock):
     def __init__(self):
-        self.config_path = Param(param_id='config_path', param_type=str)
+        self.param_schematic_file = Param(param_id='schematic_file', type=str)
+        self.param_file_name_in_circuit = Param(param_id='file_name_in_circuit', type=str)
+        self.param_add_instructions = Param(param_id='add_instructions', type=List[str])
+        self.param_probe_signals = Param(param_id='probe_signals', type=List[str])
+
         self.signal_in = InputPort(port_id='signal_in', type=TimeSignal)
-        self.signal_out = OutputPort(port_id='signal_out', type=TimeSignal)
+        self.signal_out = OutputPort(port_id='signal_out', type=MultiSignal)
 
         super().__init__(BlockInfo(
             distribution_id='br.ufmg.optma.integrations.ltspice',
@@ -27,8 +34,12 @@ class LTSpiceRunner(BaseBlock):
         ))
 
     def run(self):
-        config_path = self.config_path.value
-        config = LTSpiceRunnerConfig.from_path(config_path)
+        config = LTSpiceRunnerConfig(
+            schematic_file=Path(self.param_schematic_file.value),
+            file_name_in_circuit=self.param_file_name_in_circuit.value,
+            add_instructions=self.param_add_instructions.value,
+            probe_signals=self.param_probe_signals.value
+        )
         signal = self.signal_in.signal
 
         self.write_signal_file(config, signal)
@@ -65,7 +76,7 @@ class LTSpiceRunner(BaseBlock):
         # Sim Statistics
         print(f'Successful/Total Simulations: {str(sim_commander.okSim)}/{str(sim_commander.runno)}')
 
-    def get_output(self, config) -> TimeSignal:
+    def get_output(self, config) -> MultiSignal:
         try:
             raw_data = LTSpiceRawRead(f'{Path(config.schematic_file).stem}.raw')
         except FileNotFoundError:
@@ -81,17 +92,18 @@ class LTSpiceRunner(BaseBlock):
         print(f'Recovered {len(signal_trace_dict)} signals, including time')
         time = signal_trace_dict['time']
 
-        out_signal = None
+        out_signals = MultiSignal()
         for (key, signal) in signal_trace_dict.items():
             if key != 'time':
                 print(f'Recovered signal {key} for output')
-                out_signal = signal
+                out_signal = TimeSignal(time, signal)
+                out_signals.set(SignalName(key), out_signal)
                 break
 
-        if out_signal is None:
-            raise RuntimeError('Could not recover a signal from simulation to use as output')
+        if len(out_signals) == 0:
+            raise RuntimeError('Could not recover an output signal from simulation')
 
-        return TimeSignal(time, out_signal)
+        return out_signals
 
     def remove_temp_files(self, config: LTSpiceRunnerConfig):
         ltspice_file = Path().cwd() / Path("LtSpice") / Path(config.schematic_file)

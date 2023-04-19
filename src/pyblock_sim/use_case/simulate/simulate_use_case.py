@@ -76,8 +76,8 @@ class SimulateUseCase:
     def _apply_inputs(self, block: BlockEntity, input_connections: List[ConnectionEntity]):
         for conn in input_connections:
             try:
-                signal = self._signal_repo.get(conn.origin_block, conn.origin_port)
-                block.runtime.set_input(conn.destination_port, signal)
+                signal = self._signal_repo.get_by_selector(conn.origin)
+                block.runtime.set_input(conn.destination.port, signal)
             except Exception as ex:
                 raise BlockInputException(conn, ex)
 

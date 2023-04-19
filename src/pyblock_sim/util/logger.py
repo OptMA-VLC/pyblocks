@@ -1,5 +1,3 @@
-from typing import Tuple, Any
-
 from rich.console import Console
 
 

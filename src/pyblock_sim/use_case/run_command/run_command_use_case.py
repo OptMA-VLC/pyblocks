@@ -42,7 +42,7 @@ class RunCommandUseCase:
             else:
                 raise TypeError(
                     f"The signal {selector} can't be plotted because "
-                    f"plotting the type '{signal.type}' is not supported"
+                    f"plotting the type '{type(signal).__name__}' is not supported"
                 )
 
         # Shrink current axis by 20%
@@ -60,7 +60,7 @@ class RunCommandUseCase:
 
         plt.show()
 
-    def _run_save_command(self, command: PlotCommandEntity):
+    def _run_save_command(self, command: SaveCommandEntity):
         save_path = Path(command.save_path)
         if not save_path.parent.exists():
             raise ValueError(f"The specified path to save the signals '{save_path.resolve()}' does not exist")

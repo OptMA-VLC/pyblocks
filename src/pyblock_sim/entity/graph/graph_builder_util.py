@@ -6,6 +6,8 @@ from src.pyblock_sim.entity.block.block_entity import BlockEntity
 from src.pyblock_sim.entity.block.port_entity import PortEntity
 from src.pyblock_sim.entity.graph.connection_entity import ConnectionEntity
 from src.pyblock_sim.entity.graph.simulation_graph import SimulationGraph
+from src.pyblock_sim.entity.project.port_selector import PortSelector
+from src.pyblock_sim.entity.project.signal_selector import SignalSelector
 
 
 class GraphBuilderUtil:
@@ -33,7 +35,10 @@ class GraphBuilderUtil:
         block_v = self.get_block(name_v)
         port_v = block_v.get_input(PortId(port_v))
 
-        self._g.add_connection(ConnectionEntity.from_port_entity(from_port=port_u, to_port=port_v))
+        self._g.add_connection(ConnectionEntity(
+            origin=SignalSelector(block=block_u.instance_id, port=port_u.port_id),
+            destination=PortSelector(block=block_v.instance_id, port=port_v.port_id)
+        ))
 
         return self
 

@@ -43,9 +43,7 @@ class BuildSimulationGraphUseCase:
         for conn_spec in graph_spec.connections:
             graph.add_connection(
                 ConnectionEntity(
-                    origin_block=conn_spec.origin.block,
-                    origin_port=conn_spec.origin.port,
-                    destination_block=conn_spec.destination.block,
-                    destination_port=conn_spec.destination.port
+                    origin=conn_spec.origin,
+                    destination=conn_spec.destination
                 )
             )

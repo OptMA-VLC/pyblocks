@@ -25,20 +25,26 @@ class Param:
 
     @value.setter
     def value(self, value: Any):
-        if not isinstance(value, self.type):
-            raise ValueError(f"Can't assign value of type '{type(value).__name__}' to param '{self.id}' which has "
-                             f"type '{self.type.__name__}'")
-        self._value = value
-
-    def __init__(self, param_id: Union[ParamId, str], param_type: Type, default: Any = NO_VALUE):
+        try:
+            if not isinstance(value, self.type):
+                raise ValueError(f"Can't assign value of type '{type(value).__name__}' to param '{self.id}' which has "
+                                 f"type '{self.type.__name__}'")
+            self._value = value
+        except TypeError as err:
+            if 'Subscripted generics' in str(err):
+                print('Warning: type checking for generic types is not currently supported')
+                self._value = value
+            else:
+                raise
+    def __init__(self, param_id: Union[ParamId, str], type: Type, default: Any = NO_VALUE):
         if isinstance(param_id, str):
             param_id = ParamId(param_id)
 
-        if (default is not Param.NO_VALUE) and (not isinstance(default, param_type)):
-            raise ValueError(f"The Param '{param_id}' is of type '{param_type.__name__}' but the provided "
+        if (default is not Param.NO_VALUE) and (not isinstance(default, type)):
+            raise ValueError(f"The Param '{param_id}' is of type '{type.__name__}' but the provided "
                              f"default value is of type '{type(default).__name__}'")
 
         self.id = param_id
-        self.type = param_type
+        self.type = type
         self.default = default
         self._value = Param.NO_VALUE

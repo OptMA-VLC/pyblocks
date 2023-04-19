@@ -22,8 +22,7 @@ class BlockInputException(SimulationException):
     def __init__(self, conn: ConnectionEntity, inner_ex: Optional[Exception]):
         self.inner_exception = inner_ex
         super().__init__(
-            f"An error occurred while transferring signal from port '{conn.origin_block}'::'{conn.origin_port}' "
-            f"to port '{conn.destination_block}'::'{conn.destination_port}'"
+            f"An error occurred while transferring signal from port '{conn.origin}' to port '{conn.destination}'"
         )
 
 

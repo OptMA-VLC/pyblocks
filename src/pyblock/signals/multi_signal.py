@@ -20,3 +20,6 @@ class MultiSignal:
 
     def delete(self, signal_name: SignalName):
         del self._signals[signal_name]
+
+    def __len__(self):
+        return len(self._signals)
