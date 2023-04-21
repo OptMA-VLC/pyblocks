@@ -8,9 +8,7 @@ class Port:
     type: Type
     signal: Any
 
-    def __init__(self, port_id: str, type: Type):
+    def __init__(self, port_id: str, type: Type = Any):
         self.id = PortId(port_id)
         self.type = type
         self.signal = None
-
-    # TODO: enforce type consistency when assigning to signal

@@ -4,7 +4,7 @@ from scipy import signal
 from src import pyblock
 from src.pyblock.block.params.param_id import ParamId
 from src.pyblock.block.ports.port_id import PortId
-from src.pyblock_sim.block_runtime.block_runtime.block_runtime import BlockRuntime
+from src.pyblock_sim.block_runtime.block_runtime import BlockRuntime
 from src.block_library.basic.signal_generator.block import SignalGeneratorBlock
 
 

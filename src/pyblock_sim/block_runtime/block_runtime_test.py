@@ -6,7 +6,7 @@ from src.pyblock.block.params.param import Param
 from src.pyblock.block.ports.input_port import InputPort
 from src.pyblock.block.ports.output_port import OutputPort
 from src.pyblock.block.ports.port_id import PortId
-from src.pyblock_sim.block_runtime.block_runtime.block_runtime import BlockRuntime
+from src.pyblock_sim.block_runtime.block_runtime import BlockRuntime
 from src.pyblock_sim.entity.block.parameter_entity import ParameterEntity
 
 
@@ -41,12 +41,12 @@ class TestBlockRuntime:
 
 class TestBlock(BaseBlock):
     def __init__(self):
+        self.info = BlockInfo(
+            distribution_id=BlockDistributionId('test_block'), name='', description=''
+        )
         self.param_1 = Param(param_id=ParamId('param_1'), type=str)
         self.in_1 = InputPort(port_id='in_1', type=str)
         self.out_1 = OutputPort(port_id='out_1', type=str)
-        super().__init__(BlockInfo(
-            distribution_id=BlockDistributionId('test_block'), name='', description=''
-        ))
 
     def run(self):
         self.out_1.signal = self.in_1.signal + self.param_1.value

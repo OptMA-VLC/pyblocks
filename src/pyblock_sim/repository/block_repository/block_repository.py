@@ -7,7 +7,7 @@ import src.pyblock_sim.repository.block_repository.block_repository_exceptions a
 import src.pyblock_sim.repository.block_repository.block_repository_helpers as helpers
 from src.pyblock.block.base_block import BaseBlock
 from src.pyblock.block.block_distribution_id import BlockDistributionId
-from src.pyblock_sim.block_runtime.block_runtime.block_runtime import BlockRuntime
+from src.pyblock_sim.block_runtime.block_runtime import BlockRuntime
 from src.pyblock_sim.entity.block.interface_block_runtime import IBlockRuntime
 from src.pyblock_sim.repository.block_repository.indexing_result import IndexingResult, ResultItem
 from src.pyblock_sim.repository.block_repository.interface_block_repository import IBlockRepository
