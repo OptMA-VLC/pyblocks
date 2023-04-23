@@ -6,13 +6,13 @@
       "name": "Signal Generator",
       "parameters": [
         {
-          "param_id": "freq", "value": 1000
+          "param_id": "frequency", "value": 1000
         },
         {
           "param_id": "amplitude", "value": 5.0
         },
         {
-          "param_id": "sample_freq", "value": 10000
+          "param_id": "sample_frequency", "value": 10000
         }
       ]
     },

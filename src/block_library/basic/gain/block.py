@@ -8,15 +8,15 @@ from src.pyblock.block.ports.output_port import OutputPort
 
 class GainBlock(BaseBlock):
     def __init__(self):
-        self.gain_db = Param(param_id='gain_db', type=float, default=0.0)
-        self.signal_in = InputPort(port_id='signal_in', type=TimeSignal)
-        self.signal_out = OutputPort(port_id='signal_out', type=TimeSignal)
-
-        super().__init__(BlockInfo(
+        self.info = BlockInfo(
             distribution_id='br.ufmg.optma.basic.gain',
             name='Gain',
             description='Applies a gain to a signal'
-        ))
+        )
+
+        self.gain_db = Param(param_id='gain_db', type=float, default=0.0)
+        self.signal_in = InputPort(port_id='signal_in', type=TimeSignal)
+        self.signal_out = OutputPort(port_id='signal_out', type=TimeSignal)
 
     def run(self):
         gain = pow(10.0, self.gain_db.value/20.0)

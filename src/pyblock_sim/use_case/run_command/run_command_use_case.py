@@ -9,6 +9,8 @@ from src.pyblock_sim.entity.project.command.command_entity import CommandEntity
 from src.pyblock_sim.entity.project.command.plot_command_entity import PlotCommandEntity
 from src.pyblock_sim.entity.project.command.save_command_entity import SaveCommandEntity
 from src.pyblock_sim.repository.signal_repository.signal_repository import SignalRepository
+from src.pyblock_sim.use_case.run_command.csv_saver import CSVSaver
+from src.pyblock_sim.use_case.run_command.plotter import Plotter
 
 
 class RunCommandUseCase:
@@ -33,71 +35,33 @@ class RunCommandUseCase:
             except KeyError:
                 raise KeyError(f"The signal '{signal_selector}' can't be plotted because it was not found")
 
-        fig, ax = plt.subplots(1, 1, figsize=(10, 6))
-        for (selector, signal) in signals.items():
-            if isinstance(signal, np.ndarray):
-                ax.plot(signal, label=str(selector))
-            elif isinstance(signal, TimeSignal):
-                ax.plot(signal.time, signal.wave, label=str(selector))
-            else:
-                raise TypeError(
-                    f"The signal {selector} can't be plotted because "
-                    f"plotting the type '{type(signal).__name__}' is not supported"
-                )
-
-        # Shrink current axis by 20%
-        box = ax.get_position()
-        ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
-
-        # Put a legend to the right of the current axis
-        ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-
-        if command.save_path is not None:
-            save_path = Path(command.save_path)
-            if not save_path.parent.exists():
-                raise ValueError(f"The specified path to save the plot '{save_path.resolve()}' does not exist")
-            plt.savefig(save_path)
-
-        plt.show()
+        Plotter.line_plot(signals, Path(command.save_path))
 
     def _run_save_command(self, command: SaveCommandEntity):
         save_path = Path(command.save_path)
         if not save_path.parent.exists():
             raise ValueError(f"The specified path to save the signals '{save_path.resolve()}' does not exist")
 
-        signals_table = []
+        csv_signals_dict = {}
+        str_signals_dict = {}
         for signal_selector in command.signals:
-            try:
-                signal = self._signal_repo.get_by_selector(signal_selector)
-                if isinstance(signal, np.ndarray):
-                    sig_list = signal.tolist()
-                    arr = [str(signal_selector)] + sig_list
-                    signals_table.append(arr)
-                elif isinstance(signal, TimeSignal):
-                    arr_time = [f'{signal_selector} (time)'] + signal.time.tolist()
-                    arr_wave = [f'{signal_selector} (signal)'] + signal.wave.tolist()
-                    signals_table.append(arr_time)
-                    signals_table.append(arr_wave)
-                else:
-                    raise TypeError(f"Saving signal of type '{type(signal)}' is not supported")
-            except KeyError:
-                raise KeyError(f"The signal '{signal_selector}' can't be saved because it was not found")
+            signal = self._signal_repo.get_by_selector(signal_selector)
+            if isinstance(signal, np.ndarray) or isinstance(signal, TimeSignal):
+                csv_signals_dict[str(signal_selector)] = signal
+            elif isinstance(signal, str):
+                str_signals_dict[str(signal_selector)] = signal
+            else:
+                raise ValueError(f"Unsupported signal type for saving: {type(signal)}")
 
-        with open(save_path, 'w', newline='') as f:
-            writer = csv.writer(f)
-            headers = []
-            max_len = 0
-            for signal_list in signals_table:
-                headers.append(signal_list[0])
-                if len(signal_list) > max_len:
-                    max_len = len(signal_list)
+        if len(str_signals_dict) > 0:
+            with open(save_path, 'w') as f:
+                for (name, signal) in str_signals_dict.items():
+                    if len(str_signals_dict) > 1:
+                        f.write(f'>>>> {name}')
+                    f.write(signal)
 
-            writer.writerow(headers)
-            for i in range(1, max_len):
-                row = []
-                for signal_list in signals_table:
-                    try:
-                        row.append(signal_list[i])
-                    except IndexError:
-                        row.append(None)
-                writer.writerow(row)
+        if len(csv_signals_dict) > 0:
+            CSVSaver.save_csv(Path(save_path), csv_signals_dict)
+
+
+

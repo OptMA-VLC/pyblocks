@@ -19,6 +19,12 @@ from src.pyblock.signals.time_signal import TimeSignal
 
 class LTSpiceRunner(BaseBlock):
     def __init__(self):
+        self.info = BlockInfo(
+            distribution_id='br.ufmg.optma.integrations.ltspice',
+            name='LTSpice Runner Block',
+            description='Takes a signal, simulates a circuit in LTSpice and provides an output'
+        )
+
         self.param_schematic_file = Param(param_id='schematic_file', type=str)
         self.param_file_name_in_circuit = Param(param_id='file_name_in_circuit', type=str)
         self.param_add_instructions = Param(param_id='add_instructions', type=List[str])
@@ -26,12 +32,6 @@ class LTSpiceRunner(BaseBlock):
 
         self.signal_in = InputPort(port_id='signal_in', type=TimeSignal)
         self.signal_out = OutputPort(port_id='signal_out', type=MultiSignal)
-
-        super().__init__(BlockInfo(
-            distribution_id='br.ufmg.optma.integrations.ltspice',
-            name='LTSpice Runner Block',
-            description='Takes a signal, simulates a circuit in LTSpice and provides an output'
-        ))
 
     def run(self):
         config = LTSpiceRunnerConfig(

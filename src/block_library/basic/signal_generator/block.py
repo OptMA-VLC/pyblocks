@@ -10,6 +10,12 @@ from src.pyblock.signals.time_signal import TimeSignal
 
 class SignalGeneratorBlock(BaseBlock):
     def __init__(self):
+        self.info = BlockInfo(
+            distribution_id='br.ufmg.optma.basic.signal_generator',
+            name='Signal Generator',
+            description='Generates a Square, Triangle or Sine Wave signal'
+        )
+
         self.wave_form = Param(param_id='wave_form', type=str, default='square')
         self.freq = Param(param_id='frequency', type=float, default=1000.0)
         self.sample_freq = Param(param_id='sample_frequency', type=float, default=10000.0)
@@ -18,12 +24,6 @@ class SignalGeneratorBlock(BaseBlock):
         self.amplitude = Param(param_id='amplitude', type=float, default=1.0)
 
         self.signal_out = OutputPort(port_id='signal_out', type=TimeSignal)
-
-        super().__init__(BlockInfo(
-            distribution_id='br.ufmg.optma.basic.signal_generator',
-            name='Signal Generator',
-            description='Generates a Square, Triangle or Sine Wave signal'
-        ))
 
     def run(self):
         wave_form = self.wave_form.value.lower()

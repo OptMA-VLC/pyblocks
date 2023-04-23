@@ -1,0 +1,39 @@
+{
+  "blocks": [
+    {
+      "instance_of": "com.pyblocks.example.string_source",
+      "instance_id": "string_source",
+      "parameters": [
+        {
+          "param_id": "value",
+          "value": "Hello World!"
+        }
+      ]
+    },
+    {
+      "instance_of": "com.pyblocks.example.string_transform",
+      "instance_id": "string_transform",
+      "parameters": [
+        {
+          "param_id": "transform_type",
+          "value": "to_upper"
+        }
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "from": "string_source::output",
+      "to": "string_transform::input"
+    }
+  ],
+  "commands": [
+    {
+      "command": "save",
+      "args": {
+        "signals": ["string_transform::output"],
+        "save_path": "./output.txt"
+      }
+    }
+  ]
+}
