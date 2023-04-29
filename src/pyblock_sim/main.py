@@ -2,6 +2,7 @@ import os.path
 import sys
 from pathlib import Path
 
+from src.pyblock_sim.cli.cli_commands import cli
 from src.pyblock_sim.repository.block_repository.block_repository import BlockRepository
 from src.pyblock_sim.repository.block_repository.block_repository_exceptions import NoBlockPyFile
 from src.pyblock_sim.repository.block_repository.indexing_result import IndexingResult, ResultItem

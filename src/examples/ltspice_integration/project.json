@@ -6,13 +6,13 @@
       "name": "Signal Generator",
       "parameters": [
         {
-          "param_id": "frequency", "value": 1000
+          "param_id": "frequency", "value": 15000
         },
         {
           "param_id": "amplitude", "value": 5.0
         },
         {
-          "param_id": "sample_frequency", "value": 10000
+          "param_id": "sample_frequency", "value": 150000
         }
       ]
     },
@@ -30,7 +30,7 @@
         {
           "param_id": "add_instructions", "value": [
             "; Simulation settings",
-            ".tran 0 10m 0 1u"
+            ".tran 0 1m 0 1u"
           ]
         },
         {
@@ -62,7 +62,7 @@
         {
           "param_id": "add_instructions", "value": [
             "; Simulation settings",
-            ".tran 0 10m 0 1u"
+            ".tran 0 1m 0 1u"
           ]
         },
         {
