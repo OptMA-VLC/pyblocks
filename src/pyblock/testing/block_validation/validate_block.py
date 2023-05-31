@@ -1,5 +1,4 @@
 import inspect
-import sys
 from typing import List
 
 from src.pyblock.block.base_block import BaseBlock

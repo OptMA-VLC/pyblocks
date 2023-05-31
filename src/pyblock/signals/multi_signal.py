@@ -23,3 +23,11 @@ class MultiSignal:
 
     def __len__(self):
         return len(self._signals)
+
+    def __str__(self):
+        s = f"<{self.__class__} object at {id(self)}>\n"
+        s += f"    {len(self)} signals:\n"
+        for (name, signal) in self._signals.items():
+            s += f"    '{name}' - {type(signal).__name__}\n"
+
+        return s

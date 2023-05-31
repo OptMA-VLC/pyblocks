@@ -1,0 +1,36 @@
+{
+  "blocks": [
+    {
+      "instance_of": "br.ufmg.optma.basic.csv_reader",
+      "instance_id": "csv_reader",
+      "parameters": [
+        {
+          "param_id": "file", "value": "./data.csv"
+        },
+        {
+          "param_id": "combine_signals",
+          "value": [
+            {
+              "name": "tx_in",
+              "time_column": "tx_in_t",
+              "value_column": "tx_in"
+            },
+            {
+              "name": "tx_in",
+              "time_column": "tx_in_t",
+              "value_column": "tx_in"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "commands": [
+    {
+      "command": "plot",
+      "args": {
+        "signals": ["csv_reader::output[]"]
+      }
+    }
+  ]
+}

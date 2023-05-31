@@ -12,7 +12,7 @@
           "param_id": "amplitude", "value": 5.0
         },
         {
-          "param_id": "sample_frequency", "value": 150000
+          "param_id": "sample_frequency", "value": 100000
         }
       ]
     },

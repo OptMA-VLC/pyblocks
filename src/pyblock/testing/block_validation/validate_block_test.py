@@ -5,7 +5,7 @@ from src.pyblock.block.block_info import BlockInfo
 from src.pyblock.block.params.param import Param
 from src.pyblock.block.ports.input_port import InputPort
 from src.pyblock.block.ports.output_port import OutputPort
-from src.pyblock.testing.validate_block import validate, BlockValidationError
+from src.pyblock.testing.block_validation.validate_block import validate, BlockValidationError
 
 
 class TestValidateBlock:

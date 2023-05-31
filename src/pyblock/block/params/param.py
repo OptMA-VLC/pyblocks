@@ -31,12 +31,6 @@ class Param:
         if isinstance(param_id, str):
             param_id = ParamId(param_id)
 
-        if (default is not Param.NO_VALUE) and (not isinstance(default, type)):
-            raise ValueError(
-                f"The Param '{param_id}' is of type '{type.__name__}' but the provided "
-                f"default value is of type '{type(default).__name__}'"
-            )
-
         self.id = param_id
         self.type = type
         self.default = default
