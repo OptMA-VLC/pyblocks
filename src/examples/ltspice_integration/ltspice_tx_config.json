@@ -1,9 +1,0 @@
-{
-  "schematic_file": "./transmissor.asc",
-  "file_name_in_circuit": "TX_input.txt",
-  "add_instructions": [
-      "; Simulation settings",
-      ".tran 0 10m 0 1u"
-  ],
-  "probe_signals": ["I(D1)"]
-}

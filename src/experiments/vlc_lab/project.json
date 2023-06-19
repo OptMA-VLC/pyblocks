@@ -16,20 +16,91 @@
               "value_column": "tx_in"
             },
             {
-              "name": "tx_in",
-              "time_column": "tx_in_t",
-              "value_column": "tx_in"
+              "name": "rx_out",
+              "time_column": "rx_out_t",
+              "value_column": "rx_out"
             }
           ]
         }
       ]
+    },
+    {
+      "instance_of": "br.ufmg.optma.integrations.ltspice",
+      "instance_id": "ltspice_tx",
+      "name": "LTSpice Integration",
+      "parameters": [
+        {
+          "param_id": "schematic_file", "value": "./transmissor.asc"
+        },
+        {
+          "param_id": "file_name_in_circuit", "value": "TX_input.txt"
+        },
+        {
+          "param_id": "add_instructions", "value": [
+            "; Simulation settings",
+            ".tran 0 3m 0 1u"
+          ]
+        },
+        {
+          "param_id": "probe_signals", "value": ["I(D1)"]
+        }
+      ]
+    },
+    {
+      "instance_of": "br.ufmg.optma.basic.gain",
+      "instance_id": "gain",
+      "name": "Gain",
+      "parameters": [
+        {
+          "param_id": "gain_db", "value": -70.0
+        }
+      ]
+    },
+    {
+      "instance_of": "br.ufmg.optma.integrations.ltspice",
+      "instance_id": "ltspice_rx",
+      "parameters": [
+        {
+          "param_id": "schematic_file", "value": "./receptor.asc"
+        },
+        {
+          "param_id": "file_name_in_circuit", "value": "RX_input.txt"
+        },
+        {
+          "param_id": "add_instructions", "value": [
+            "; Simulation settings",
+            ".tran 0 3m 0 1u"
+          ]
+        },
+        {
+          "param_id": "probe_signals", "value": ["V(Saida)"]
+        }
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "from": "csv_reader::output[tx_in]",
+      "to": "ltspice_tx::signal_in"
+    },
+    {
+      "from": "ltspice_tx::signal_out[I(D1)]",
+      "to": "gain::signal_in"
+    },
+    {
+      "from": "gain::signal_out",
+      "to": "ltspice_rx::signal_in"
     }
   ],
   "commands": [
     {
       "command": "plot",
       "args": {
-        "signals": ["csv_reader::output[]"]
+        "signals": [
+          "csv_reader::output[tx_in]",
+          "csv_reader::output[rx_out]",
+          "ltspice_rx::signal_out[V(Saida)]"
+        ]
       }
     }
   ]

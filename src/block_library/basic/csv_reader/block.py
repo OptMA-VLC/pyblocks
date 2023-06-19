@@ -1,4 +1,5 @@
 import csv
+import locale
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, List
@@ -102,8 +103,14 @@ class CsvReaderBlock(BaseBlock):
         parsed_row = []
 
         for value in row:
-            if isinstance(value, str) and str.strip(value) == '':
-                value = None
+            if isinstance(value, str):
+                value = str.strip(value)
+                if value == '':
+                    value = None
+                if value[0] == '"' and value[-1] == '"':
+                    value = value[1:(len(value)-1)]
+                if value.count(',') == 1:
+                    value = value.replace(',', '.')
 
             try:
                 value = float(value)

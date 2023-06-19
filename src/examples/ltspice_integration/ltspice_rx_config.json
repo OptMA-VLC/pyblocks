@@ -1,9 +1,0 @@
-{
-  "schematic_file": "./receptor.asc",
-  "file_name_in_circuit": "RX_input.txt",
-  "add_instructions": [
-      "; Simulation settings",
-      ".tran 0 10m 0 1u"
-  ],
-  "probe_signals": ["V(Saida)"]
-}

@@ -48,7 +48,7 @@
         }
       ]
     },
-        {
+    {
       "instance_of": "br.ufmg.optma.integrations.ltspice",
       "instance_id": "ltspice_rx",
       "name": "LTSpice Integration",

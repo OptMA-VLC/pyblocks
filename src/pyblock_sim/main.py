@@ -22,7 +22,7 @@ def main():
     logger.info('Meow!  :cat:')
     check_requirements()
 
-    project_path = Path('../examples/ltspice_integration/project.json')
+    project_path = Path('../experiments/vlc_lab/project.json')
 
     library_rel_path = Path('../block_library')
     library_path = Path(os.path.relpath(library_rel_path, project_path.parent))

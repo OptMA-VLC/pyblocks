@@ -29,13 +29,19 @@ class RunCommandUseCase:
 
     def _run_plot_command(self, command: PlotCommandEntity):
         signals = {}
+
         for signal_selector in command.signals:
             try:
                 signals[str(signal_selector)] = self._signal_repo.get_by_selector(signal_selector)
             except KeyError:
                 raise KeyError(f"The signal '{signal_selector}' can't be plotted because it was not found")
 
-        Plotter.line_plot(signals, Path(command.save_path))
+        if command.save_path is not None:
+            save_path = Path(command.save_path)
+        else:
+            save_path = None
+
+        Plotter.line_plot(signals, save_path)
 
     def _run_save_command(self, command: SaveCommandEntity):
         save_path = Path(command.save_path)
