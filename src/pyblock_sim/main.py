@@ -2,6 +2,8 @@ import os.path
 import sys
 from pathlib import Path
 
+from src.pyblock_sim.repository.cli.object_printers.indexing_result_printer import IndexingResultPrinter
+from src.pyblock_sim.repository.cli.print_level import PrintLevel
 from src.pyblock_sim.repository_provider import RepositoryProvider
 from src.pyblock_sim.use_case.run_from_file.run_from_file_use_case import RunFromFileUseCase
 from src.pyblock_sim.util.logger import logger
@@ -16,10 +18,27 @@ def main():
 
     block_library_rel_path = Path('../block_library')
     block_library_path = Path(os.path.relpath(block_library_rel_path, project_path.parent))
+
     with set_directory(project_path.parent):
-        repo_provider = RepositoryProvider(block_library_path)
+        repo_provider = setup_repositories(block_library_path)
+
         run_from_file_use_case = RunFromFileUseCase(repo_provider)
         run_from_file_use_case.run_from_file(Path(project_path.name))
+
+
+def setup_repositories(block_library_path: Path) -> RepositoryProvider:
+    repo_provider = RepositoryProvider()
+
+    repo_provider.cli.register_obj_printer(IndexingResultPrinter())
+
+    repo_provider.cli.print('Loading block library......... ', end='')
+    indexing_result = repo_provider.block_repo.index_blocks(block_library_path)
+    repo_provider.cli.print('[green]ok[/green]', level=None)
+    repo_provider.cli.print(indexing_result)
+
+    repo_provider.block_repo.index_blocks(block_library_path)
+
+    return repo_provider
 
 
 def check_requirements():

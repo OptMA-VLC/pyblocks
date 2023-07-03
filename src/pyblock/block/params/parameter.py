@@ -5,7 +5,7 @@ import sentinel
 from src.pyblock.block.params.param_id import ParamId
 
 
-class Param:
+class Parameter:
     NO_VALUE = sentinel.create('NO_VALUE')
 
     id: ParamId
@@ -15,9 +15,9 @@ class Param:
 
     @property
     def value(self):
-        if self._value is Param.NO_VALUE:
-            if self.default is Param.NO_VALUE:
-                raise ValueError(f"Illegal attempt to access the value of Param '{self.id}'. value has not been "
+        if self._value is Parameter.NO_VALUE:
+            if self.default is Parameter.NO_VALUE:
+                raise ValueError(f"Illegal attempt to access the value of Parameter '{self.id}'. value has not been "
                                  f"assigned and there is no default value for this parameter.")
             else:
                 return self.default
@@ -34,4 +34,4 @@ class Param:
         self.id = param_id
         self.type = type
         self.default = default
-        self._value = Param.NO_VALUE
+        self._value = Parameter.NO_VALUE

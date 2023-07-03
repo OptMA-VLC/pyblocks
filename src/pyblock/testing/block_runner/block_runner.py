@@ -3,7 +3,7 @@ from typing import List, Any, Type, Dict
 
 from src.pyblock.block.base_block import BaseBlock
 from src.pyblock.block.block_distribution_id import BlockDistributionId
-from src.pyblock.block.params.param import Param
+from src.pyblock.block.params.parameter import Parameter
 from src.pyblock.block.params.param_id import ParamId
 from src.pyblock.block.ports.input_port import InputPort
 from src.pyblock.block.ports.output_port import OutputPort
@@ -16,7 +16,7 @@ class BlockRunner:
 
     _inputs: List[InputPort]
     _outputs: List[OutputPort]
-    _params: List[Param]
+    _params: List[Parameter]
 
     def __init__(self, block_class: Type[BaseBlock]):
         self._block_instance = block_class()
@@ -58,8 +58,8 @@ class BlockRunner:
     def _find_outputs(self, block: BaseBlock) -> List[OutputPort]:
         return self._find_attributes(block, matching_type=OutputPort)
 
-    def _find_params(self, block: BaseBlock) -> List[Param]:
-        return self._find_attributes(block, matching_type=Param)
+    def _find_params(self, block: BaseBlock) -> List[Parameter]:
+        return self._find_attributes(block, matching_type=Parameter)
 
     def _find_attributes(self, obj: object, matching_type=object) -> List:
         def check_is_attr(x):

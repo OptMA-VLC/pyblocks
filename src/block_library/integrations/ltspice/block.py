@@ -4,12 +4,12 @@ from pathlib import Path
 from typing import List
 
 from PyLTSpice import SimCommander
-from PyLTSpice.LTSpice_RawRead import LTSpiceRawRead
+from PyLTSpice import RawRead
 
 from src.block_library.integrations.ltspice.ltspice_runner_config import LTSpiceRunnerConfig
 from src.pyblock.block.base_block import BaseBlock
 from src.pyblock.block.block_info import BlockInfo
-from src.pyblock.block.params.param import Param
+from src.pyblock.block.params.parameter import Parameter
 from src.pyblock.block.ports.input_port import InputPort
 from src.pyblock.block.ports.output_port import OutputPort
 from src.pyblock.signals.multi_signal import MultiSignal
@@ -25,10 +25,10 @@ class LTSpiceRunner(BaseBlock):
             description='Takes a signal, simulates a circuit in LTSpice and provides an output'
         )
 
-        self.param_schematic_file = Param(param_id='schematic_file', type=str)
-        self.param_file_name_in_circuit = Param(param_id='file_name_in_circuit', type=str)
-        self.param_add_instructions = Param(param_id='add_instructions', type=List[str])
-        self.param_probe_signals = Param(param_id='probe_signals', type=List[str])
+        self.param_schematic_file = Parameter(param_id='schematic_file', type=str)
+        self.param_file_name_in_circuit = Parameter(param_id='file_name_in_circuit', type=str)
+        self.param_add_instructions = Parameter(param_id='add_instructions', type=List[str])
+        self.param_probe_signals = Parameter(param_id='probe_signals', type=List[str])
 
         self.signal_in = InputPort(port_id='signal_in', type=TimeSignal)
         self.signal_out = OutputPort(port_id='signal_out', type=MultiSignal)
@@ -78,7 +78,7 @@ class LTSpiceRunner(BaseBlock):
 
     def get_output(self, config) -> MultiSignal:
         try:
-            raw_data = LTSpiceRawRead(f'{Path(config.schematic_file).stem}.raw')
+            raw_data = RawRead(f'{Path(config.schematic_file).stem}.raw')
         except FileNotFoundError:
             with open(f'{Path(config.schematic_file.stem)}.fail') as fail_file:
                 error_msg = fail_file.read()

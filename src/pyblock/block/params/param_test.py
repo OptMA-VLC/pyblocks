@@ -1,22 +1,22 @@
 import pytest
 
-from src.pyblock.block.params.param import Param
+from src.pyblock.block.params.parameter import Parameter
 
 
 class TestParam:
     def test_set_get_value(self):
-        param = Param(param_id='my_param', type=str)
+        param = Parameter(param_id='my_param', type=str)
 
         param.value = 'my_str'
         assert param.value == 'my_str'
 
     def test_is_error_when_reading_before_assignment_and_no_default_exists(self):
-        param = Param(param_id='my_param', type=str)
+        param = Parameter(param_id='my_param', type=str)
         with pytest.raises(ValueError):
             val = param.value
 
     def test_default_value(self):
-        param = Param(param_id='my_param', type=str, default='default_str')
+        param = Parameter(param_id='my_param', type=str, default='default_str')
 
         assert param.value == 'default_str'
         param.value = 'user_str'

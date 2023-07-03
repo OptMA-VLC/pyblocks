@@ -1,3 +1,4 @@
+import pathlib
 from abc import ABC, abstractmethod
 from typing import List
 
@@ -8,7 +9,7 @@ from src.pyblock_sim.repository.block_repository.indexing_result import Indexing
 
 class IBlockRepository(ABC):
     @abstractmethod
-    def index_blocks(self) -> IndexingResult:
+    def index_blocks(self, block_library_path: pathlib.Path) -> IndexingResult:
         pass
 
     @abstractmethod

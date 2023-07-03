@@ -3,7 +3,7 @@ import scipy
 
 from src.pyblock.block.base_block import BaseBlock
 from src.pyblock.block.block_info import BlockInfo
-from src.pyblock.block.params.param import Param
+from src.pyblock.block.params.parameter import Parameter
 from src.pyblock.block.ports.output_port import OutputPort
 from src.pyblock.signals.time_signal import TimeSignal
 
@@ -16,12 +16,12 @@ class SignalGeneratorBlock(BaseBlock):
             description='Generates a Square, Triangle or Sine Wave signal'
         )
 
-        self.wave_form = Param(param_id='wave_form', type=str, default='square')
-        self.freq = Param(param_id='frequency', type=float, default=1000.0)
-        self.sample_freq = Param(param_id='sample_frequency', type=float, default=10000.0)
-        self.duration = Param(param_id='duration', type=float, default=0.01)
-        self.duty = Param(param_id='duty', type=float, default=0.5)
-        self.amplitude = Param(param_id='amplitude', type=float, default=1.0)
+        self.wave_form = Parameter(param_id='wave_form', type=str, default='square')
+        self.freq = Parameter(param_id='frequency', type=float, default=1000.0)
+        self.sample_freq = Parameter(param_id='sample_frequency', type=float, default=10000.0)
+        self.duration = Parameter(param_id='duration', type=float, default=0.01)
+        self.duty = Parameter(param_id='duty', type=float, default=0.5)
+        self.amplitude = Parameter(param_id='amplitude', type=float, default=1.0)
 
         self.signal_out = OutputPort(port_id='signal_out', type=TimeSignal)
 

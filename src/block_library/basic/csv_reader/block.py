@@ -1,5 +1,4 @@
 import csv
-import locale
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, List
@@ -7,7 +6,7 @@ from typing import Dict, List
 from src.pyblock import TimeSignal
 from src.pyblock.block.base_block import BaseBlock
 from src.pyblock.block.block_info import BlockInfo
-from src.pyblock.block.params.param import Param
+from src.pyblock.block.params.parameter import Parameter
 from src.pyblock.block.ports.output_port import OutputPort
 from src.pyblock.signals.multi_signal import MultiSignal
 from src.pyblock.signals.signal_name import SignalName
@@ -26,8 +25,8 @@ class CsvReaderBlock(BaseBlock):
             distribution_id='br.ufmg.optma.basic.csv_reader',
             name='CSV Reader'
         )
-        self.csv_path = Param(param_id='file', type=str)
-        self.combine_signals = Param(param_id='combine_signals', type=List[Dict], default=None)
+        self.csv_path = Parameter(param_id='file', type=str)
+        self.combine_signals = Parameter(param_id='combine_signals', type=List[Dict], default=None)
         self.output = OutputPort(port_id='output', type=MultiSignal)
 
     def run(self):

@@ -3,7 +3,7 @@ from typing import List
 
 from src.pyblock.block.base_block import BaseBlock
 from src.pyblock.block.block_info import BlockInfo
-from src.pyblock.block.params.param import Param
+from src.pyblock.block.params.parameter import Parameter
 from src.pyblock.block.ports.input_port import InputPort
 from src.pyblock.block.ports.output_port import OutputPort
 
@@ -59,7 +59,7 @@ def _validate_unique_ports(block: BaseBlock):
 
 
 def _validate_unique_params(block):
-    params = _find_attributes(block, matching_type=Param)
+    params = _find_attributes(block, matching_type=Parameter)
 
     ids = [param.id for param in params]
     seen_ids = []

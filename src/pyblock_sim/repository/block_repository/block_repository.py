@@ -15,18 +15,16 @@ from src.pyblock_sim.repository.block_repository.interface_block_repository impo
 
 class BlockRepository(IBlockRepository):
     _indexed_blocks: Dict[BlockDistributionId, pathlib.Path]
-    _block_library_path: pathlib.Path
 
-    def __init__(self, block_library_path: pathlib.Path):
-        self._block_library_path = block_library_path
+    def __init__(self):
         self._indexed_blocks = {}
 
-    def index_blocks(self) -> IndexingResult:
-        if not self._block_library_path.is_dir():
-            raise repo_exceptions.NotADir(self._block_library_path)
+    def index_blocks(self, block_library_path: pathlib.Path) -> IndexingResult:
+        if not block_library_path.is_dir():
+            raise repo_exceptions.NotADir(block_library_path)
 
-        indexing_result = IndexingResult(self._block_library_path)
-        for block_dir in helpers.get_subdirectories(self._block_library_path):
+        indexing_result = IndexingResult(block_library_path)
+        for block_dir in helpers.get_subdirectories(block_library_path):
             if block_dir.name.startswith('__'):
                 indexing_result.append(ResultItem.skipped(block_dir))
                 continue

@@ -1,6 +1,6 @@
 from src.pyblock.block.base_block import BaseBlock
 from src.pyblock.block.block_info import BlockInfo
-from src.pyblock.block.params.param import Param
+from src.pyblock.block.params.parameter import Parameter
 from src.pyblock.block.ports.input_port import InputPort
 from src.pyblock.block.ports.output_port import OutputPort
 
@@ -12,7 +12,7 @@ class StringTransformBlock(BaseBlock):
         )
         self.input = InputPort(port_id='input', type=str)
         self.output = OutputPort(port_id='output', type=str)
-        self.transform_type = Param(param_id='transform_type', type=str)
+        self.transform_type = Parameter(param_id='transform_type', type=str)
 
     def run(self):
         in_str: str = self.input.signal

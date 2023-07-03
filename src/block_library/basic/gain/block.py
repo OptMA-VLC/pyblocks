@@ -1,7 +1,7 @@
 from src.pyblock import TimeSignal
 from src.pyblock.block.base_block import BaseBlock
 from src.pyblock.block.block_info import BlockInfo
-from src.pyblock.block.params.param import Param
+from src.pyblock.block.params.parameter import Parameter
 from src.pyblock.block.ports.input_port import InputPort
 from src.pyblock.block.ports.output_port import OutputPort
 
@@ -14,7 +14,7 @@ class GainBlock(BaseBlock):
             description='Applies a gain to a signal'
         )
 
-        self.gain_db = Param(param_id='gain_db', type=float, default=0.0)
+        self.gain_db = Parameter(param_id='gain_db', type=float, default=0.0)
         self.signal_in = InputPort(port_id='signal_in', type=TimeSignal)
         self.signal_out = OutputPort(port_id='signal_out', type=TimeSignal)
 

@@ -2,7 +2,7 @@ from src.pyblock.block.base_block import BaseBlock
 from src.pyblock.block.block_distribution_id import BlockDistributionId
 from src.pyblock.block.block_info import BlockInfo
 from src.pyblock.block.params.param_id import ParamId
-from src.pyblock.block.params.param import Param
+from src.pyblock.block.params.parameter import Parameter
 from src.pyblock.block.ports.input_port import InputPort
 from src.pyblock.block.ports.output_port import OutputPort
 from src.pyblock.block.ports.port_id import PortId
@@ -44,7 +44,7 @@ class TestBlock(BaseBlock):
         self.info = BlockInfo(
             distribution_id=BlockDistributionId('test_block'), name='', description=''
         )
-        self.param_1 = Param(param_id=ParamId('param_1'), type=str)
+        self.param_1 = Parameter(param_id=ParamId('param_1'), type=str)
         self.in_1 = InputPort(port_id='in_1', type=str)
         self.out_1 = OutputPort(port_id='out_1', type=str)
 
