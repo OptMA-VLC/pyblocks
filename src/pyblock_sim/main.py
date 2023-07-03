@@ -15,6 +15,7 @@ def main():
     check_requirements()
 
     project_path = Path('../experiments/vlc_lab/project.json')
+    # project_path = Path('../examples/string_transform/project.json')
 
     block_library_rel_path = Path('../block_library')
     block_library_path = Path(os.path.relpath(block_library_rel_path, project_path.parent))

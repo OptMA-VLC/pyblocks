@@ -12,7 +12,7 @@ class StringTransformBlock(BaseBlock):
         )
         self.input = InputPort(port_id='input', type=str)
         self.output = OutputPort(port_id='output', type=str)
-        self.transform_type = Parameter(param_id='transform_type', type=str)
+        self.transform_type = Parameter(param_id='transform', default='to_lower', type=str)
 
     def run(self):
         in_str: str = self.input.signal

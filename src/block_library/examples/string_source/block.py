@@ -9,7 +9,7 @@ class StringSourceBlock(BaseBlock):
         self.info = BlockInfo(
             distribution_id='com.pyblocks.example.string_source'
         )
-        self.value_param = Parameter(param_id='value', type=str)
+        self.value_param = Parameter(param_id='value', default='Hello World!', type=str)
         self.output = OutputPort(port_id='output', type=str)
 
     def run(self):

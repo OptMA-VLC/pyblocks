@@ -2,20 +2,15 @@
   "blocks": [
     {
       "instance_of": "com.pyblocks.example.string_source",
-      "instance_id": "string_source",
-      "parameters": [
-        {
-          "param_id": "value",
-          "value": "Hello World!"
-        }
-      ]
+      "instance_id": "string_source"
+
     },
     {
       "instance_of": "com.pyblocks.example.string_transform",
       "instance_id": "string_transform",
       "parameters": [
         {
-          "param_id": "transform_type",
+          "param_id": "transform",
           "value": "to_upper"
         }
       ]
