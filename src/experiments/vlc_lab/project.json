@@ -52,7 +52,7 @@
       "name": "Gain",
       "parameters": [
         {
-          "param_id": "gain_db", "value": -70.0
+          "param_id": "gain_db", "value": -60.0
         }
       ]
     },
