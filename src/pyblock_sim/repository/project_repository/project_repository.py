@@ -67,8 +67,8 @@ class ProjectRepository:
             f"Block does not have a value for 'instance_id'"
         )
         distribution_id = self._get_dict_key(
-            block_dict, 'instance_of',
-            f"Block does not have a value for 'instance_of'"
+            block_dict, 'distribution_id',
+            f"Block does not have a value for 'distribution_id'"
         )
         name = block_dict.get('name', instance_id)
 

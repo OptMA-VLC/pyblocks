@@ -1,7 +1,7 @@
 {
   "blocks": [
     {
-      "instance_of": "br.ufmg.optma.basic.csv_reader",
+      "distribution_id": "br.ufmg.optma.basic.csv_reader",
       "instance_id": "csv_reader",
       "parameters": [
         {
@@ -25,7 +25,7 @@
       ]
     },
     {
-      "instance_of": "br.ufmg.optma.integrations.ltspice",
+      "distribution_id": "br.ufmg.optma.integrations.ltspice",
       "instance_id": "ltspice_tx",
       "name": "LTSpice Integration",
       "parameters": [
@@ -47,7 +47,7 @@
       ]
     },
     {
-      "instance_of": "br.ufmg.optma.basic.gain",
+      "distribution_id": "br.ufmg.optma.basic.gain",
       "instance_id": "gain",
       "name": "Gain",
       "parameters": [
@@ -57,7 +57,7 @@
       ]
     },
     {
-      "instance_of": "br.ufmg.optma.integrations.ltspice",
+      "distribution_id": "br.ufmg.optma.integrations.ltspice",
       "instance_id": "ltspice_rx",
       "parameters": [
         {

@@ -29,7 +29,7 @@ String Source
   - instance id: "string_source"
 
 String Transform
-   - instance_of: "com.pyblocks.example.string_transform"
+   - distribution_id: "com.pyblocks.example.string_transform"
    - instance_id: "string_transform"
 ```
 
@@ -46,11 +46,11 @@ writing the first section, which specifies the blocks to be used in this simulat
 {
   "blocks": [
     {
-      "instance_of": "com.pyblocks.example.string_source",
+      "distribution_id": "com.pyblocks.example.string_source",
       "instance_id": "string_source"
     },
     {
-      "instance_of": "com.pyblocks.example.string_transform",
+      "distribution_id": "com.pyblocks.example.string_transform",
       "instance_id": "string_transform"
     }
   ],
@@ -63,7 +63,7 @@ writing the first section, which specifies the blocks to be used in this simulat
 }
 ```
 
-Each block has the two mandatory fields `instance_of` and `instance_id`, that correspond to the ids discussed preivously.
+Each block has the two mandatory fields `distribution_id` and `instance_id`, that correspond to the IDs discussed preivously.
 
 Each connection has the `from` and `to` fields. These specify the output port of the origin
 block and the input port of the destination block. The values of these fields use the *port selector* syntax, in the form:
@@ -134,11 +134,11 @@ the value `to_upper` to this parameter. Running it should produce the string `HE
 {
   "blocks": [
     {
-      "instance_of": "com.pyblocks.example.string_source",
+      "distribution_id": "com.pyblocks.example.string_source",
       "instance_id": "string_source",
     },
     {
-      "instance_of": "com.pyblocks.example.string_transform",
+      "distribution_id": "com.pyblocks.example.string_transform",
       "instance_id": "string_transform",
       "parameters": [
         {
