@@ -7,7 +7,7 @@ from src.pyblock.block.ports.output_port import OutputPort
 class StringSourceBlock(BaseBlock):
     def __init__(self):
         self.info = BlockInfo(
-            distribution_id='com.pyblocks.example.string_source'
+            distribution_id='com.pyblocks.tutorials.string_source'
         )
         self.value_param = Parameter(param_id='value', default='Hello World!', type=str)
         self.output = OutputPort(port_id='output', type=str)

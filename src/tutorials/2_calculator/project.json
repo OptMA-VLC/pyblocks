@@ -1,0 +1,44 @@
+{
+  "blocks": [
+    {
+      "distribution_id": "com.pyblocks.basic.constant",
+      "instance_id": "constant_a",
+      "parameters": [
+        {
+          "param_id": "constant",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "distribution_id": "com.pyblocks.basic.constant",
+      "instance_id": "constant_b",
+      "parameters": [
+        {
+          "param_id": "constant",
+          "value": 3
+        }
+      ]
+    },
+    {
+      "distribution_id": "com.pyblocks.tutorials.calculator",
+      "instance_id": "calculator",
+      "parameters": [
+        {
+          "param_id": "operation",
+          "value": "%"
+        }
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "from": "constant_a::output",
+      "to": "calculator::a"
+    },
+    {
+      "from": "constant_b::output",
+      "to": "calculator::b"
+    }
+  ]
+}

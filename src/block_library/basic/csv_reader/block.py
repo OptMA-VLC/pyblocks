@@ -22,7 +22,7 @@ class CombineSignalSpec:
 class CsvReaderBlock(BaseBlock):
     def __init__(self):
         self.info = BlockInfo(
-            distribution_id='br.ufmg.optma.basic.csv_reader',
+            distribution_id='com.pyblocks.basic.csv_reader',
             name='CSV Reader'
         )
         self.csv_path = Parameter(param_id='file', type=str)

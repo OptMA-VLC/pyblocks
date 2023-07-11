@@ -9,7 +9,7 @@ from src.pyblock.block.ports.output_port import OutputPort
 class GainBlock(BaseBlock):
     def __init__(self):
         self.info = BlockInfo(
-            distribution_id='br.ufmg.optma.basic.gain',
+            distribution_id='com.pyblocks.signal.gain',
             name='Gain',
             description='Applies a gain to a signal'
         )

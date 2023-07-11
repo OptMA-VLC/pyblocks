@@ -1,4 +1,4 @@
-# Example 1: String Transform
+# Tutorial 1: String Transform
 
 In this tutorial you will learn:
 - How to configure a simulation with a project file
@@ -7,9 +7,12 @@ In this tutorial you will learn:
 
 A simulation is described as a block diagram, where outputs of some blocks are connected to the input of others and 
 data flows between them. In this tutorial, we will assemble a simulation consisting of two blocks: one will produce 
-a string and the other will apply a transformation to it. The figure below represents this scenario:
+a string and the other will apply a transformation to it. The figure below represents this scenario. Connections 
+between inputs and outputs are indicated by solid arrows, the solid arrow coming out of `string_transform` represents
+the output value that is produced even if this output is not connected to other block. The dashed arrow represents
+a user parameter being provided to the `string_transform` block.
 
->> TODO: add image
+![Block diagram for example 1](tutorial_1_string_transform.png?raw=true)
 
 To describe a simulation scenario, we must write a file that tells the simulator what blocks will be used and
 how they are connected. This file is in the JSON format and is called the project file.
@@ -25,11 +28,11 @@ project file. In this example we will use the following blocks:
 
 ```
 String Source
-  - distribution id: "com.pyblocks.example.string_source"
+  - distribution id: "com.pyblocks.tutorials.string_source"
   - instance id: "string_source"
 
 String Transform
-   - distribution_id: "com.pyblocks.example.string_transform"
+   - distribution_id: "com.pyblocks.tutorials.string_transform"
    - instance_id: "string_transform"
 ```
 
@@ -46,11 +49,11 @@ writing the first section, which specifies the blocks to be used in this simulat
 {
   "blocks": [
     {
-      "distribution_id": "com.pyblocks.example.string_source",
+      "distribution_id": "com.pyblocks.tutorials.string_source",
       "instance_id": "string_source"
     },
     {
-      "distribution_id": "com.pyblocks.example.string_transform",
+      "distribution_id": "com.pyblocks.tutorials.string_transform",
       "instance_id": "string_transform"
     }
   ],
@@ -134,11 +137,11 @@ the value `to_upper` to this parameter. Running it should produce the string `HE
 {
   "blocks": [
     {
-      "distribution_id": "com.pyblocks.example.string_source",
+      "distribution_id": "com.pyblocks.tutorials.string_source",
       "instance_id": "string_source",
     },
     {
-      "distribution_id": "com.pyblocks.example.string_transform",
+      "distribution_id": "com.pyblocks.tutorials.string_transform",
       "instance_id": "string_transform",
       "parameters": [
         {

@@ -8,7 +8,7 @@ from src.pyblock.block.ports.output_port import OutputPort
 class StringTransformBlock(BaseBlock):
     def __init__(self):
         self.info = BlockInfo(
-            distribution_id='com.pyblocks.example.string_transform'
+            distribution_id='com.pyblocks.tutorials.string_transform'
         )
         self.input = InputPort(port_id='input', type=str)
         self.output = OutputPort(port_id='output', type=str)

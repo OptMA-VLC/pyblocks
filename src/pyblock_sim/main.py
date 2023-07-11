@@ -20,7 +20,7 @@ def main():
 
     path_manager = PathManager(
         run_path=Path.cwd(),
-        project_rel_path=Path('../experiments/vlc_lab/project.json'),
+        project_rel_path=Path('../tutorials/3_time_signals/project.json'),
         block_library_rel_path=Path('../block_library')
     )
 

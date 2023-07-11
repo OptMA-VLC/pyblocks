@@ -1,7 +1,7 @@
 {
   "blocks": [
     {
-      "distribution_id": "br.ufmg.optma.basic.signal_generator",
+      "distribution_id": "com.pyblocks.signal.signal_generator",
       "instance_id": "sig_gen_1",
       "name": "Signal Generator",
       "parameters": [
@@ -17,7 +17,7 @@
       ]
     },
     {
-      "distribution_id": "br.ufmg.optma.integrations.ltspice",
+      "distribution_id": "com.pyblocks.integrations.ltspice",
       "instance_id": "ltspice_tx",
       "name": "LTSpice Integration",
       "parameters": [
@@ -39,7 +39,7 @@
       ]
     },
     {
-      "distribution_id": "br.ufmg.optma.basic.gain",
+      "distribution_id": "com.pyblocks.signal.gain",
       "instance_id": "gain",
       "name": "Gain",
       "parameters": [
@@ -49,7 +49,7 @@
       ]
     },
     {
-      "distribution_id": "br.ufmg.optma.integrations.ltspice",
+      "distribution_id": "com.pyblocks.integrations.ltspice",
       "instance_id": "ltspice_rx",
       "name": "LTSpice Integration",
       "parameters": [

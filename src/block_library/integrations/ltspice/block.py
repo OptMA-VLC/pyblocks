@@ -20,7 +20,7 @@ from src.pyblock.signals.time_signal import TimeSignal
 class LTSpiceRunner(BaseBlock):
     def __init__(self):
         self.info = BlockInfo(
-            distribution_id='br.ufmg.optma.integrations.ltspice',
+            distribution_id='com.pyblocks.integrations.ltspice',
             name='LTSpice Runner Block',
             description='Takes a signal, simulates a circuit in LTSpice and provides an output'
         )

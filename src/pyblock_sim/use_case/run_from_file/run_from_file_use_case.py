@@ -1,5 +1,3 @@
-from pathlib import Path
-
 from src.pyblock_sim.repository.cli.print_level import PrintLevel
 from src.pyblock_sim.repository_provider import RepositoryProvider
 from src.pyblock_sim.use_case.build_simulation_graph.build_simulation_graph_use_case import BuildSimulationGraphUseCase
@@ -7,8 +5,6 @@ from src.pyblock_sim.use_case.compute_simulation_steps.compute_simulation_steps_
     ComputeSimulationStepsUseCase
 from src.pyblock_sim.use_case.run_command.run_command_use_case import RunCommandUseCase
 from src.pyblock_sim.use_case.simulate.simulate_use_case import SimulateUseCase
-from src.pyblock_sim.use_case.simulate.simulation_report import SimulationReport
-from src.pyblock_sim.util.logger import logger
 
 
 class RunFromFileUseCase:
@@ -23,7 +19,7 @@ class RunFromFileUseCase:
         build_graph_use_case = BuildSimulationGraphUseCase(self._repo_provider.block_repo)
         compute_simulation_steps_use_case = ComputeSimulationStepsUseCase()
         simulate_use_case = SimulateUseCase(self._repo_provider)
-        run_command_use_case = RunCommandUseCase(self._repo_provider.signal_repo)
+        run_command_use_case = RunCommandUseCase(self._repo_provider)
 
         cli.print('Loading project............... ', end='')
         project = self._repo_provider.project_repo.load(

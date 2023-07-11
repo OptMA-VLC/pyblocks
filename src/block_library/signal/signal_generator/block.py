@@ -11,7 +11,7 @@ from src.pyblock.signals.time_signal import TimeSignal
 class SignalGeneratorBlock(BaseBlock):
     def __init__(self):
         self.info = BlockInfo(
-            distribution_id='br.ufmg.optma.basic.signal_generator',
+            distribution_id='com.pyblocks.signal.signal_generator',
             name='Signal Generator',
             description='Generates a Square, Triangle or Sine Wave signal'
         )

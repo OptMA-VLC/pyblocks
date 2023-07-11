@@ -27,7 +27,7 @@ class Parameter:
     def value(self, value: Any):
         self._value = value
 
-    def __init__(self, param_id: Union[ParamId, str], type: Type, default: Any = NO_VALUE):
+    def __init__(self, param_id: Union[ParamId, str], type: Type = Any, default: Any = NO_VALUE):
         if isinstance(param_id, str):
             param_id = ParamId(param_id)
 

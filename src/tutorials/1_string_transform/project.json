@@ -1,12 +1,12 @@
 {
   "blocks": [
     {
-      "distribution_id": "com.pyblocks.example.string_source",
+      "distribution_id": "com.pyblocks.tutorials.string_source",
       "instance_id": "string_source"
 
     },
     {
-      "distribution_id": "com.pyblocks.example.string_transform",
+      "distribution_id": "com.pyblocks.tutorials.string_transform",
       "instance_id": "string_transform",
       "parameters": [
         {

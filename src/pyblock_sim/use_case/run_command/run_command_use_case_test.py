@@ -10,6 +10,7 @@ from src.pyblock_sim.entity.project.command.command_entity import CommandType
 from src.pyblock_sim.entity.project.command.save_command_entity import SaveCommandEntity
 from src.pyblock_sim.entity.project.signal_selector import SignalSelector
 from src.pyblock_sim.repository.signal_repository.signal_repository import SignalRepository
+from src.pyblock_sim.repository_provider import RepositoryProvider
 from src.pyblock_sim.use_case.run_command.run_command_use_case import RunCommandUseCase
 
 
@@ -27,7 +28,10 @@ class TestRunCommandUseCase_SaveCommand:
         port_2 = PortId('port_2')
         signal_repo.set(block, port_1, sig_1)
         signal_repo.set(block, port_2, sig_2)
-        use_case = RunCommandUseCase(signal_repo)
+
+        use_case = RunCommandUseCase(RepositoryProvider(
+            signal_repo=signal_repo
+        ))
 
         cmd = SaveCommandEntity(
             type=CommandType.SAVE,
