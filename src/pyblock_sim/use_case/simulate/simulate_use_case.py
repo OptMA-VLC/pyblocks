@@ -6,9 +6,8 @@ from typing import List
 from src.pyblock_sim.entity.block.block_entity import BlockEntity
 from src.pyblock_sim.entity.graph.connection_entity import ConnectionEntity
 from src.pyblock_sim.entity.simulation.simulation_steps import SimulationStep
-from src.pyblock_sim.repository.block_repository.interface_block_repository import IBlockRepository
+from src.pyblock_sim.repository.path_manager.path_manager import PathManager
 from src.pyblock_sim.repository.signal_repository.signal_repository import SignalRepository
-from src.pyblock_sim.repository_provider import RepositoryProvider
 from src.pyblock_sim.use_case.simulate.simulation_exceptions import BlockInputException, BlockParamException, \
     BlockOutputException, BlockRunningException
 from src.pyblock_sim.use_case.simulate.simulation_report import SimulationReport
@@ -17,14 +16,16 @@ from src.pyblock_sim.util.set_directory import set_directory
 
 
 class SimulateUseCase:
-    _repo_provider: RepositoryProvider
+    _signal_repo: SignalRepository
+    _path_manager: PathManager
 
-    def __init__(self, repo_provider: RepositoryProvider):
-        self._repo_provider = repo_provider
+    def __init__(self, signal_repo: SignalRepository, path_manager: PathManager):
+        self._signal_repo = signal_repo
+        self._path_manager = path_manager
 
     def simulate(self, steps: List[SimulationStep]) -> SimulationReport:
         report = SimulationReport()
-        project_path = self._repo_provider.path_manager.get_project_absolute_path()
+        project_path = self._path_manager.get_project_absolute_path()
 
         with set_directory(project_path.parent):
             for step in steps:
@@ -75,8 +76,7 @@ class SimulateUseCase:
     def _apply_inputs(self, block: BlockEntity, input_connections: List[ConnectionEntity]):
         for conn in input_connections:
             try:
-                signal_repo = self._repo_provider.signal_repo
-                signal = signal_repo.get_by_selector(conn.origin)
+                signal = self._signal_repo.get_by_selector(conn.origin)
                 block.runtime.set_input(conn.destination.port, signal)
             except Exception as ex:
                 raise BlockInputException(conn, ex)
@@ -97,8 +97,11 @@ class SimulateUseCase:
     def _extract_outputs(self, block: BlockEntity):
         for output_port in block.outputs:
             try:
-                signal_repo = self._repo_provider.signal_repo
                 output_signal = block.runtime.get_output(output_port.port_id)
-                signal_repo.set(output_port.block.instance_id, output_port.port_id, output_signal)
+                self._signal_repo.set(
+                    output_port.block.instance_id,
+                    output_port.port_id,
+                    output_signal
+                )
             except Exception as ex:
                 raise BlockOutputException(block.instance_id, output_port.port_id, ex)

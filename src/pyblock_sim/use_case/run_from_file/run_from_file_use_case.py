@@ -18,8 +18,8 @@ class RunFromFileUseCase:
 
         build_graph_use_case = BuildSimulationGraphUseCase(self._repo_provider.block_repo)
         compute_simulation_steps_use_case = ComputeSimulationStepsUseCase()
-        simulate_use_case = SimulateUseCase(self._repo_provider)
-        run_command_use_case = RunCommandUseCase(self._repo_provider)
+        simulate_use_case = SimulateUseCase(self._repo_provider.signal_repo, self._repo_provider.path_manager)
+        run_command_use_case = RunCommandUseCase(self._repo_provider.signal_repo, self._repo_provider.path_manager)
 
         cli.print('Loading project............... ', end='')
         project = self._repo_provider.project_repo.load(

@@ -6,16 +6,19 @@ from src.pyblock import TimeSignal
 from src.pyblock_sim.entity.project.command.command_entity import CommandEntity
 from src.pyblock_sim.entity.project.command.plot_command_entity import PlotCommandEntity
 from src.pyblock_sim.entity.project.command.save_command_entity import SaveCommandEntity
-from src.pyblock_sim.repository_provider import RepositoryProvider
+from src.pyblock_sim.repository.path_manager.path_manager import PathManager
+from src.pyblock_sim.repository.signal_repository.signal_repository import SignalRepository
 from src.pyblock_sim.use_case.run_command.csv_saver import CSVSaver
 from src.pyblock_sim.use_case.run_command.plotter import Plotter
 
 
 class RunCommandUseCase:
-    _repo_provider: RepositoryProvider
+    _signal_repo: SignalRepository
+    _path_manager: PathManager
 
-    def __init__(self, repo_provider: RepositoryProvider):
-        self._repo_provider = repo_provider
+    def __init__(self, signal_repo: SignalRepository, path_manager: PathManager):
+        self._signal_repo = signal_repo
+        self._path_manager = path_manager
 
     def run_command(self, command: CommandEntity):
         if isinstance(command, PlotCommandEntity):
@@ -30,28 +33,26 @@ class RunCommandUseCase:
 
         for signal_selector in command.signals:
             try:
-                signal_repo = self._repo_provider.signal_repo
-                signals[str(signal_selector)] = signal_repo.get_by_selector(signal_selector)
+                signals[str(signal_selector)] = self._signal_repo.get_by_selector(signal_selector)
             except KeyError:
                 raise KeyError(f"The signal '{signal_selector}' can't be plotted because it was not found")
 
         if command.save_path is not None:
-            save_path = self._repo_provider.path_manager.resolve_relpath_from_project(Path(command.save_path))
+            save_path = self._path_manager.resolve_relpath_from_project(Path(command.save_path))
         else:
             save_path = None
 
         Plotter.line_plot(signals, save_path)
 
     def _run_save_command(self, command: SaveCommandEntity):
-        save_path = self._repo_provider.path_manager.resolve_relpath_from_project(Path(command.save_path))
+        save_path = self._path_manager.resolve_relpath_from_project(Path(command.save_path))
         if not save_path.parent.exists():
             raise ValueError(f"The specified path to save the signals '{save_path.resolve()}' does not exist")
 
         csv_signals_dict = {}
         str_signals_dict = {}
         for signal_selector in command.signals:
-            signal_repo = self._repo_provider.signal_repo
-            signal = signal_repo.get_by_selector(signal_selector)
+            signal = self._signal_repo.get_by_selector(signal_selector)
             if isinstance(signal, np.ndarray) or isinstance(signal, TimeSignal):
                 csv_signals_dict[str(signal_selector)] = signal
             elif isinstance(signal, str):
@@ -68,6 +69,3 @@ class RunCommandUseCase:
 
         if len(csv_signals_dict) > 0:
             CSVSaver.save_csv(save_path, csv_signals_dict)
-
-
-
