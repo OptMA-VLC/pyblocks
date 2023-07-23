@@ -22,7 +22,7 @@ class RunFromFileUseCase:
         run_command_use_case = RunCommandUseCase(self._repo_provider.signal_repo, self._repo_provider.path_manager)
 
         cli.print('Loading project............... ', end='')
-        project = self._repo_provider.project_repo.load(
+        project = self._repo_provider.project_repo.parse_project_file(
             self._repo_provider.path_manager.get_project_absolute_path()
         )
         cli.print('[green]ok[/green]', level=None)

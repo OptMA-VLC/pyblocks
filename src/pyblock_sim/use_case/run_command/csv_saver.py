@@ -10,6 +10,9 @@ from src.pyblock import TimeSignal
 class CSVSaver:
     @staticmethod
     def save_csv(save_path: Path, signals: Dict):
+        if len(signals) == 0:
+            return
+
         signals_table = []
         for (sig_name, signal) in signals.items():
             if isinstance(signal, np.ndarray):

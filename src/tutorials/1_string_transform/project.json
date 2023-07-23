@@ -25,10 +25,16 @@
   "commands": [
     {
       "command": "save",
-      "args": {
-        "signals": ["string_transform::output"],
-        "save_path": "./output.txt"
-      }
+      "parameters": [
+        {
+          "param_id": "save_path",
+          "value": "./output.txt"
+        },
+        {
+          "param_id": "signals",
+          "value": ["string_transform::output"]
+        }
+      ]
     }
   ]
 }

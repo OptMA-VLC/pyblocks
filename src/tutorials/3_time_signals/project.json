@@ -38,13 +38,19 @@
   "commands": [
     {
       "command": "plot",
-      "args": {
-        "signals": [
-          "csv_reader::output[square_wave]",
-          "low_pass_filter::output"
-        ],
-        "save_path": "./outputs/tutorial_3_time_signals_plot.png"
-      }
+      "parameters": [
+        {
+          "param_id": "signals",
+          "value": [
+            "csv_reader::output[square_wave]",
+            "low_pass_filter::output"
+          ]
+        },
+        {
+          "param_id": "save_path",
+          "value": "./outputs/tutorial_3_time_signals_plot.png"
+        }
+      ]
     }
   ]
 }

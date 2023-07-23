@@ -110,19 +110,29 @@ the following to the project file:
   "commands": [
     {
       "command": "save",
-      "args": {
-        "signals": ["string_transform::output"],
-        "save_path": "./output.txt"
-      }
+      "parameters": [
+        {
+          "param_id": "save_path",
+          "value": "./output.txt"
+        },
+        {
+          "param_id": "signals",
+          "value": ["string_transform::output"]
+        }
+      ]
     }
   ]
 }
 ```
 
-The save command has two parameters. `singnals` is a list of port selectors to select what output should be saved. 
-`save_path` is the directory where the data should be saved, relative to the path of the `project.json` file.
+In the `commands` section we provide a list of command objects. Each command object
+has a list of parameter objects, each having a `param_id` and a `value`. In the save
+command, `signals` is a list of port selectors to select what output should be saved
+and `save_path` is the directory where the data should be saved, relative to the 
+path of the `project.json` file.
 
-Running the project file at this point should produce the string `hello world!` in a file called `output.txt`.
+Running the project file at this point should produce the string `hello world!` in a 
+file called `output.txt`.
 
 ### Parameters
 

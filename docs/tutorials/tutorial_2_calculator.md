@@ -42,7 +42,7 @@ We will begin with the project file shown below. The fields of a project file ar
       "parameters": [
         {
           "param_id": "operation",
-          "value": "%"
+          "value": "+"
         }
       ]
     }

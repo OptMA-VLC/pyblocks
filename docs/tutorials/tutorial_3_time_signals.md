@@ -154,35 +154,50 @@ and include the `plot` command.
   "commands": [
     {
       "command": "plot",
-      "args": {
-        "signals": [
-          "csv_reader::output[square_wave]",
-          "low_pass_filter::output"
-        ],
-        "save_path": "./outputs/tutorial_3_time_signals_plot.png"
-      }
+      "parameters": [
+        {
+          "param_id": "signals",
+          "value": [
+            "csv_reader::output[square_wave]",
+            "low_pass_filter::output"
+          ]
+        },
+        {
+          "param_id": "save_path",
+          "value": "./outputs/tutorial_3_time_signals_plot.png"
+        }
+      ]
     }
   ]
 }
 ```
 
-In the `args` section of the plot command we provide a list of signals, using the aforementioned signal selector format.
-The `save_path` is optional. If it is provided, the following plot will be saved as an image in the specified file.
+In the `parameters` section of the plot command we provide a list of signals using the 
+signal selector syntax. The `save_path` parameter is optional. If it is provided, the 
+following plot will be saved as an image in the specified file.
 
 ![tutorial_3_time_signals_plot.png](tutorial_3_time_signals_plot.png)
 
-TimeSignal data can be extracted using the `save` command. If we put the following object in the `commands` array
-the signals will be saved to the .csv file with similar structure to the one we used as input in this example.
+TimeSignal data can be extracted using the `save` command. If we put the following object 
+in the `commands` array the signals will be saved in a .csv file with similar structure 
+to the one we used as input in this example.
 
 ```json
 {
   "command": "save",
-  "args": {
-    "signals": [
-      "csv_reader::output[square_wave]",
-      "low_pass_filter::output"
-    ],
-    "save_path": "./outputs/signals.csv"
-  }
+  "parameters": [
+    {
+      "param_id": "save_path",
+      "value": "./outputs/signals.csv"
+    },
+    {
+      "param_id": "signals",
+      "value": [
+          "csv_reader::output[tx_in]",
+          "csv_reader::output[rx_out]",
+          "ltspice_rx::signal_out[V(Saida)]"   
+      ]
+    }
+  ]
 }
 ```

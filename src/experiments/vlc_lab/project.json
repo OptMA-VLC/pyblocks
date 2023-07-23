@@ -95,13 +95,16 @@
   "commands": [
     {
       "command": "plot",
-      "args": {
-        "signals": [
-          "csv_reader::output[tx_in]",
-          "csv_reader::output[rx_out]",
-          "ltspice_rx::signal_out[V(Saida)]"
-        ]
-      }
+      "parameters": [
+        {
+          "param_id": "signals",
+          "value": [
+            "csv_reader::output[tx_in]",
+            "csv_reader::output[rx_out]",
+            "ltspice_rx::signal_out[V(Saida)]"
+          ]
+        }
+      ]
     }
   ]
 }

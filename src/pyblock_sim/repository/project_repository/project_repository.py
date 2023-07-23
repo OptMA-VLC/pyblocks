@@ -4,7 +4,7 @@ from typing import Dict, Any, List
 
 from src.pyblock_sim.entity.block.parameter_entity import ParameterEntity
 from src.pyblock_sim.entity.project.block_specification import BlockSpecification
-from src.pyblock_sim.entity.project.command.command_parser import CommandParser
+from src.pyblock_sim.repository.project_repository.command_parser import CommandParser
 from src.pyblock_sim.entity.project.connection_specification import ConnectionSpecification
 from src.pyblock_sim.entity.project.graph_specification import GraphSpecification
 from src.pyblock_sim.entity.project.port_selector import PortSelector
@@ -13,7 +13,7 @@ from src.pyblock_sim.entity.project.signal_selector import SignalSelector
 
 
 class ProjectRepository:
-    def load(self, path: Path) -> ProjectEntity:
+    def parse_project_file(self, path: Path) -> ProjectEntity:
         json_dict = self._load_json(path)
 
         block_list = self._get_dict_key(
