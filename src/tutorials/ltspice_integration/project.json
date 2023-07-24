@@ -87,6 +87,9 @@
   ],
   "commands": [
     {
+      "command": "simulate"
+    },
+    {
       "command": "plot",
       "args": {
         "signals": [

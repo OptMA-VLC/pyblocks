@@ -1,4 +1,9 @@
 {
+  "commands": [
+    {
+      "command": "simulate"
+    }
+  ],
   "blocks": [
     {
       "distribution_id": "com.pyblocks.basic.constant",

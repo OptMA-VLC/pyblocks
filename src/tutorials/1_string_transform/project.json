@@ -24,6 +24,9 @@
   ],
   "commands": [
     {
+      "command": "simulate"
+    },
+    {
       "command": "save",
       "parameters": [
         {

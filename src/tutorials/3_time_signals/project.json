@@ -37,6 +37,9 @@
   ],
   "commands": [
     {
+      "command": "simulate"
+    },
+    {
       "command": "plot",
       "parameters": [
         {

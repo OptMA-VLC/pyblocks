@@ -15,6 +15,11 @@ We will begin with the project file shown below. The fields of a project file ar
 
 ```json
 {
+  "commands": [
+    {
+      "command": "simulate"
+    }
+  ],
   "blocks": [
     {
       "distribution_id": "com.pyblocks.basic.constant",

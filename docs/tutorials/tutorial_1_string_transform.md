@@ -62,19 +62,23 @@ writing the first section, which specifies the blocks to be used in this simulat
       "from": "string_source::output",
       "to": "string_transform::input"
     }
-  ]
+  ],
+  "commands": [...]
 }
 ```
 
-Each block has the two mandatory fields `distribution_id` and `instance_id`, that correspond to the IDs discussed preivously.
+Each block has the two mandatory fields `distribution_id` and `instance_id`, that correspond 
+to the IDs discussed preivously.
 
 Each connection has the `from` and `to` fields. These specify the output port of the origin
-block and the input port of the destination block. The values of these fields use the *port selector* syntax, in the form:
+block and the input port of the destination block. The values of these fields use the 
+*port selector* syntax, in the form:
 
 `block_instance_id::port_id`
 
-The ID of input and output ports are determined by the block implementation. Specifying a port that the block has not 
-declared will result in an error when the simulator tries to build the simulation.
+The ID of input and output ports are determined by the block implementation. Specifying 
+a port that the block has not declared will result in an error when the simulator tries 
+to build the simulation.
 
 #### A Note About Cyclical Connections
 
@@ -96,11 +100,25 @@ an output of A. When there are cyclical connections in the block diagram, there 
 (C needs B that needs C that needs B that...). It is possible to describe a diagram with cycles in the project file
 but an error will be raised when running the simulation.
 
-### Extracting Outputs and Running
+### Running and Extracting Outputs
 
-When a block runs, its output ports are populated with results. As a user, you want to view or save this results.
-This is done through the commands section of the project file. In this example we will use the `save` command by adding 
-the following to the project file:
+To simulate, we need to write the corresponding command to the project file:
+
+```JSON
+// project.json
+{
+  "commands": [
+    {
+      "command": "simulate"
+    }
+  ],
+  "blocks": [...],
+  "connections": [...]
+}
+
+When a block runs, its output ports are populated with results. As a user, you can view or save them 
+with additional entries in the commands section of the project file. In this example we will use the 
+`save` command to write the produced string to a file:
 
 ```JSON
 // project.json
@@ -109,15 +127,18 @@ the following to the project file:
   "connections": [...],
   "commands": [
     {
+      "command": "simulate"
+    },
+    {
       "command": "save",
       "parameters": [
         {
-          "param_id": "save_path",
-          "value": "./output.txt"
-        },
-        {
           "param_id": "signals",
           "value": ["string_transform::output"]
+        },
+        {
+          "param_id": "save_path",
+          "value": "./output.txt"
         }
       ]
     }
@@ -125,7 +146,7 @@ the following to the project file:
 }
 ```
 
-In the `commands` section we provide a list of command objects. Each command object
+Each command object has the `command` field and can have the `parameters` field which
 has a list of parameter objects, each having a `param_id` and a `value`. In the save
 command, `signals` is a list of port selectors to select what output should be saved
 and `save_path` is the directory where the data should be saved, relative to the 
@@ -168,6 +189,9 @@ the value `to_upper` to this parameter. Running it should produce the string `HE
     }
   ],
   "commands": [
+    {
+      "command": "simulate"
+    },
     {
       "command": "save",
       "args": {

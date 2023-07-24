@@ -6,6 +6,7 @@ from src.pyblock_sim.entity.project.command.command_param_entity import CommandP
 
 
 class CommandType(Enum):
+    SIMULATE = 'simulate'
     PLOT = 'plot'
     SAVE = 'save'
 
@@ -14,9 +15,7 @@ class CommandEntity(ABC):
     """
         Base class for command entities.
         list_params method MUST be implemented in derived classes
-        An initializer MUST be implemented and:
-            - Assign the command type to self.type
-            - Call super().__init__() to populate the params list
+        An initializer MUST be implemented and call super().__init__(CommandType.MY_COMMAND)
     """
     type: CommandType
     params: List[CommandParamEntity]

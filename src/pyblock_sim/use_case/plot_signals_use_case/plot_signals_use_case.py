@@ -1,6 +1,7 @@
 from pathlib import Path
 from typing import List, Optional
 
+from src.pyblock_sim.entity.project.command.command_entity import CommandEntity, CommandType
 from src.pyblock_sim.entity.project.signal_selector import SignalSelector
 from src.pyblock_sim.repository.path_manager.path_manager import PathManager
 from src.pyblock_sim.repository.signal_repository.signal_repository import SignalRepository
@@ -15,8 +16,16 @@ class PlotSignalsUseCase:
         self._signal_repo = signal_repo
         self._path_manager = path_manager
 
-    def plot_signals(self, signals: List[SignalSelector], save_path: Optional[Path] = None):
+    def plot_signals(self, command: CommandEntity):
+        if command.type != CommandType.PLOT:
+            raise ValueError(
+                f"PlotCommandRunner.run(cmd) called with invalid command "
+                f"type '{command.type}'. Must be '{CommandType.PLOT}'"
+            )
+
         signals_dict = {}
+        signals = self._parse_signals(command)
+        save_path = command.get_param('save_path')
 
         for signal_selector in signals:
             try:

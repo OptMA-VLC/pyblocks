@@ -153,6 +153,9 @@ and include the `plot` command.
   ],
   "commands": [
     {
+      "command": "simulate"
+    },
+    {
       "command": "plot",
       "parameters": [
         {

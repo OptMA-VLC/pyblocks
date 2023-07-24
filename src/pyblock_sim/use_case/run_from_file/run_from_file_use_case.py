@@ -1,8 +1,11 @@
+from src.pyblock_sim.entity.project.command.command_entity import CommandType, CommandEntity
+from src.pyblock_sim.entity.project.project_entity import ProjectEntity
 from src.pyblock_sim.repository.cli.print_level import PrintLevel
 from src.pyblock_sim.repository_provider import RepositoryProvider
-from src.pyblock_sim.use_case.run_command.run_command_use_case import RunCommandUseCase
+from src.pyblock_sim.use_case.plot_signals_use_case.plot_signals_use_case import PlotSignalsUseCase
 
 from src.pyblock_sim.use_case.run_from_file.simulation_progress_printer import SimulationProgressPrinter
+from src.pyblock_sim.use_case.save_signals_use_case.save_signals_use_case import SaveSignalsUseCase
 from src.pyblock_sim.use_case.simulate_use_case.simulate_use_case import SimulateUseCase
 
 
@@ -15,13 +18,41 @@ class RunFromFileUseCase:
     def run_from_file(self):
         cli = self._repo_provider.cli
 
-        simulate_use_case = SimulateUseCase(
-            self._repo_provider.signal_repo,
-            self._repo_provider.block_repo,
-            self._repo_provider.cli,
-            self._repo_provider.path_manager
-        )
-        run_command_use_case = RunCommandUseCase(self._repo_provider.signal_repo, self._repo_provider.path_manager)
+        self._load_blocks()
+        project = self._load_project()
+
+        if len(project.commands) == 0:
+            cli.print('There are no commands in this project file. The simulator will exit.')
+            return
+
+        for command in project.commands:
+            try:
+                cli.print(f'Running command [bold]{command.type.value}[/bold]')
+                if command.type == CommandType.SIMULATE:
+                    self._simulate_use_case(project)
+                elif command.type == CommandType.PLOT:
+                    self._plot_signals_use_case(command)
+                elif command.type == CommandType.SAVE:
+                    self._save_signals_use_case(command)
+                else:
+                    raise NotImplementedError(f"Unknown command type: '{command.type.value}'")
+            except Exception as e:
+                cli.print(f'Command [bold]{command.type.value}[/bold] failed with execption:', level=PrintLevel.ERROR)
+                cli.print(f'{e}', level=PrintLevel.ERROR)
+                cli.print('The simulator will now exit by rethrowing this exception...')
+                raise
+
+    def _load_blocks(self):
+        cli = self._repo_provider.cli
+
+        cli.print('Loading block library......... ', end='')
+        library_path = self._repo_provider.path_manager.get_block_library_absolute_path()
+        indexing_result = self._repo_provider.block_repo.index_blocks(library_path)
+        cli.print('[green]ok[/green]', level=None)
+        cli.print(indexing_result)
+
+    def _load_project(self):
+        cli = self._repo_provider.cli
 
         cli.print('Loading project............... ', end='')
         project = self._repo_provider.project_repo.parse_project_file(
@@ -29,15 +60,26 @@ class RunFromFileUseCase:
         )
         cli.print('[green]ok[/green]', level=None)
 
-        simulation_progress_printer = SimulationProgressPrinter(cli)
+        return project
+
+    def _simulate_use_case(self, project: ProjectEntity):
+        simulate_use_case = SimulateUseCase(
+            self._repo_provider.signal_repo,
+            self._repo_provider.block_repo,
+            self._repo_provider.cli,
+            self._repo_provider.path_manager
+        )
+        simulation_progress_printer = SimulationProgressPrinter(self._repo_provider.cli)
         simulate_use_case.simulate(project, simulation_progress_printer)
 
-        for cmd in project.commands:
-            cli.print(f'Running command {cmd.type.value}'.ljust(30, '.'), end=' ')
-            try:
-                run_command_use_case.run_command(cmd)
-                cli.print('[green]ok[/green]', level=None)
-            except Exception as ex:
-                cli.print('[red]error[/red]', level=None)
-                cli.print(f"Command {cmd.type.value} failed with the error - {ex}", level=PrintLevel.ERROR)
-                break
+    def _plot_signals_use_case(self, command: CommandEntity):
+        plot_signals_use_case = PlotSignalsUseCase(
+            self._repo_provider.signal_repo, self._repo_provider.path_manager
+        )
+        plot_signals_use_case.plot_signals(command)
+
+    def _save_signals_use_case(self, command: CommandEntity):
+        save_signals_use_case = SaveSignalsUseCase(
+            self._repo_provider.signal_repo, self._repo_provider.path_manager
+        )
+        save_signals_use_case.save_signals(command)

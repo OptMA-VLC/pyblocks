@@ -11,38 +11,29 @@ from src.pyblock_sim.use_case.run_from_file.run_from_file_use_case import RunFro
 
 
 def main():
-    cli = CLI()
+    cli = setup_cli()
+
     cli.print('Welcome to pyblocks-sim!  :cat:')
     check_requirements(cli)
 
-    setup_cli(cli)
-
     path_manager = PathManager(
         run_path=Path.cwd(),
-        project_rel_path=Path('../experiments/vlc_lab/project.json'),
+        # project_rel_path=Path('../experiments/vlc_lab/project.json'),
+        project_rel_path=Path('../tutorials/2_calculator/project.json'),
         block_library_rel_path=Path('../block_library')
     )
 
     repo_provider = RepositoryProvider(cli=cli, path_manager=path_manager)
 
-    load_block_library(repo_provider)
-
     run_from_file_use_case = RunFromFileUseCase(repo_provider)
     run_from_file_use_case.run_from_file()
 
 
-def setup_cli(cli: CLI):
+def setup_cli() -> CLI:
+    cli = CLI()
     cli.register_obj_printer(IndexingResultPrinter())
     cli.register_obj_printer(SimulationReportPrinter())
-
-
-def load_block_library(repo_provider: RepositoryProvider):
-    repo_provider.cli.print('Loading block library......... ', end='')
-    library_path = repo_provider.path_manager.get_block_library_absolute_path()
-    indexing_result = repo_provider.block_repo.index_blocks(library_path)
-    repo_provider.cli.print('[green]ok[/green]', level=None)
-    repo_provider.cli.print(indexing_result)
-
+    return cli
 
 def check_requirements(cli: CLI):
     major_ver, minor_ver, _, _, _ = sys.version_info
