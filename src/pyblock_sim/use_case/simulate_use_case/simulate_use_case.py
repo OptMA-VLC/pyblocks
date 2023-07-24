@@ -5,38 +5,80 @@ from typing import List
 
 from src.pyblock_sim.entity.block.block_entity import BlockEntity
 from src.pyblock_sim.entity.graph.connection_entity import ConnectionEntity
+from src.pyblock_sim.entity.project.project_entity import ProjectEntity
 from src.pyblock_sim.entity.simulation.simulation_steps import SimulationStep
+from src.pyblock_sim.repository.block_repository.block_repository import BlockRepository
+from src.pyblock_sim.repository.cli.cli import CLI
 from src.pyblock_sim.repository.path_manager.path_manager import PathManager
 from src.pyblock_sim.repository.signal_repository.signal_repository import SignalRepository
-from src.pyblock_sim.use_case.simulate.simulation_exceptions import BlockInputException, BlockParamException, \
-    BlockOutputException, BlockRunningException
-from src.pyblock_sim.use_case.simulate.simulation_report import SimulationReport
-from src.pyblock_sim.use_case.simulate.simulation_step_report import SimulationStepReport
+
+from src.pyblock_sim.use_case.build_simulation_graph.build_simulation_graph_use_case import BuildSimulationGraphUseCase
+from src.pyblock_sim.use_case.compute_simulation_steps.compute_simulation_steps_use_case import \
+    ComputeSimulationStepsUseCase
+from src.pyblock_sim.use_case.simulate_use_case.empty_simulation_progress_callbacks import \
+    EmptySimulationProgressCallbacks
+from src.pyblock_sim.use_case.simulate_use_case.simulation_exceptions import BlockParamException, BlockInputException, \
+    BlockRunningException, BlockOutputException
+from src.pyblock_sim.use_case.simulate_use_case.simulation_progress_callbacks import SimulationProgressCallbacks
+from src.pyblock_sim.use_case.simulate_use_case.simulation_report import SimulationReport
+from src.pyblock_sim.use_case.simulate_use_case.simulation_step_report import SimulationStepReport
 from src.pyblock_sim.util.set_directory import set_directory
 
 
 class SimulateUseCase:
     _signal_repo: SignalRepository
+    _block_repo: BlockRepository
+    _cli: CLI
     _path_manager: PathManager
 
-    def __init__(self, signal_repo: SignalRepository, path_manager: PathManager):
+    def __init__(
+            self, signal_repo: SignalRepository,
+            block_repo: BlockRepository,
+            cli: CLI,
+            path_manager: PathManager
+    ):
         self._signal_repo = signal_repo
+        self._block_repo = block_repo
+        self._cli = cli
         self._path_manager = path_manager
 
-    def simulate(self, steps: List[SimulationStep]) -> SimulationReport:
+    def simulate(
+            self, project: ProjectEntity,
+            progress_callback: SimulationProgressCallbacks = EmptySimulationProgressCallbacks()
+    ) -> SimulationReport:
         report = SimulationReport()
-        project_path = self._path_manager.get_project_absolute_path()
+        progress_callback.will_start_simulation()
 
-        with set_directory(project_path.parent):
-            for step in steps:
-                step_report = self.simulate_step(step)
-                report.steps.append(step_report)
-                if not step_report.success:
-                    break
+        build_graph_use_case = BuildSimulationGraphUseCase(self._block_repo)
+        compute_simulation_steps_use_case = ComputeSimulationStepsUseCase()
 
+        progress_callback.will_build_simulation_graph()
+        simulation_graph = build_graph_use_case.build_simulation_graph(project.graph_spec)
+        progress_callback.did_build_simulation_graph(simulation_graph)
+
+        progress_callback.will_calculate_steps()
+        simulation_steps = compute_simulation_steps_use_case.compute_simulation_steps(simulation_graph)
+        progress_callback.did_calculate_steps(simulation_steps)
+
+        step_count = 0
+        for step in simulation_steps:
+            progress_callback.will_simulate_step()
+
+            step_report = self._simulate_step(step)
+            step_report.total_number_of_steps = len(simulation_steps)
+            step_report.step_number = step_count
+            step_count += 1
+
+            report.steps.append(step_report)
+            progress_callback.did_simulate_step(step_report)
+            if not step_report.success:
+                break
+
+        progress_callback.did_complete_simulation(report)
         return report
 
-    def simulate_step(self, step: SimulationStep) -> SimulationStepReport:
+    def _simulate_step(self, step: SimulationStep) -> SimulationStepReport:
+        project_path = self._path_manager.get_project_absolute_path()
         block = step.block
 
         report = SimulationStepReport(block.instance_id)
@@ -50,9 +92,10 @@ class SimulateUseCase:
             self._apply_params(block)
             self._apply_inputs(block, step.input_connections)
 
-            start_time = time.perf_counter()
-            (stdout, stderr) = self._run(block)
-            stop_time = time.perf_counter()
+            with set_directory(project_path.parent):
+                start_time = time.perf_counter()
+                (stdout, stderr) = self._run(block)
+                stop_time = time.perf_counter()
 
             self._extract_outputs(block)
         except Exception as ex:

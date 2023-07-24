@@ -1,6 +1,6 @@
 from typing import List
 
-from src.pyblock_sim.use_case.simulate.simulation_step_report import SimulationStepReport
+from src.pyblock_sim.use_case.simulate_use_case.simulation_step_report import SimulationStepReport
 
 
 class SimulationReport:

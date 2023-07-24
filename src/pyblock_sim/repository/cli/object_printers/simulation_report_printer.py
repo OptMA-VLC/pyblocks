@@ -1,7 +1,7 @@
 from typing import Type
 
 from src.pyblock_sim.repository.cli.object_printer import ObjectPrinter
-from src.pyblock_sim.use_case.simulate.simulation_report import SimulationReport
+from src.pyblock_sim.use_case.simulate_use_case.simulation_report import SimulationReport
 
 
 class SimulationReportPrinter(ObjectPrinter):
