@@ -7,6 +7,7 @@ from src.pyblock_sim.entity.project.command.command_param_entity import CommandP
 
 class CommandType(Enum):
     SIMULATE = 'simulate'
+    BLOCK_HELP = 'block_help'
     PLOT = 'plot'
     SAVE = 'save'
 

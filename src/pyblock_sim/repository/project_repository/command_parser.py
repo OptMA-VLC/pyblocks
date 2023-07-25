@@ -2,6 +2,7 @@ from typing import Dict
 
 from src.pyblock_sim.entity.project.command.command_entity import CommandEntity, CommandType
 from src.pyblock_sim.entity.project.command.plot_command_entity import PlotCommandEntity
+from src.pyblock_sim.entity.project.command.print_block_command_entity import BlockHelpCommandEntity
 from src.pyblock_sim.entity.project.command.save_command_entity import SaveCommandEntity
 from src.pyblock_sim.entity.project.command.simulate_command_entity import SimulateCommandEntity
 
@@ -38,7 +39,8 @@ class CommandParser:
         command_classes = [
             PlotCommandEntity,
             SaveCommandEntity,
-            SimulateCommandEntity
+            SimulateCommandEntity,
+            BlockHelpCommandEntity
         ]
 
         for cmd_class in command_classes:

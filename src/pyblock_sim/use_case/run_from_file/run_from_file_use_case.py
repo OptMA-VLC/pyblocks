@@ -2,6 +2,7 @@ from src.pyblock_sim.entity.project.command.command_entity import CommandType, C
 from src.pyblock_sim.entity.project.project_entity import ProjectEntity
 from src.pyblock_sim.repository.cli.print_level import PrintLevel
 from src.pyblock_sim.repository_provider import RepositoryProvider
+from src.pyblock_sim.use_case.block_help_use_case.block_help_use_case import BlockHelpUseCase
 from src.pyblock_sim.use_case.plot_signals_use_case.plot_signals_use_case import PlotSignalsUseCase
 
 from src.pyblock_sim.use_case.run_from_file.simulation_progress_printer import SimulationProgressPrinter
@@ -34,6 +35,8 @@ class RunFromFileUseCase:
                     self._plot_signals_use_case(command)
                 elif command.type == CommandType.SAVE:
                     self._save_signals_use_case(command)
+                elif command.type == CommandType.BLOCK_HELP:
+                    self._block_help_use_case(command)
                 else:
                     raise NotImplementedError(f"Unknown command type: '{command.type.value}'")
             except Exception as e:
@@ -83,3 +86,10 @@ class RunFromFileUseCase:
             self._repo_provider.signal_repo, self._repo_provider.path_manager
         )
         save_signals_use_case.save_signals(command)
+
+    def _block_help_use_case(self, command: CommandEntity):
+        block_help_use_case = BlockHelpUseCase(
+            self._repo_provider.block_repo, self._repo_provider.cli
+        )
+        block_help_use_case.print_block_help(command)
+

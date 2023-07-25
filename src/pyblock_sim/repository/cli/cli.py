@@ -31,7 +31,7 @@ class CLI:
             printer = self._get_printer_for(args_list[i])
             if printer is None:
                 if isinstance(args_list[i], str):
-                    args_list[i] = tag + args_list[i]
+                    args_list[i] = self._add_tag_before_every_line(args_list[i], tag)
             else:
                 printed_obj = printer.print(args_list[i])
                 args_list[i] = self._add_tag_before_every_line(printed_obj, tag)
