@@ -1,7 +1,7 @@
 from src.pyblock_sim.entity.block.block_entity import BlockEntity
 from src.pyblock_sim.entity.graph.connection_entity import ConnectionEntity
 from src.pyblock_sim.entity.graph.simulation_graph import SimulationGraph
-from src.pyblock_sim.entity.project.graph_specification import GraphSpecification
+from src.pyblock_sim.entity.project.graph.graph_specification import GraphSpecification
 from src.pyblock_sim.repository.block_repository.interface_block_repository import IBlockRepository
 
 

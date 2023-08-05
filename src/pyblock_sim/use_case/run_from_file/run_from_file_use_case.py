@@ -3,7 +3,9 @@ from src.pyblock_sim.entity.project.project_entity import ProjectEntity
 from src.pyblock_sim.repository.cli.print_level import PrintLevel
 from src.pyblock_sim.repository_provider import RepositoryProvider
 from src.pyblock_sim.use_case.block_help_use_case.block_help_use_case import BlockHelpUseCase
+from src.pyblock_sim.use_case.param_sweep_use_case.param_sweep_use_case import ParamSweepUseCase
 from src.pyblock_sim.use_case.plot_signals_use_case.plot_signals_use_case import PlotSignalsUseCase
+from src.pyblock_sim.use_case.run_from_file.param_sweep_progress_printer import ParamSweepProgressPrinter
 
 from src.pyblock_sim.use_case.run_from_file.simulation_progress_printer import SimulationProgressPrinter
 from src.pyblock_sim.use_case.save_signals_use_case.save_signals_use_case import SaveSignalsUseCase
@@ -31,6 +33,8 @@ class RunFromFileUseCase:
                 cli.print(f'Running command [bold]{command.type.value}[/bold]')
                 if command.type == CommandType.SIMULATE:
                     self._simulate_use_case(project)
+                elif command.type == CommandType.SIMULATE_SWEEP:
+                    self._simulate_sweep_use_case(command, project)
                 elif command.type == CommandType.PLOT:
                     self._plot_signals_use_case(command)
                 elif command.type == CommandType.SAVE:
@@ -40,7 +44,7 @@ class RunFromFileUseCase:
                 else:
                     raise NotImplementedError(f"Unknown command type: '{command.type.value}'")
             except Exception as e:
-                cli.print(f'Command [bold]{command.type.value}[/bold] failed with execption:', level=PrintLevel.ERROR)
+                cli.print(f'Command [bold]{command.type.value}[/bold] failed with exception:', level=PrintLevel.ERROR)
                 cli.print(f'{e}', level=PrintLevel.ERROR)
                 cli.print('The simulator will now exit by rethrowing this exception...')
                 raise
@@ -69,11 +73,26 @@ class RunFromFileUseCase:
         simulate_use_case = SimulateUseCase(
             self._repo_provider.signal_repo,
             self._repo_provider.block_repo,
-            self._repo_provider.cli,
             self._repo_provider.path_manager
         )
         simulation_progress_printer = SimulationProgressPrinter(self._repo_provider.cli)
         simulate_use_case.simulate(project, simulation_progress_printer)
+
+    def _simulate_sweep_use_case(self, command: CommandEntity, project: ProjectEntity):
+        simulate_sweep_use_case = ParamSweepUseCase(
+            self._repo_provider.signal_repo,
+            self._repo_provider.block_repo,
+            self._repo_provider.path_manager
+        )
+        sweep_progress_printer = ParamSweepProgressPrinter(self._repo_provider.cli)
+
+        sweep_report = simulate_sweep_use_case.simulate_sweep(
+            command,
+            project,
+            sweep_progress_printer
+        )
+
+        print(sweep_report)
 
     def _plot_signals_use_case(self, command: CommandEntity):
         plot_signals_use_case = PlotSignalsUseCase(
@@ -92,4 +111,3 @@ class RunFromFileUseCase:
             self._repo_provider.block_repo, self._repo_provider.cli
         )
         block_help_use_case.print_block_help(command)
-

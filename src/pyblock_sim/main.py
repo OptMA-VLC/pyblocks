@@ -18,7 +18,7 @@ def main():
 
     path_manager = PathManager(
         run_path=Path.cwd(),
-        project_rel_path=Path('../experiments/vlc_lab/project.json'),
+        project_rel_path=Path('../experiments/vlc_param_sweep/project.json'),
         # project_rel_path=Path('../tutorials/2_calculator/project.json'),
         block_library_rel_path=Path('../block_library')
     )
@@ -34,6 +34,7 @@ def setup_cli() -> CLI:
     cli.register_obj_printer(IndexingResultPrinter())
     cli.register_obj_printer(SimulationReportPrinter())
     return cli
+
 
 def check_requirements(cli: CLI):
     major_ver, minor_ver, _, _, _ = sys.version_info

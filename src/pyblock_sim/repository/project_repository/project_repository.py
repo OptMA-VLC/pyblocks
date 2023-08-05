@@ -3,10 +3,10 @@ from pathlib import Path
 from typing import Dict, Any, List
 
 from src.pyblock_sim.entity.block.parameter_entity import ParameterEntity
-from src.pyblock_sim.entity.project.block_specification import BlockSpecification
+from src.pyblock_sim.entity.project.graph.block_specification import BlockSpecification
 from src.pyblock_sim.repository.project_repository.command_parser import CommandParser
-from src.pyblock_sim.entity.project.connection_specification import ConnectionSpecification
-from src.pyblock_sim.entity.project.graph_specification import GraphSpecification
+from src.pyblock_sim.entity.project.graph.connection_specification import ConnectionSpecification
+from src.pyblock_sim.entity.project.graph.graph_specification import GraphSpecification
 from src.pyblock_sim.entity.project.port_selector import PortSelector
 from src.pyblock_sim.entity.project.project_entity import ProjectEntity
 from src.pyblock_sim.entity.project.signal_selector import SignalSelector

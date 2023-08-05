@@ -8,7 +8,6 @@ from src.pyblock_sim.entity.graph.connection_entity import ConnectionEntity
 from src.pyblock_sim.entity.project.project_entity import ProjectEntity
 from src.pyblock_sim.entity.simulation.simulation_steps import SimulationStep
 from src.pyblock_sim.repository.block_repository.block_repository import BlockRepository
-from src.pyblock_sim.repository.cli.cli import CLI
 from src.pyblock_sim.repository.path_manager.path_manager import PathManager
 from src.pyblock_sim.repository.signal_repository.signal_repository import SignalRepository
 
@@ -28,18 +27,16 @@ from src.pyblock_sim.util.set_directory import set_directory
 class SimulateUseCase:
     _signal_repo: SignalRepository
     _block_repo: BlockRepository
-    _cli: CLI
     _path_manager: PathManager
 
     def __init__(
-            self, signal_repo: SignalRepository,
+            self,
+            signal_repo: SignalRepository,
             block_repo: BlockRepository,
-            cli: CLI,
             path_manager: PathManager
     ):
         self._signal_repo = signal_repo
         self._block_repo = block_repo
-        self._cli = cli
         self._path_manager = path_manager
 
     def simulate(

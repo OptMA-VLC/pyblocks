@@ -1,6 +1,6 @@
 from src.pyblock.block.block_distribution_id import BlockDistributionId
 from src.pyblock_sim.entity.project.command.command_entity import CommandEntity, CommandType
-from src.pyblock_sim.entity.project.command.print_block_command_entity import BlockHelpCommandEntity
+from src.pyblock_sim.entity.project.command.block_help_command_entity import BlockHelpCommandEntity
 from src.pyblock_sim.repository.block_repository.block_repository import BlockRepository
 from src.pyblock_sim.repository.cli.cli import CLI
 

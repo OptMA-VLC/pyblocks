@@ -8,10 +8,12 @@ class CommandParamEntity:
 
     id: str
     default: Any
+    description: str
     value: Any
 
-    def __init__(self, param_id: str, default: Any = NO_VALUE):
+    def __init__(self, param_id: str, description: str = '', default: Any = NO_VALUE):
         self.id = param_id
+        self.description = description
         self.default = default
         self.value = CommandParamEntity.NO_VALUE
 

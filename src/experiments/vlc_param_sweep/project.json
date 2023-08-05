@@ -1,0 +1,109 @@
+{
+  "blocks": [
+    {
+      "distribution_id": "com.pyblocks.basic.csv_reader",
+      "instance_id": "csv_reader",
+      "parameters": [
+        {
+          "param_id": "file", "value": "./data.csv"
+        },
+        {
+          "param_id": "combine_signals",
+          "value": [
+            {
+              "name": "tx_in",
+              "time_column": "tx_in_t",
+              "value_column": "tx_in"
+            },
+            {
+              "name": "rx_out",
+              "time_column": "rx_out_t",
+              "value_column": "rx_out"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "distribution_id": "com.pyblocks.integrations.ltspice",
+      "instance_id": "ltspice_tx",
+      "name": "LTSpice Integration",
+      "parameters": [
+        {
+          "param_id": "schematic_file", "value": "./transmissor.asc"
+        },
+        {
+          "param_id": "file_name_in_circuit", "value": "TX_input.txt"
+        },
+        {
+          "param_id": "add_instructions", "value": [
+            "; Simulation settings",
+            ".tran 0 3m 0 1u"
+          ]
+        },
+        {
+          "param_id": "probe_signals", "value": ["I(D1)"]
+        }
+      ]
+    },
+    {
+      "distribution_id": "com.pyblocks.signal.gain",
+      "instance_id": "gain",
+      "name": "Gain",
+      "parameters": [
+        {
+          "param_id": "gain_db", "value": -60.0
+        }
+      ]
+    },
+    {
+      "distribution_id": "com.pyblocks.integrations.ltspice",
+      "instance_id": "ltspice_rx",
+      "parameters": [
+        {
+          "param_id": "schematic_file", "value": "./receptor.asc"
+        },
+        {
+          "param_id": "file_name_in_circuit", "value": "RX_input.txt"
+        },
+        {
+          "param_id": "add_instructions", "value": [
+            "; Simulation settings",
+            ".tran 0 3m 0 1u"
+          ]
+        },
+        {
+          "param_id": "probe_signals", "value": ["V(Saida)"]
+        }
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "from": "csv_reader::output[tx_in]",
+      "to": "ltspice_tx::signal_in"
+    },
+    {
+      "from": "ltspice_tx::signal_out[I(D1)]",
+      "to": "gain::signal_in"
+    },
+    {
+      "from": "gain::signal_out",
+      "to": "ltspice_rx::signal_in"
+    }
+  ],
+  "commands": [
+    {
+      "command": "simulate_sweep",
+      "parameters": [
+        {
+          "param_id": "target_block_instance_id", "value": "gain"
+        }, {
+          "param_id": "target_param_id", "value": "gain_db"
+        }, {
+          "param_id": "sweep_values", "value": [-70, -60, -50]
+        }
+      ]
+    }
+  ]
+}

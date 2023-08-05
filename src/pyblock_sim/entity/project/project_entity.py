@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import List
 
 from src.pyblock_sim.entity.project.command.command_entity import CommandEntity
-from src.pyblock_sim.entity.project.graph_specification import GraphSpecification
+from src.pyblock_sim.entity.project.graph.graph_specification import GraphSpecification
 
 
 @dataclass

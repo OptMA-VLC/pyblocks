@@ -1,10 +1,11 @@
 from typing import Dict
 
-from src.pyblock_sim.entity.project.command.command_entity import CommandEntity, CommandType
+from src.pyblock_sim.entity.project.command.block_help_command_entity import BlockHelpCommandEntity
+from src.pyblock_sim.entity.project.command.command_entity import CommandEntity
 from src.pyblock_sim.entity.project.command.plot_command_entity import PlotCommandEntity
-from src.pyblock_sim.entity.project.command.print_block_command_entity import BlockHelpCommandEntity
 from src.pyblock_sim.entity.project.command.save_command_entity import SaveCommandEntity
 from src.pyblock_sim.entity.project.command.simulate_command_entity import SimulateCommandEntity
+from src.pyblock_sim.entity.project.command.simulate_param_sweep_command_entity import SimulateParamSweepCommandEntity
 
 
 class CommandParser:
@@ -37,10 +38,11 @@ class CommandParser:
     @staticmethod
     def _get_entity_from_command_string(cmd_str: str) -> CommandEntity:
         command_classes = [
+            BlockHelpCommandEntity,
+            SimulateCommandEntity,
+            SimulateParamSweepCommandEntity,
             PlotCommandEntity,
             SaveCommandEntity,
-            SimulateCommandEntity,
-            BlockHelpCommandEntity
         ]
 
         for cmd_class in command_classes:
