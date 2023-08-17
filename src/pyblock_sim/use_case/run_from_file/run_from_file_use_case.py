@@ -1,6 +1,8 @@
 from src.pyblock_sim.entity.project.command.command_entity import CommandType, CommandEntity
 from src.pyblock_sim.entity.project.project_entity import ProjectEntity
 from src.pyblock_sim.repository.cli.print_level import PrintLevel
+from src.pyblock_sim.repository.param_sweep_result_repository.param_sweep_result_repository import \
+    ParamSweepResultRepository
 from src.pyblock_sim.repository_provider import RepositoryProvider
 from src.pyblock_sim.use_case.block_help_use_case.block_help_use_case import BlockHelpUseCase
 from src.pyblock_sim.use_case.param_sweep_use_case.param_sweep_use_case import ParamSweepUseCase
@@ -86,13 +88,18 @@ class RunFromFileUseCase:
         )
         sweep_progress_printer = ParamSweepProgressPrinter(self._repo_provider.cli)
 
-        sweep_report = simulate_sweep_use_case.simulate_sweep(
-            command,
-            project,
-            sweep_progress_printer
+        sweep_result = simulate_sweep_use_case.simulate_sweep(
+            command, project, sweep_progress_printer
         )
 
-        print(sweep_report)
+        save_path_str = command.get_param('output_dir')
+        save_path = self._repo_provider.path_manager.resolve_relpath_from_project(save_path_str)
+        self._repo_provider.cli.print(f'Now saving parameter sweep result to {save_path}')
+
+        save_sweep_repo = ParamSweepResultRepository()
+        save_sweep_repo.save_result(sweep_result, save_path)
+
+        self._repo_provider.cli.print('Saved parameter sweep data.')
 
     def _plot_signals_use_case(self, command: CommandEntity):
         plot_signals_use_case = PlotSignalsUseCase(

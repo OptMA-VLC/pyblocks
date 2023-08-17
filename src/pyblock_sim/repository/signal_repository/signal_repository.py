@@ -1,9 +1,10 @@
 import copy
 from logging import Logger
-from typing import Any, Dict, Tuple
+from typing import Any, Dict, Tuple, List
 
 from src.pyblock.block.ports.port_id import PortId
 from src.pyblock.signals.multi_signal import MultiSignal
+from src.pyblock.signals.signal_name import SignalName
 from src.pyblock_sim.entity.block.block_instance_id import BlockInstanceId
 from src.pyblock_sim.entity.project.signal_selector import SignalSelector
 from src.pyblock_sim.util.logger_provider import LoggerProvider
@@ -45,3 +46,19 @@ class SignalRepository:
             return signal
 
         return signal.get(selector.signal_name)
+
+    def list_signals(self) -> List[SignalSelector]:
+        signal_selectors = []
+
+        for (block_port_tuple, signal) in self._signals.items():
+            block = block_port_tuple[0]
+            port = block_port_tuple[1]
+
+            if isinstance(signal, MultiSignal):
+                for signal_name in signal.list_signals():
+                    selector = SignalSelector(block, port, SignalName(signal_name))
+                    signal_selectors.append(selector)
+            else:
+                signal_selectors.append(SignalSelector(block, port))
+
+        return signal_selectors

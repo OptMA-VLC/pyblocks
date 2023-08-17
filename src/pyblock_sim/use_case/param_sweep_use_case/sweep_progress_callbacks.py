@@ -1,7 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import Any
 
-from src.pyblock_sim.use_case.param_sweep_use_case.param_sweep_result import IterationResult, ParamSweepResult
+from src.pyblock_sim.entity.parameter_sweep.param_sweep_result_entity import IterationResultEntity, \
+    ParamSweepResultEntity
 
 
 class SweepProgressCallbacks(ABC):
@@ -14,9 +15,9 @@ class SweepProgressCallbacks(ABC):
         pass
 
     @abstractmethod
-    def did_finish_iteration(self, iteration_result: IterationResult):
+    def did_finish_iteration(self, iteration_result: IterationResultEntity):
         pass
 
     @abstractmethod
-    def did_finish_sweep(self, result: ParamSweepResult):
+    def did_finish_sweep(self, result: ParamSweepResultEntity):
         pass

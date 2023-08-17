@@ -2,13 +2,14 @@ import copy
 import numbers
 from typing import List, Any
 
+from src.pyblock_sim.entity.parameter_sweep.param_sweep_result_entity import ParamSweepResultEntity, \
+    IterationResultEntity
 from src.pyblock_sim.entity.project.command.command_entity import CommandEntity
 from src.pyblock_sim.entity.project.project_entity import ProjectEntity
 from src.pyblock_sim.repository.block_repository.block_repository import BlockRepository
 from src.pyblock_sim.repository.path_manager.path_manager import PathManager
 from src.pyblock_sim.repository.signal_repository.signal_repository import SignalRepository
 from src.pyblock_sim.use_case.param_sweep_use_case.empty_sweep_progress_callbacks import EmptySweepProgressCallbacks
-from src.pyblock_sim.use_case.param_sweep_use_case.param_sweep_result import ParamSweepResult, IterationResult
 from src.pyblock_sim.use_case.param_sweep_use_case.sweep_progress_callbacks import SweepProgressCallbacks
 from src.pyblock_sim.use_case.simulate_use_case.simulate_use_case import SimulateUseCase
 
@@ -36,7 +37,7 @@ class ParamSweepUseCase:
         sweep_progress_callbacks.will_start_sweep()
 
         sweep_values = self._get_sweep_values(command)
-        sweep_result = ParamSweepResult(
+        sweep_result = ParamSweepResultEntity(
             target_block=command.get_param('target_block_instance_id'),
             target_param=command.get_param('target_param_id'),
             param_values=sweep_values
@@ -66,7 +67,7 @@ class ParamSweepUseCase:
     def _simulate_iteration(
             self, command: CommandEntity, project: ProjectEntity,
             iteration: int, param_value: Any
-    ) -> IterationResult:
+    ) -> IterationResultEntity:
         signal_repo = SignalRepository()
         simulate_use_case = SimulateUseCase(
             signal_repo=signal_repo,
@@ -77,8 +78,8 @@ class ParamSweepUseCase:
         self._apply_param_on_project(project, command, param_value)
         report = simulate_use_case.simulate(project)
 
-        iteration_result = IterationResult(
-            iteration_number=iteration, iteration_value=param_value,
+        iteration_result = IterationResultEntity(
+            iteration_number=iteration, parameter_value=param_value,
             report=report, signal_repo=signal_repo
         )
 

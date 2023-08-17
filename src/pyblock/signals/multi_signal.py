@@ -1,4 +1,4 @@
-from typing import Dict, Any
+from typing import Dict, Any, List
 from src.pyblock.signals.signal_name import SignalName
 
 
@@ -20,6 +20,12 @@ class MultiSignal:
 
     def delete(self, signal_name: SignalName):
         del self._signals[signal_name]
+
+    def list_signals(self) -> List[str]:
+        signal_names = []
+        for sig_name in self._signals.keys():
+            signal_names.append(sig_name)
+        return signal_names
 
     def __len__(self):
         return len(self._signals)

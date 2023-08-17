@@ -6,9 +6,9 @@ from src.pyblock_sim.use_case.simulate_use_case.simulation_report import Simulat
 
 
 @dataclass
-class IterationResult:
+class IterationResultEntity:
     iteration_number: int
-    iteration_value: Any
+    parameter_value: Any
     report: SimulationReport
     signal_repo: SignalRepository
 
@@ -17,11 +17,11 @@ class IterationResult:
         return self.report.success
 
 
-class ParamSweepResult:
+class ParamSweepResultEntity:
     target_block: str
     target_param: str
     param_values: List[Any]
-    iteration_results: List[IterationResult]
+    iteration_results: List[IterationResultEntity]
 
     @property
     def total_iterations(self) -> int:
@@ -29,6 +29,8 @@ class ParamSweepResult:
 
     @property
     def success(self) -> bool:
+        if len(self.iteration_results) == 0:
+            return False
         return self.iteration_results[-1].success
 
     def __init__(

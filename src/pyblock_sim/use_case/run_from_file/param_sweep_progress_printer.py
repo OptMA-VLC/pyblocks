@@ -1,7 +1,8 @@
 from typing import Any
 
+from src.pyblock_sim.entity.parameter_sweep.param_sweep_result_entity import ParamSweepResultEntity, \
+    IterationResultEntity
 from src.pyblock_sim.repository.cli.cli import CLI
-from src.pyblock_sim.use_case.param_sweep_use_case.param_sweep_result import ParamSweepResult, IterationResult
 from src.pyblock_sim.use_case.param_sweep_use_case.sweep_progress_callbacks import SweepProgressCallbacks
 
 
@@ -20,10 +21,10 @@ class ParamSweepProgressPrinter(SweepProgressCallbacks):
         iter_cnt = f'{iteration_number}/{total_iterations}'
         self._cli.print(f"Iteration {iter_cnt} with param value = {iteration_value}")
 
-    def did_finish_iteration(self, iteration_result: IterationResult):
+    def did_finish_iteration(self, iteration_result: IterationResultEntity):
         pass
 
-    def did_finish_sweep(self, result: ParamSweepResult):
+    def did_finish_sweep(self, result: ParamSweepResultEntity):
         if result.success:
             self._cli.print('[green]Parameter sweep completed successfully[/green]')
         else:
