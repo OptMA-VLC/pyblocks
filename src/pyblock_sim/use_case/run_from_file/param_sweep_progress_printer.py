@@ -18,8 +18,7 @@ class ParamSweepProgressPrinter(SweepProgressCallbacks):
         self._cli.print()
 
     def will_start_iteration(self, iteration_number: int, total_iterations: int, iteration_value: Any):
-        iter_cnt = f'{iteration_number}/{total_iterations}'
-        self._cli.print(f"Iteration {iter_cnt} with param value = {iteration_value}")
+        self._cli.print(f"Iteration {iteration_number} with param value = {iteration_value}")
 
     def did_finish_iteration(self, iteration_result: IterationResultEntity):
         pass

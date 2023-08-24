@@ -18,8 +18,8 @@ def main():
 
     path_manager = PathManager(
         run_path=Path.cwd(),
-        project_rel_path=Path('../experiments/vlc_param_sweep/project.json'),
-        # project_rel_path=Path('../tutorials/2_calculator/project.json'),
+        # project_rel_path=Path('../experiments/vlc_param_sweep/project.json'),
+        project_rel_path=Path('../tutorials/4_parameter_sweep/project.json'),
         block_library_rel_path=Path('../block_library')
     )
 

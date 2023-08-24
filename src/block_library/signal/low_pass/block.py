@@ -18,7 +18,7 @@ class LowPassFilterBlock(BaseBlock):
 
         self.input = InputPort(port_id='input')
         self.output = OutputPort(port_id='output')
-        self.order = Parameter(param_id='order', default=2)
+        self.order = Parameter(param_id='order', default=1)
         self.f_cutoff = Parameter(param_id='f_cutoff', default=1000)
 
     def run(self):

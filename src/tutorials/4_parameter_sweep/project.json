@@ -1,0 +1,48 @@
+{
+  "blocks": [
+    {
+      "distribution_id": "com.pyblocks.signal.signal_generator",
+      "instance_id": "signal_generator",
+      "parameters": [
+        {
+          "param_id": "duration", "value": 0.003
+        }, {
+          "param_id": "frequency", "value": 1000
+        }, {
+          "param_id": "sample_frequency", "value": 100000
+        }
+      ]
+    },
+    {
+      "distribution_id": "com.pyblocks.signal.low_pass",
+      "instance_id": "low_pass_filter",
+      "parameters": [
+        {
+          "param_id": "f_cutoff", "value": 100
+        }
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "from": "signal_generator::signal_out",
+      "to": "low_pass_filter::input"
+    }
+  ],
+  "commands": [
+    {
+      "command": "parameter_sweep",
+      "parameters": [
+        {
+          "param_id": "target_block_instance_id", "value": "low_pass_filter"
+        }, {
+          "param_id": "target_param_id", "value": "f_cutoff"
+        }, {
+          "param_id": "sweep_values", "value": [ 10000, 5000, 1000 ]
+        }, {
+          "param_id": "output_dir", "value": "."
+        }
+      ]
+    }
+  ]
+}

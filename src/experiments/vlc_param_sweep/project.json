@@ -94,7 +94,7 @@
   ],
   "commands": [
     {
-      "command": "simulate_sweep",
+      "command": "parameter_sweep",
       "parameters": [
         {
           "param_id": "target_block_instance_id", "value": "gain"

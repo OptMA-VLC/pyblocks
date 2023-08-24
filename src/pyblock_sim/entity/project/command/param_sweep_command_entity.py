@@ -6,7 +6,7 @@ from src.pyblock_sim.entity.project.command.command_param_entity import CommandP
 
 class ParamSweepCommandEntity(CommandEntity):
     def __init__(self):
-        super().__init__(CommandType.SIMULATE_SWEEP)
+        super().__init__(CommandType.PARAMETER_SWEEP)
 
     def list_params(self) -> List[CommandParamEntity]:
         return [

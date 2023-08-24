@@ -7,7 +7,7 @@ from src.pyblock_sim.entity.project.command.command_param_entity import CommandP
 
 class CommandType(Enum):
     SIMULATE = 'simulate'
-    SIMULATE_SWEEP = 'simulate_sweep'
+    PARAMETER_SWEEP = 'parameter_sweep'
     BLOCK_HELP = 'block_help'
     PLOT = 'plot'
     SAVE = 'save'

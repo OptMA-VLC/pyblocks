@@ -35,7 +35,7 @@ class RunFromFileUseCase:
                 cli.print(f'Running command [bold]{command.type.value}[/bold]')
                 if command.type == CommandType.SIMULATE:
                     self._simulate_use_case(project)
-                elif command.type == CommandType.SIMULATE_SWEEP:
+                elif command.type == CommandType.PARAMETER_SWEEP:
                     self._simulate_sweep_use_case(command, project)
                 elif command.type == CommandType.PLOT:
                     self._plot_signals_use_case(command)
