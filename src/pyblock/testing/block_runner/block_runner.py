@@ -10,7 +10,7 @@ from src.pyblock.block.ports.output_port import OutputPort
 from src.pyblock.block.ports.port_id import PortId
 
 
-class BlockRunner:
+class BlockTester:
     distribution_id: BlockDistributionId
     _block_instance: BaseBlock
 
@@ -26,28 +26,35 @@ class BlockRunner:
         self._outputs = self._find_outputs(self._block_instance)
         self._params = self._find_params(self._block_instance)
 
-    def set_parameter(self, param_id: str, value: Any):
+    def set_parameter(self, param_id: str, value: Any) -> 'BlockTester':
         for block_param in self._params:
             if block_param.id == ParamId(param_id):
                 block_param.value = value
-                return
+                return self
 
         raise KeyError(f"No parameter with Id '{param_id}' in block '{self.distribution_id}'")
 
-    def set_input(self, port_id: str, value: Any):
+    def set_input(self, port_id: str, value: Any) -> 'BlockTester':
         for block_input in self._inputs:
             if block_input.id == PortId(port_id):
                 block_input.signal = value
-                return
+                return self
 
         raise KeyError(f"No input port with Id '{port_id}' in block '{self.distribution_id}'")
 
-    def get_outputs(self) -> Dict:
+    def get_outputs_dict(self) -> Dict:
         output_dict = {}
         for out_port in self._outputs:
             output_dict[out_port.id] = out_port.signal
 
         return output_dict
+
+    def get_output(self, port_id: str):
+        for out_port in self._outputs:
+            if out_port.id == port_id:
+                return out_port.signal
+
+        raise KeyError(f"No output port with Id '{port_id}' in block '{self.distribution_id}'")
 
     def run(self):
         self._block_instance.run()

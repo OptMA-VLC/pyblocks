@@ -9,3 +9,4 @@ class PortEntity:
     block: 'BlockEntity'
     port_id: PortId
     type: Type = Any
+    description: str = ''

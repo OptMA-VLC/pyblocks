@@ -88,7 +88,7 @@ Accessing the time and value of the TimeSignal would look like this:
 
 ```python
 time = self.output_port.signal['square_wave'].time
-value = self.output_port.signal['square_wave'].wave
+value = self.output_port.signal['square_wave'].signal
 ```
 
 Pyblock-sim knows about the MultiSignal type and provides us a useful shorthand to connecting

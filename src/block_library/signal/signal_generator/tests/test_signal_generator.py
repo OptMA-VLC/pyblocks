@@ -27,4 +27,4 @@ class TestSignalGenerator:
 
         pyblock.testing.plot(out)
         np.testing.assert_allclose(t, out.time)
-        np.testing.assert_allclose(square_wave, out.wave)
+        np.testing.assert_allclose(square_wave, out.signal)

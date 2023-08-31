@@ -20,7 +20,7 @@ class CSVSaver:
                 signals_table.append(arr)
             elif isinstance(signal, TimeSignal):
                 arr_time = [f'{sig_name} (time)'] + signal.time.tolist()
-                arr_wave = [f'{sig_name} (signal)'] + signal.wave.tolist()
+                arr_wave = [f'{sig_name} (signal)'] + signal.signal.tolist()
                 signals_table.append(arr_time)
                 signals_table.append(arr_wave)
             else:

@@ -30,15 +30,15 @@ class BlockHelpUseCase:
 
         doc = '========================= Block Documentation =======================\n\n'
         if info.name is not None:
-            doc += f'  Name: {info.name}\n'
+            doc += f'Name: {info.name}\n'
         if info.description is not None:
-            doc += f'  Description: {info.description}\n'
-        doc += f'  Distribution ID: {info.distribution_id}\n'
+            doc += f'Description: {info.description}\n'
+        doc += f'Distribution ID: {info.distribution_id}\n'
 
         doc += '\n## Inputs Ports:\n'
         for inpt in inputs:
-            doc += f'- {inpt.port_id}\n'
-
+            doc += f'Port id: {inpt.port_id}\n'
+            doc += f'Description: {inpt.description}'
         doc += '\n## Output Ports:\n'
         for outpt in outputs:
             doc += f'- {outpt.port_id}\n'

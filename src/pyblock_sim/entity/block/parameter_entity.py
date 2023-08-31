@@ -9,3 +9,4 @@ class ParameterEntity:
     param_id: ParamId
     value: Any
     type: Type = Any
+    description: str = ''

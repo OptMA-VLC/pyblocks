@@ -69,7 +69,7 @@ class SweepResultSerializer:
                 '_type': type(signal).__name__,
                 'name': sig_name,
                 'time': signal.time.tolist(),
-                'signal': signal.wave.tolist()
+                'signal': signal.signal.tolist()
             }
         else:
             raise TypeError(f"Can't serialize signal of type {type(signal).__name__}")

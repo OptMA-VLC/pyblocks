@@ -23,7 +23,7 @@ class GainBlock(BaseBlock):
         signal_in = self.signal_in.signal
         signal_out = TimeSignal(
             time=signal_in.time,
-            signal=signal_in.wave * gain
+            signal=signal_in.signal * gain
         )
 
         self.signal_out.signal = signal_out

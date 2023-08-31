@@ -16,7 +16,7 @@ class Plotter:
             if isinstance(signal, np.ndarray):
                 ax.plot(signal, label=str(selector))
             elif isinstance(signal, TimeSignal):
-                ax.plot(signal.time, signal.wave, label=str(selector))
+                ax.plot(signal.time, signal.signal, label=str(selector))
             else:
                 raise TypeError(
                     f"The signal {selector} can't be plotted because "

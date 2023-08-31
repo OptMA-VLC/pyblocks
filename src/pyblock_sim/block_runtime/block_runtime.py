@@ -49,7 +49,7 @@ class BlockRuntime(IBlockRuntime):
 
     def list_parameters(self) -> List[ParameterEntity]:
         return [
-            ParameterEntity(param_id=param.id, type=param.type, value=None)
+            ParameterEntity(param_id=param.id, type=param.type, description=param.description, value=None)
             for param in self._params
         ]
 

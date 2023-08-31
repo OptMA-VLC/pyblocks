@@ -11,6 +11,7 @@ class Parameter:
     id: ParamId
     type: Type
     default: Any
+    description: str
     _value: Any
 
     @property
@@ -27,7 +28,13 @@ class Parameter:
     def value(self, value: Any):
         self._value = value
 
-    def __init__(self, param_id: Union[ParamId, str], type: Type = Any, default: Any = NO_VALUE):
+    def __init__(
+            self,
+            param_id: Union[ParamId, str],
+            type: Type = Any,
+            default: Any = NO_VALUE,
+            description: str = ''
+    ):
         if isinstance(param_id, str):
             param_id = ParamId(param_id)
 
@@ -35,3 +42,4 @@ class Parameter:
         self.type = type
         self.default = default
         self._value = Parameter.NO_VALUE
+        self.description = description

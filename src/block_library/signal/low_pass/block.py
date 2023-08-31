@@ -31,7 +31,7 @@ class LowPassFilterBlock(BaseBlock):
 
         # apply filter
         (b, a) = butter(order, f_cutoff, fs=f_sample, btype='low', analog=False)
-        out_signal = lfilter(b, a, input_signal.wave)
+        out_signal = lfilter(b, a, input_signal.signal)
 
         # set output
         self.output.signal = TimeSignal(

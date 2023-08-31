@@ -55,7 +55,7 @@ class LTSpiceRunner(BaseBlock):
         with open(file_name_in_circuit, "w") as file_in_circuit:
             for idx in range(len(signal)):
                 time = signal.time[idx]
-                value = signal.wave[idx]
+                value = signal.signal[idx]
                 file_in_circuit.write(f'{time}\t{value}\n')
 
     def run_ltspice(self, config: LTSpiceRunnerConfig):

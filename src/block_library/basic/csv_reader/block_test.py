@@ -2,7 +2,7 @@ from src.block_library.basic.csv_reader.block import CsvReaderBlock
 from src.pyblock import TimeSignal
 from src.pyblock.signals.multi_signal import MultiSignal
 from src.pyblock.signals.signal_name import SignalName
-from src.pyblock.testing.block_runner.block_runner import BlockRunner
+from src.pyblock.testing.block_runner.block_runner import BlockTester
 
 
 class TestCsvBlock:
@@ -18,12 +18,12 @@ class TestCsvBlock:
                 1.4  , 5'''
         )
 
-        runner = BlockRunner(CsvReaderBlock)
+        runner = BlockTester(CsvReaderBlock)
         runner.set_parameter('file', csv_path)
 
         runner.run()
 
-        outputs = runner.get_outputs()
+        outputs = runner.get_outputs_dict()
         multi_signal: MultiSignal = outputs['output']
 
         assert multi_signal.get(SignalName('col_1')) == [1.0, 1.1, 1.2, 1.3, 1.4]
@@ -41,7 +41,7 @@ class TestCsvBlock:
                 1.4     , 5    , 5'''
         )
 
-        runner = BlockRunner(CsvReaderBlock)
+        runner = BlockTester(CsvReaderBlock)
         runner.set_parameter('file', csv_path)
         runner.set_parameter('combine_signals', [{
             'name': 'combined_signal',
@@ -51,12 +51,12 @@ class TestCsvBlock:
 
         runner.run()
 
-        outputs = runner.get_outputs()
+        outputs = runner.get_outputs_dict()
         multi_signal: MultiSignal = outputs['output']
 
         combined_signal: TimeSignal = multi_signal.get(SignalName('combined_signal'))
         time = combined_signal.time.tolist()
-        value = combined_signal.wave.tolist()
+        value = combined_signal.signal.tolist()
         assert time == [1.0, 1.1, 1.2, 1.3, 1.4]
         assert value == [1,   2,   3,  None,  5]
         assert multi_signal.get(SignalName('col_2')) == [1.0, None, 3.0, None, 5.0]
