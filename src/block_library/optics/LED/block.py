@@ -30,6 +30,11 @@ class LED_Block(BaseBlock):
 
     def run(self):
         input_signal = self.input_current.signal
+        if not isinstance(input_signal, TimeSignal):
+            print('[Warning] input_signal must be a TimeSignal')
+            self.output_radiant_flux.signal = None
+            return
+
         conversion_constant = self.conversion_constant.value
         self.output_radiant_flux.signal = TimeSignal(
             time=input_signal.time,
