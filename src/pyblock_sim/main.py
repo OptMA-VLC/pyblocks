@@ -6,7 +6,7 @@ from src.pyblock_sim.repository.cli.object_printers.indexing_result_printer impo
 from src.pyblock_sim.repository.cli.object_printers.simulation_report_printer import SimulationReportPrinter
 from src.pyblock_sim.repository.cli.print_level import PrintLevel
 from src.pyblock_sim.repository.path_manager.path_manager import PathManager
-from src.pyblock_sim.repository_provider import RepositoryProvider
+from src.pyblock_sim.repository.repository_provider import RepositoryProvider
 from src.pyblock_sim.use_case.run_from_file.run_from_file_use_case import RunFromFileUseCase
 
 

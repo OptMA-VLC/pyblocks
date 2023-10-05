@@ -3,7 +3,7 @@ from src.pyblock_sim.entity.project.project_entity import ProjectEntity
 from src.pyblock_sim.repository.cli.print_level import PrintLevel
 from src.pyblock_sim.repository.param_sweep_result_repository.param_sweep_result_repository import \
     ParamSweepResultRepository
-from src.pyblock_sim.repository_provider import RepositoryProvider
+from src.pyblock_sim.repository.repository_provider import RepositoryProvider
 from src.pyblock_sim.use_case.block_help_use_case.block_help_use_case import BlockHelpUseCase
 from src.pyblock_sim.use_case.param_sweep_use_case.param_sweep_use_case import ParamSweepUseCase
 from src.pyblock_sim.use_case.plot_signals_use_case.plot_signals_use_case import PlotSignalsUseCase

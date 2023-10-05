@@ -1,10 +1,10 @@
 from typing import List
 
 from src.pyblock_sim.entity.graph.simulation_graph import SimulationGraph
+from src.pyblock_sim.entity.simulation.simulation_report import SimulationReport
+from src.pyblock_sim.entity.simulation.simulation_step_report import SimulationStepReport
 from src.pyblock_sim.entity.simulation.simulation_steps import SimulationStep
 from src.pyblock_sim.use_case.simulate_use_case.simulation_progress_callbacks import SimulationProgressCallbacks
-from src.pyblock_sim.use_case.simulate_use_case.simulation_report import SimulationReport
-from src.pyblock_sim.use_case.simulate_use_case.simulation_step_report import SimulationStepReport
 
 
 class EmptySimulationProgressCallbacks(SimulationProgressCallbacks):

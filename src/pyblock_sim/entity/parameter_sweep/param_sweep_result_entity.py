@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 from typing import Any, List
 
+from src.pyblock_sim.entity.simulation.simulation_report import SimulationReport
 from src.pyblock_sim.repository.signal_repository.signal_repository import SignalRepository
-from src.pyblock_sim.use_case.simulate_use_case.simulation_report import SimulationReport
 
 
 @dataclass

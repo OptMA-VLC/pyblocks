@@ -4,7 +4,7 @@ from typing import List
 
 from src.pyblock.block.block_distribution_id import BlockDistributionId
 from src.pyblock_sim.entity.block.interface_block_runtime import IBlockRuntime
-from src.pyblock_sim.repository.block_repository.indexing_result import IndexingResult
+from src.pyblock_sim.entity.block_library.indexing_result import IndexingResult
 
 
 class IBlockRepository(ABC):

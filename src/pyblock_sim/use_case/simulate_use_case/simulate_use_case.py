@@ -6,6 +6,8 @@ from typing import List
 from src.pyblock_sim.entity.block.block_entity import BlockEntity
 from src.pyblock_sim.entity.graph.connection_entity import ConnectionEntity
 from src.pyblock_sim.entity.project.project_entity import ProjectEntity
+from src.pyblock_sim.entity.simulation.simulation_report import SimulationReport
+from src.pyblock_sim.entity.simulation.simulation_step_report import SimulationStepReport
 from src.pyblock_sim.entity.simulation.simulation_steps import SimulationStep
 from src.pyblock_sim.repository.block_repository.block_repository import BlockRepository
 from src.pyblock_sim.repository.path_manager.path_manager import PathManager
@@ -19,8 +21,6 @@ from src.pyblock_sim.use_case.simulate_use_case.empty_simulation_progress_callba
 from src.pyblock_sim.use_case.simulate_use_case.simulation_exceptions import BlockParamException, BlockInputException, \
     BlockRunningException, BlockOutputException
 from src.pyblock_sim.use_case.simulate_use_case.simulation_progress_callbacks import SimulationProgressCallbacks
-from src.pyblock_sim.use_case.simulate_use_case.simulation_report import SimulationReport
-from src.pyblock_sim.use_case.simulate_use_case.simulation_step_report import SimulationStepReport
 from src.pyblock_sim.util.set_directory import set_directory
 
 

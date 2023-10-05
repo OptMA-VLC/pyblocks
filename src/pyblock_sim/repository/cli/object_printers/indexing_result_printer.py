@@ -1,7 +1,7 @@
 from typing import Type
 
+from src.pyblock_sim.entity.block_library.indexing_result import IndexingResult, ResultItem
 from src.pyblock_sim.repository.block_repository.block_repository_exceptions import NoBlockPyFile
-from src.pyblock_sim.repository.block_repository.indexing_result import IndexingResult, ResultItem
 from src.pyblock_sim.repository.cli.object_printer import ObjectPrinter
 from src.pyblock_sim.util.logger import logger
 
