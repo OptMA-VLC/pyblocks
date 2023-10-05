@@ -1,0 +1,59 @@
+{
+  "blocks": [
+    {
+      "distribution_id": "com.pyblocks.basic.csv_reader",
+      "instance_id": "csv_reader",
+      "parameters": [
+        {
+          "param_id": "file", "value": "./square_wave.csv"
+        },
+        {
+          "param_id": "combine_signals",
+          "value": [
+            {
+              "name": "square_wave",
+              "time_column": "time",
+              "value_column": "voltage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "distribution_id": "com.pyblocks.signal.low_pass",
+      "instance_id": "low_pass_filter",
+      "parameters": [
+        {
+          "param_id": "f_cutoff", "value": 100
+        }
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "from": "csv_reader::output[square_wave]",
+      "to": "low_pass_filter::input"
+    }
+  ],
+  "commands": [
+    {
+      "command": "simulate"
+    },
+    {
+      "command": "plot",
+      "parameters": [
+        {
+          "param_id": "signals",
+          "value": [
+            "csv_reader::output[square_wave]",
+            "low_pass_filter::output"
+          ]
+        },
+        {
+          "param_id": "save_path",
+          "value": "./outputs/tutorial_3_time_signals_plot.png"
+        }
+      ]
+    }
+  ]
+}

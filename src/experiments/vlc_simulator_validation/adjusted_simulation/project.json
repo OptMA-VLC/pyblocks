@@ -1,0 +1,223 @@
+{
+  "blocks": [
+    {
+      "distribution_id": "com.pyblocks.signal.signal_generator",
+      "instance_id": "signal_generator",
+      "parameters": [
+        {
+          "param_id": "frequency", "value": 38000
+        },
+        {
+          "param_id": "sample_frequency", "value": 200000
+        },
+        {
+          "param_id": "duration", "value": 0.0001
+        },
+        {
+          "param_id": "amplitude", "value": 5
+        }
+      ]
+    },
+    {
+      "distribution_id": "com.pyblocks.integrations.ltspice",
+      "instance_id": "ltspice_tx",
+      "parameters": [
+        {
+          "param_id": "schematic_file", "value": "./transmissor.asc"
+        },
+        {
+          "param_id": "file_name_in_circuit", "value": "TX_input.txt"
+        },
+        {
+          "param_id": "add_instructions", "value": [
+            "; Simulation settings",
+            ".tran 0 100u 0 1u"
+          ]
+        },
+        {
+          "param_id": "probe_signals", "value": ["I(D1)", "V(V_D1p)", "V(V_D1n)"]
+        }
+      ]
+    },
+    {
+      "distribution_id": "com.pyblocks.basic.sub",
+      "instance_id": "sub"
+    },
+    {
+      "distribution_id": "com.pyblocks.optics.LED_vi",
+      "instance_id": "led",
+      "parameters": [
+        {
+          "param_id": "led_efficiency", "value": 0.25
+        }
+      ]
+    },
+    {
+      "distribution_id": "com.pyblocks.optics.LOS_channel",
+      "instance_id": "los_channel",
+      "parameters": [
+        {
+          "param_id": "led_position", "value": [0, 0, 0]
+        },
+        {
+          "param_id": "led_orientation", "value": [1, 0, 0]
+        },
+        {
+          "param_id": "led_half_power_angle_deg", "value": 60
+        },
+        {
+          "param_id": "pd_position", "value": [0.05, 0, 0]
+        },
+        {
+          "param_id": "pd_orientation", "value": [-1, 0, 0]
+        },
+        {
+          "param_id": "pd_area_mm", "value": 1
+        },
+        {
+          "param_id": "pd_field_of_view", "value": 60
+        }
+      ]
+    },
+    {
+      "distribution_id": "com.pyblocks.optics.photodetector",
+      "instance_id": "photodetector",
+      "parameters": [
+        {
+          "param_id": "sensitivity", "value": 0.36
+        }
+      ]
+    },
+    {
+      "distribution_id": "com.pyblocks.integrations.ltspice",
+      "instance_id": "ltspice_rx",
+      "parameters": [
+        {
+          "param_id": "schematic_file", "value": "./receptor.asc"
+        },
+        {
+          "param_id": "file_name_in_circuit", "value": "RX_input.txt"
+        },
+        {
+          "param_id": "add_instructions", "value": [
+            "; Simulation settings",
+            ".tran 0 100u 0 1u"
+          ]
+        },
+        {
+          "param_id": "probe_signals", "value": ["V(Saida)"]
+        }
+      ]
+    }
+  ],
+    "connections": [
+    {
+      "from": "signal_generator::signal_out",
+      "to": "ltspice_tx::signal_in"
+    },
+    {
+      "from": "ltspice_tx::signal_out[V(V_D1p)]",
+      "to": "sub::signal_a"
+    },
+    {
+      "from": "ltspice_tx::signal_out[V(V_D1n)]",
+      "to": "sub::signal_b"
+    },
+    {
+      "from": "sub::signal_out",
+      "to": "led::input_voltage"
+    },
+    {
+      "from": "ltspice_tx::signal_out[I(D1)]",
+      "to": "led::input_current"
+    },
+    {
+      "from": "led::output_radiant_flux",
+      "to": "los_channel::input_radiant_flux"
+    },
+    {
+      "from": "los_channel::output_radiant_flux",
+      "to": "photodetector::input_radiant_flux"
+    },
+    {
+      "from": "photodetector::output_current",
+      "to": "ltspice_rx::signal_in"
+    }
+  ],
+  "commands": [
+    {
+      "command": "simulate"
+    },
+    {
+      "command": "plot",
+      "parameters": [
+        {
+          "param_id": "signals",
+          "value": [
+            "los_channel::output_radiant_flux"
+          ]
+        }
+      ]
+    }
+  ],
+  "commands_param_sweep": [
+    {
+      "command": "parameter_sweep",
+      "parameters": [
+        {
+          "param_id": "target_block_instance_id", "value": "channel_noise"
+        }, {
+          "param_id": "target_param_id", "value": "ambient_light_w"
+        }, {
+          "param_id": "sweep_values",
+          "value": [
+            0,
+            10e-9,
+            30e-9,
+            100e-9,
+            300e-9,
+            1e-6,
+            3e-6,
+            10e-6,
+            30e-6,
+            100e-6,
+            300e-6,
+            1e-3
+          ]
+        }, {
+          "param_id": "output_dir", "value": "."
+        }
+      ]
+    }
+  ],
+  "commands_param_sweep_distance": [
+    {
+      "command": "parameter_sweep",
+      "parameters": [
+        {
+          "param_id": "target_block_instance_id", "value": "channel"
+        }, {
+          "param_id": "target_param_id", "value": "pd_position"
+        }, {
+          "param_id": "sweep_values",
+          "value": [
+            [0.01, 0, 0],
+            [0.02, 0, 0],
+            [0.03, 0, 0],
+            [0.04, 0, 0],
+            [0.05, 0, 0],
+            [0.06, 0, 0],
+            [0.07, 0, 0],
+            [0.08, 0, 0],
+            [0.09, 0, 0],
+            [0.10, 0, 0],
+            [0.20, 0, 0],
+            [0.30, 0, 0]
+          ]
+        }, {
+          "param_id": "output_dir", "value": "."
+        }
+      ]
+    }
+  ]
+}

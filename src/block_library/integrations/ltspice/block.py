@@ -87,7 +87,9 @@ class LTSpiceRunner(BaseBlock):
             )
 
         signal_trace_dict = {'time': raw_data.get_axis()}
-        signal_trace_dict.update({signal: raw_data.get_trace(signal) for signal in config.probe_signals})
+        signal_trace_dict.update({
+            signal: raw_data.get_trace(signal) for signal in config.probe_signals
+        })
 
         print(f'Recovered {len(signal_trace_dict)} signals, including time')
         time = signal_trace_dict['time']
@@ -98,7 +100,6 @@ class LTSpiceRunner(BaseBlock):
                 print(f'Recovered signal {key} for output')
                 out_signal = TimeSignal(time, signal)
                 out_signals.set(SignalName(key), out_signal)
-                break
 
         if len(out_signals) == 0:
             raise RuntimeError('Could not recover an output signal from simulation')

@@ -11,9 +11,9 @@ class ComputeSimulationStepsUseCase:
         blocks_in_execution_order = graph.topological_sort()
 
         for block in blocks_in_execution_order:
+            incoming_connections = graph.get_incoming_connections(block.instance_id)
             steps.append(SimulationStep(
-                block=block,
-                input_connections=graph.get_incoming_connections(block.instance_id),
+                block=block, input_connections=incoming_connections,
             ))
 
         return steps

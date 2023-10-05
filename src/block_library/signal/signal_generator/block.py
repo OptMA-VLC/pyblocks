@@ -37,6 +37,7 @@ class SignalGeneratorBlock(BaseBlock):
 
         if wave_form == 'square':
             signal = scipy.signal.square(2*np.pi * f * t, duty=duty)
+            signal = 1 - signal  # make wave start in low level
         elif wave_form == 'triangle':
             signal = scipy.signal.sawtooth(2*np.pi * f * t, width=duty)
             signal = (signal + 1)/2

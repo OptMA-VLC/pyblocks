@@ -2,6 +2,7 @@ from numbers import Real
 from typing import Type, List
 
 import numpy as np
+from scipy import signal
 
 
 class TimeSignal:
@@ -36,6 +37,12 @@ class TimeSignal:
     def get_time_step(self) -> Real:
         """Method to get the time step."""
         return 1 / self.sample_frequency
+
+    def resample_to(self, other: 'TimeSignal') -> 'TimeSignal':
+        return TimeSignal(
+            time=other.time,
+            signal=signal.resample(self.signal, len(other.time))
+        )
 
     def __len__(self) -> int:
         if len(self.signal) != len(self.time):

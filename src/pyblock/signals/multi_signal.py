@@ -16,7 +16,14 @@ class MultiSignal:
         self._signals[signal_name] = signal
 
     def get(self, signal_name: SignalName):
-        return self._signals[signal_name]
+        try:
+            return self._signals[signal_name]
+        except KeyError:
+            s = f"This MultiSignal object has no signal '{signal_name}'. Available signals are ["
+            for name in self._signals.keys():
+                s += f'{name}, '
+            s = s[:-2] + ']\n'
+            raise KeyError(s)
 
     def delete(self, signal_name: SignalName):
         del self._signals[signal_name]

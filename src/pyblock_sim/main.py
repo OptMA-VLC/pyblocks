@@ -10,17 +10,33 @@ from src.pyblock_sim.repository_provider import RepositoryProvider
 from src.pyblock_sim.use_case.run_from_file.run_from_file_use_case import RunFromFileUseCase
 
 
+def get_project_path(cli: CLI, default=Path('.')) -> Path:
+    if len(sys.argv) < 2:
+        cli.print(f'No project path provided as command line argument. Using default value: {default}')
+        return default
+
+    cli_path = Path(sys.argv[1])
+    if not Path.exists(Path(cli_path)):
+        cli.print(f'The project file provided as a command line argument does not exist: {cli_path}')
+        raise FileNotFoundError(f'Project file \'{cli_path}\' does not exist')
+
+    cli.print(f'Using project path provided by command line {cli_path}')
+    return cli_path
+
+
 def main():
     cli = setup_cli()
 
     cli.print('Welcome to pyblocks-sim!  :cat:')
     check_requirements(cli)
 
+    project_path = get_project_path(
+        cli, default=Path('../experiments/vlc_simulator_validation/adjusted_simulation/project.json')
+    )
+
     path_manager = PathManager(
         run_path=Path.cwd(),
-        # project_rel_path=Path('../experiments/vlc_circuit_comparison/basic_circuit/project.json'),
-        project_rel_path=Path('../experiments/vlc_circuit_comparison/adaptative_circuit/project.json'),
-        # project_rel_path=Path('../tutorials/4_parameter_sweep/project.json'),
+        project_rel_path=project_path,
         block_library_rel_path=Path('../block_library')
     )
 

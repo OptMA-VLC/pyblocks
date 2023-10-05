@@ -159,3 +159,26 @@ class TestSimulationGraph_Connections:
         graph.add_connection(conn_1)
         with pytest.raises(Exception):
             graph.add_connection(conn_2)
+
+    def test_can_add_repeated_connection(self):
+        graph_builder = GraphBuilderUtil() \
+            .with_block('block_1', outputs=['out_a', 'out_b']) \
+            .with_block('block_2', inputs=['in_a', 'in_b'])
+        graph = graph_builder.build()
+        block_1 = graph_builder.get_block('block_1')
+        block_2 = graph_builder.get_block('block_2')
+
+        conn_1 = ConnectionEntity.from_port_entity(
+            origin=block_1.outputs[0], destination=block_2.inputs[0]
+        )
+        conn_2 = ConnectionEntity.from_port_entity(
+            origin=block_1.outputs[1], destination=block_2.inputs[1]
+        )
+
+        graph.add_connection(conn_1)
+        graph.add_connection(conn_2)
+
+        created_connections = graph.connections
+        assert len(created_connections) == 2
+        assert conn_1 in created_connections
+        assert conn_2 in created_connections

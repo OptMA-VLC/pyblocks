@@ -14,7 +14,7 @@ class SimulationGraph:
     _graph: nx.DiGraph
 
     def __init__(self):
-        self._graph = nx.DiGraph()
+        self._graph = nx.MultiDiGraph()
 
     @property
     def blocks(self) -> List[BlockEntity]:

@@ -78,7 +78,10 @@ class RunFromFileUseCase:
             self._repo_provider.path_manager
         )
         simulation_progress_printer = SimulationProgressPrinter(self._repo_provider.cli)
-        simulate_use_case.simulate(project, simulation_progress_printer)
+        simulation_report = simulate_use_case.simulate(project, simulation_progress_printer)
+        if not simulation_report.success:
+            raise simulation_report.exception
+
 
     def _simulate_sweep_use_case(self, command: CommandEntity, project: ProjectEntity):
         simulate_sweep_use_case = ParamSweepUseCase(

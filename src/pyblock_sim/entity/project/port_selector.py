@@ -19,3 +19,6 @@ class PortSelector:
             )
 
         return PortSelector(block=BlockInstanceId(parts[0]), port=PortId(parts[1]))
+
+    def __str__(self):
+        return f'{self.block}::{self.port}'
