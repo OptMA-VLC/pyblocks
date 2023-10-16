@@ -41,11 +41,11 @@ class LED_Block(BaseBlock):
 
         # validate inputs
         if not isinstance(input_voltage, TimeSignal):
-            raise TypeError('input_voltage must be a TimeSignal')
+            raise TypeError(f'input_voltage must be a TimeSignal (is {type(input_voltage).__name__})')
         if not isinstance(input_current, TimeSignal):
-            raise TypeError('input_current must be a TimeSignal')
+            raise TypeError(f'input_current must be a TimeSignal (is {type(input_current).__name__})')
         if not isinstance(led_efficiency, float) and not isinstance(led_efficiency, int):
-            raise TypeError('led_efficiency must be a Number')
+            raise TypeError(f'led_efficiency must be a Number (is {type(led_efficiency).__name__})')
 
         voltage_resampled = TimeSignal(
             time=input_current.time,

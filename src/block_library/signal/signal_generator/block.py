@@ -37,15 +37,17 @@ class SignalGeneratorBlock(BaseBlock):
 
         if wave_form == 'square':
             signal = scipy.signal.square(2*np.pi * f * t, duty=duty)
-            signal = 1 - signal  # make wave start in low level
+            signal = 0.5 * (signal + 1)  # make wave have bounds [0, 1]
+            signal = 1 - signal          # make wave start at low level
+            signal = signal * amplitude  # adjust amplitude
         elif wave_form == 'triangle':
             signal = scipy.signal.sawtooth(2*np.pi * f * t, width=duty)
             signal = (signal + 1)/2
         elif wave_form == 'sine':
             signal = np.sin(2*np.pi * f * t)
+            signal = signal * amplitude/2 + amplitude/2
         else:
             raise ValueError(f"The requested wave_form ('{wave_form}') is not supported.")
 
-        signal = signal * amplitude/2 + amplitude/2
 
         self.signal_out.signal = TimeSignal(t, signal)
