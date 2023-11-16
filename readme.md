@@ -12,17 +12,22 @@ For now, only running from code is supported by pyblocks-sim
 
 Clone this repository and run ./src/pyblock_sim/main.py
 
+## Documentation
+
+Tutorials can be found at [/docs/tutorials](./docs/tutorials).
+
 ## Repository Organization
 
 ```
 my_block
 ├─ docs  => Documentation 
+|  └─ tutorials => Tutorials
 ├─ pyinstaller-build  => Proof-of-concept of packaging using pyinstaller
 └─ src
    ├─ pyblock_sim  => Simulator source code
    ├─ pyblock  => Definition of BaseBlock and related classes
    ├─ block_library  => Block implementations
-   ├─ examples  => Examples of how to use the simulator
+   ├─ tutorials  => Source code for the tutorials
    └─ experiments  => folder for experiments at OptMA Lab. should be removed from release
 ```
 

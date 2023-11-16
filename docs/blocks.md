@@ -14,25 +14,30 @@ block_library_root
 .
 ```
 
-### Block Class
+### Implementing a Block
 
-- Class structure
+See the example in [Tutorial 2](./tutorials/2_calculator/tutorial_2_calculator.md).
 
-### Initializer
+### Q & A
 
-- do: declare block properties
-- don't: run stuff
+**Q: What should be in the initializer?**
 
-### Running
+**A**: Only declare the inputs, outputs and parameters. You may declare / initialize variables used by your code but the initializer should run quickly, because the simulator needs to run it before the simulation to discover the inputs, outputs and parameters this block declares. For example, if you need to open a file, it's best to do it at the beginning of `run` rather than at `__init__`.
 
-- run method
-- error handling
 
-### Special Signals
+**Q: How to handle errors?**
 
-- time series
-- multisignal
+**A**: If your block throws an exception in the `run` method, the simulator will catch it and append to the simulation logs. So just throw an exception. Be helpful to your user and create the exception with a message that points to the cause of the error or to the probable solution.
 
+
+**Q: Are the inputs, outputs and parameters type checked?**
+
+**A**: Sadly, no. It would be ideal but the Python type system is a mess. So you will have to double-check the types and raise InputError yourself at the beginning of your `run` function.
+
+
+**Q: What are the supported parameter types?**
+
+**A**: The parameters are parsed from a json file, so you can expect the mapping between JSON and Python types from the builtin JSON parser. This means that it is possible to receive "objects" as a parameter in the sense that the JSON object described by the user as a parameter value will be parsed as a Dict and relayed to the block.
 
 
 

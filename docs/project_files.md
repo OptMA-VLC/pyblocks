@@ -1,2 +1,0 @@
-# Writing a project file
-
