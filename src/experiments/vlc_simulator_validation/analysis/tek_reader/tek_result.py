@@ -10,6 +10,10 @@ class TekResult:
     signal: np.array
     metadata: Dict
 
+    def value_at_time(self, ref_time: float) -> float:
+        idx = np.argmax(self.time > ref_time)
+        return self.signal[idx]
+
     def __str__(self):
         s = '---- TekCsv object ----\n\nMetadata:'
         s += pretty_print_dict(self.metadata)

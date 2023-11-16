@@ -23,10 +23,10 @@
       "instance_id": "ltspice_tx",
       "parameters": [
         {
-          "param_id": "schematic_file", "value": "./transmissor.asc"
+          "param_id": "schematic_file", "value": "./ini_transmissor.asc"
         },
         {
-          "param_id": "file_name_in_circuit", "value": "TX_input.txt"
+          "param_id": "input_signal_file", "value": "TX_input.txt"
         },
         {
           "param_id": "add_instructions", "value": [
@@ -66,7 +66,7 @@
           "param_id": "led_half_power_angle_deg", "value": 15
         },
         {
-          "param_id": "pd_position", "value": [0.03, 0, 0]
+          "param_id": "pd_position", "value": [0.1, 0, 0]
         },
         {
           "param_id": "pd_orientation", "value": [-1, 0, 0]
@@ -93,10 +93,10 @@
       "instance_id": "ltspice_rx",
       "parameters": [
         {
-          "param_id": "schematic_file", "value": "./receptor.asc"
+          "param_id": "schematic_file", "value": "./ini_receptor.asc"
         },
         {
-          "param_id": "file_name_in_circuit", "value": "RX_input.txt"
+          "param_id": "input_signal_file", "value": "RX_input.txt"
         },
         {
           "param_id": "add_instructions", "value": [

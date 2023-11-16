@@ -26,7 +26,7 @@ class LTSpiceRunner(BaseBlock):
         )
 
         self.param_schematic_file = Parameter(param_id='schematic_file', type=str)
-        self.param_file_name_in_circuit = Parameter(param_id='file_name_in_circuit', type=str)
+        self.param_input_signal_file = Parameter(param_id='input_signal_file', type=str)
         self.param_add_instructions = Parameter(param_id='add_instructions', type=List[str])
         self.param_probe_signals = Parameter(param_id='probe_signals', type=List[str])
 
@@ -36,7 +36,7 @@ class LTSpiceRunner(BaseBlock):
     def run(self):
         config = LTSpiceRunnerConfig(
             schematic_file=Path(self.param_schematic_file.value),
-            file_name_in_circuit=self.param_file_name_in_circuit.value,
+            input_signal_file=self.param_input_signal_file.value,
             add_instructions=self.param_add_instructions.value,
             probe_signals=self.param_probe_signals.value
         )
@@ -50,9 +50,9 @@ class LTSpiceRunner(BaseBlock):
         self.signal_out.signal = out_signal
 
     def write_signal_file(self, config: LTSpiceRunnerConfig, signal: TimeSignal):
-        file_name_in_circuit = Path(config.file_name_in_circuit).resolve()
+        input_signal_file = Path(config.input_signal_file).resolve()
 
-        with open(file_name_in_circuit, "w") as file_in_circuit:
+        with open(input_signal_file, "w") as file_in_circuit:
             for idx in range(len(signal)):
                 time = signal.time[idx]
                 value = signal.signal[idx]

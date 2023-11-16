@@ -6,7 +6,7 @@ from typing import List
 
 @dataclass
 class LTSpiceRunnerConfig:
-    file_name_in_circuit: str
+    input_signal_file: str
     schematic_file: pathlib.Path
     probe_signals: List[str]
     add_instructions: List[str] = field(default_factory=list)
@@ -15,14 +15,14 @@ class LTSpiceRunnerConfig:
     def from_path(path: pathlib.Path) -> 'LTSpiceRunnerConfig':
         with open(path) as f:
             json_dict = json.load(f)
-            file_name_in_circuit = json_dict['file_name_in_circuit']
+            input_signal_file = json_dict['input_signal_file']
             schematic_file = pathlib.Path(json_dict['schematic_file'])
             probe_signals = json_dict['probe_signals']
             add_instructions = json_dict['add_instructions']
 
             return LTSpiceRunnerConfig(
                 schematic_file=schematic_file,
-                file_name_in_circuit=file_name_in_circuit,
+                input_signal_file=input_signal_file,
                 add_instructions=add_instructions,
                 probe_signals=probe_signals
             )

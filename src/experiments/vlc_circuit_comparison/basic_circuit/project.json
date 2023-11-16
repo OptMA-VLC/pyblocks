@@ -26,7 +26,7 @@
           "param_id": "schematic_file", "value": "./transmissor.asc"
         },
         {
-          "param_id": "file_name_in_circuit", "value": "TX_input.txt"
+          "param_id": "input_signal_file", "value": "TX_input.txt"
         },
         {
           "param_id": "add_instructions", "value": [
@@ -104,7 +104,7 @@
           "param_id": "schematic_file", "value": "./basic_receptor.asc"
         },
         {
-          "param_id": "file_name_in_circuit", "value": "RX_input.txt"
+          "param_id": "input_signal_file", "value": "RX_input.txt"
         },
         {
           "param_id": "add_instructions", "value": [

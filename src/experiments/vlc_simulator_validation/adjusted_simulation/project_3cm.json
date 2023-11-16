@@ -23,10 +23,10 @@
       "instance_id": "ltspice_tx",
       "parameters": [
         {
-          "param_id": "schematic_file", "value": "./transmissor.asc"
+          "param_id": "schematic_file", "value": "./adj_transmissor.asc"
         },
         {
-          "param_id": "file_name_in_circuit", "value": "TX_input.txt"
+          "param_id": "input_signal_file", "value": "TX_input.txt"
         },
         {
           "param_id": "add_instructions", "value": [
@@ -48,7 +48,7 @@
       "instance_id": "led",
       "parameters": [
         {
-          "param_id": "led_efficiency", "value": 0.2
+          "param_id": "led_efficiency", "value": 0.75
         }
       ]
     },
@@ -63,7 +63,7 @@
           "param_id": "led_orientation", "value": [1, 0, 0]
         },
         {
-          "param_id": "led_half_power_angle_deg", "value": 10
+          "param_id": "led_half_power_angle_deg", "value": 15
         },
         {
           "param_id": "pd_position", "value": [0.03, 0, 0]
@@ -84,7 +84,7 @@
       "instance_id": "photodetector",
       "parameters": [
         {
-          "param_id": "sensitivity", "value": 0.5
+          "param_id": "sensitivity", "value": 0.36
         }
       ]
     },
@@ -93,10 +93,10 @@
       "instance_id": "ltspice_rx",
       "parameters": [
         {
-          "param_id": "schematic_file", "value": "./receptor.asc"
+          "param_id": "schematic_file", "value": "./adj_receptor.asc"
         },
         {
-          "param_id": "file_name_in_circuit", "value": "RX_input.txt"
+          "param_id": "input_signal_file", "value": "RX_input.txt"
         },
         {
           "param_id": "add_instructions", "value": [
@@ -219,7 +219,7 @@
         {
           "param_id": "signals",
           "value": [
-            "ltspice_rx::signal_out[V(Saida)]"
+            "photodetector::output_current"
           ]
         }
       ]

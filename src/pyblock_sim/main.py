@@ -31,7 +31,9 @@ def main():
     check_requirements(cli)
 
     project_path = get_project_path(
-        cli, default=Path('../experiments/vlc_simulator_validation/adjusted_simulation/project.json')
+        cli,
+        default=Path('../experiments/vlc_simulator_validation/adjusted_simulation/project_3cm.json')
+        # default=Path('../experiments/vlc_simulator_validation/first_simulation/project.json')
     )
 
     path_manager = PathManager(
