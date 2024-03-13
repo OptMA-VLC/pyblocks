@@ -32,7 +32,7 @@ def main():
 
     project_path = get_project_path(
         cli,
-        default=Path('../experiments/vlc_simulator_validation/adjusted_simulation/project_3cm.json')
+        default=Path('../experiments/vlc_incremental_adjustment/simulations/1_initial_3cm.json')
         # default=Path('../experiments/vlc_simulator_validation/first_simulation/project.json')
     )
 
